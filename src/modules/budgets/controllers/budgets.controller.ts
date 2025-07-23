@@ -1,0 +1,71 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Request,
+} from "@nestjs/common";
+import { BudgetsService } from "../services/budgets.service";
+import { CreateBudgetDto } from "../dto/create-budget.dto";
+import { UpdateBudgetDto } from "../dto/update-budget.dto";
+import { JwtAuthGuard } from "../../auth/guards/jwt-auth.guard";
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+} from "@nestjs/swagger";
+
+@ApiTags("Budgets")
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
+@Controller("budgets")
+export class BudgetsController {
+  constructor(private readonly budgetsService: BudgetsService) {}
+
+  @Post()
+  @ApiOperation({ summary: "Create a new budget" })
+  @ApiResponse({
+    status: 201,
+    description: "The budget has been successfully created.",
+  })
+  create(@Body() createBudgetDto: CreateBudgetDto, @Request() req) {
+    return this.budgetsService.create(createBudgetDto, req.user.id);
+  }
+
+  @Get()
+  @ApiOperation({ summary: "Get all budgets for the current user" })
+  findAll(@Request() req) {
+    return this.budgetsService.findAll(req.user.id);
+  }
+
+  @Get(":id")
+  @ApiOperation({ summary: "Get a specific budget by ID" })
+  findOne(@Param("id") id: string, @Request() req) {
+    return this.budgetsService.findOne(id, req.user.id);
+  }
+
+  @Patch(":id")
+  @ApiOperation({ summary: "Update a budget" })
+  update(
+    @Param("id") id: string,
+    @Body() updateBudgetDto: UpdateBudgetDto,
+    @Request() req,
+  ) {
+    return this.budgetsService.update(id, updateBudgetDto, req.user.id);
+  }
+
+  @Delete(":id")
+  @ApiOperation({ summary: "Delete a budget" })
+  @ApiResponse({
+    status: 204,
+    description: "The budget has been successfully deleted.",
+  })
+  remove(@Param("id") id: string, @Request() req) {
+    return this.budgetsService.remove(id, req.user.id);
+  }
+}
