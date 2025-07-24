@@ -1,4 +1,1 @@
-Replaced findAll method in src/modules/transactions/services/transactions.service.ts
-Added getWalletReport functionality to transactions module.
-Reverted wallet report functionality from transactions module.
-Updated getWalletReport in reports.service.ts to include initial and final balances.
+User asked about using global environment variables in production with Docker Compose. I explained the variable precedence and recommended using a production-specific .env file or Docker Secrets for better security and manageability over host-level environment variables.
