@@ -1,1 +1,1 @@
-User asked about using global environment variables in production with Docker Compose. I explained the variable precedence and recommended using a production-specific .env file or Docker Secrets for better security and manageability over host-level environment variables.
+User wanted to add an Nginx reverse proxy. I created an 'nginx' directory with a suitable 'nginx.conf' and updated the 'docker-compose.yml' to include a new Nginx service. The new service proxies requests to the backend service, which no longer exposes its port directly.

@@ -17,13 +17,23 @@ services:
 
   backend:
     build: .
-    ports:
-      - "3000:3000"
+    # Port 3000 tidak lagi diekspos ke host, hanya bisa diakses dari dalam jaringan docker
     env_file:
       - .env
     depends_on:
       db:
         condition: service_healthy
+
+  # BARU: Service untuk Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - "80:80" # Ekspos port 80 ke host
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro # Mount file konfigurasi (read-only)
+    depends_on:
+      - backend
 
 volumes:
   postgres_data:
