@@ -7,6 +7,7 @@ import {
   Get,
   Request,
   UseGuards,
+  Param,
 } from "@nestjs/common";
 import { AuthService } from "../services/auth.service";
 import { CreateUserDto } from "../dto/create-user.dto";
@@ -18,6 +19,8 @@ import {
   ApiBearerAuth,
 } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../guards/jwt-auth.guard";
+import { ForgotPasswordDto } from "../dto/forgot-password.dto";
+import { ResetPasswordDto } from "../dto/reset-password.dto";
 
 @ApiTags("Authentication")
 @Controller("auth")
@@ -39,6 +42,26 @@ export class AuthController {
   @ApiResponse({ status: 401, description: "Invalid credentials." })
   async login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
+  }
+
+  @Post("forgot-password")
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: "Send password reset link" })
+  @ApiResponse({ status: 200, description: "Password reset link sent." })
+  async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
+    return this.authService.forgotPassword(forgotPasswordDto);
+  }
+
+  @Post("reset-password/:token")
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: "Reset user password" })
+  @ApiResponse({ status: 200, description: "Password successfully reset." })
+  @ApiResponse({ status: 401, description: "Invalid or expired token." })
+  async resetPassword(
+    @Param("token") token: string,
+    @Body() resetPasswordDto: ResetPasswordDto,
+  ) {
+    return this.authService.resetPassword(token, resetPasswordDto);
   }
 
   @UseGuards(JwtAuthGuard)

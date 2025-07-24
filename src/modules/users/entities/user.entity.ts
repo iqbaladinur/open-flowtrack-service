@@ -25,6 +25,12 @@ export class User {
   @Column({ nullable: true })
   full_name: string;
 
+  @Column({ nullable: true })
+  password_reset_token: string;
+
+  @Column({ nullable: true })
+  password_reset_expires: Date;
+
   @CreateDateColumn()
   created_at: Date;
 

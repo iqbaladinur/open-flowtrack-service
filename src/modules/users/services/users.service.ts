@@ -22,4 +22,10 @@ export class UsersService {
   async findOneById(id: string): Promise<User | undefined> {
     return this.usersRepository.findOne({ where: { id } });
   }
+
+  async findOneByResetToken(token: string): Promise<User | undefined> {
+    return this.usersRepository.findOne({
+      where: { password_reset_token: token },
+    });
+  }
 }
