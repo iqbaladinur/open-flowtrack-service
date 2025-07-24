@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Request,
+  Query,
 } from "@nestjs/common";
 import { CategoriesService } from "../services/categories.service";
 import { CreateCategoryDto } from "../dto/create-category.dto";
@@ -18,7 +19,9 @@ import {
   ApiBearerAuth,
   ApiOperation,
   ApiResponse,
+  ApiQuery,
 } from "@nestjs/swagger";
+import { CategoryType } from "../entities/category.entity";
 
 @ApiTags("Categories")
 @ApiBearerAuth()
@@ -41,8 +44,9 @@ export class CategoriesController {
   @ApiOperation({
     summary: "Get all categories for the current user (including defaults)",
   })
-  findAll(@Request() req) {
-    return this.categoriesService.findAll(req.user.id);
+  @ApiQuery({ name: "type", required: false, enum: CategoryType })
+  findAll(@Request() req, @Query("type") type?: CategoryType) {
+    return this.categoriesService.findAll(req.user.id, type);
   }
 
   @Get(":id")

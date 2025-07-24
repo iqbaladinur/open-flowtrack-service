@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { Category } from "../entities/category.entity";
+import { FindOptionsWhere, Repository } from "typeorm";
+import { Category, CategoryType } from "../entities/category.entity";
 import { CreateCategoryDto } from "../dto/create-category.dto";
 import { UpdateCategoryDto } from "../dto/update-category.dto";
 
@@ -23,9 +23,18 @@ export class CategoriesService {
     return this.categoriesRepository.save(category);
   }
 
-  async findAll(userId: string): Promise<Category[]> {
+  async findAll(userId: string, type?: CategoryType): Promise<Category[]> {
+    const where: FindOptionsWhere<Category>[] = [
+      { user_id: userId },
+      { user_id: null },
+    ];
+
+    if (type) {
+      where.forEach((condition) => (condition.type = type));
+    }
+
     return this.categoriesRepository.find({
-      where: [{ user_id: userId }, { user_id: null }], // Return user's and default categories
+      where,
     });
   }
 
