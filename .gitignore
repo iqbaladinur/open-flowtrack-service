@@ -113,3 +113,6 @@ out
 
 # dist directory
 /dist
+
+# ai context directory
+/.context_ai_log
