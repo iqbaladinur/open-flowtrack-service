@@ -1,0 +1,1 @@
+Added optional `type` filter to `findAll` in the categories module.
