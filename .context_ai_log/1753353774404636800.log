@@ -1,0 +1,1 @@
+Altered the startDate to be the start of the day and endDate to be the end of the day in src/modules/transactions/services/transactions.service.ts.

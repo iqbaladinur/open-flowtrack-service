@@ -1,0 +1,3 @@
+Replaced findAll method in src/modules/transactions/services/transactions.service.ts
+Added getWalletReport functionality to transactions module.
+Reverted wallet report functionality from transactions module.

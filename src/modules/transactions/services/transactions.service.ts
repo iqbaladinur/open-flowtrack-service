@@ -1,6 +1,12 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Between, FindOptionsWhere, Repository } from "typeorm";
+import {
+  Between,
+  FindOptionsWhere,
+  LessThanOrEqual,
+  MoreThanOrEqual,
+  Repository,
+} from "typeorm";
 import { Transaction } from "../entities/transaction.entity";
 import { CreateTransactionDto } from "../dto/create-transaction.dto";
 import { UpdateTransactionDto } from "../dto/update-transaction.dto";
@@ -34,8 +40,22 @@ export class TransactionsService {
   ): Promise<Transaction[]> {
     const where: FindOptionsWhere<Transaction> = { user_id: userId };
 
-    if (startDate && endDate) {
-      where.date = Between(startDate, endDate);
+    const start = startDate ? new Date(startDate) : undefined;
+    if (start) {
+      start.setHours(0, 0, 0, 0);
+    }
+
+    const end = endDate ? new Date(endDate) : undefined;
+    if (end) {
+      end.setHours(23, 59, 59, 999);
+    }
+
+    if (start && end) {
+      where.date = Between(start, end);
+    } else if (start) {
+      where.date = MoreThanOrEqual(start);
+    } else if (end) {
+      where.date = LessThanOrEqual(end);
     }
     if (walletId) {
       where.wallet_id = walletId;
