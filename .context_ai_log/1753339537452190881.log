@@ -1,0 +1,1 @@
+Fixed a bug in the categories module where `findAll` was incorrectly filtering when no `type` was provided.

@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Request,
+  Query,
 } from "@nestjs/common";
 import { TransactionsService } from "../services/transactions.service";
 import { CreateTransactionDto } from "../dto/create-transaction.dto";
@@ -18,7 +19,9 @@ import {
   ApiBearerAuth,
   ApiOperation,
   ApiResponse,
+  ApiQuery,
 } from "@nestjs/swagger";
+import { CategoryType } from "../../categories/entities/category.entity";
 
 @ApiTags("Transactions")
 @ApiBearerAuth()
@@ -39,8 +42,27 @@ export class TransactionsController {
 
   @Get()
   @ApiOperation({ summary: "Get all transactions for the current user" })
-  findAll(@Request() req) {
-    return this.transactionsService.findAll(req.user.id);
+  @ApiQuery({ name: "start_date", required: false, type: Date })
+  @ApiQuery({ name: "end_date", required: false, type: Date })
+  @ApiQuery({ name: "wallet_id", required: false, type: String })
+  @ApiQuery({ name: "category_id", required: false, type: String })
+  @ApiQuery({ name: "type", required: false, enum: CategoryType })
+  findAll(
+    @Request() req,
+    @Query("start_date") startDate?: Date,
+    @Query("end_date") endDate?: Date,
+    @Query("wallet_id") walletId?: string,
+    @Query("category_id") categoryId?: string,
+    @Query("type") type?: CategoryType,
+  ) {
+    return this.transactionsService.findAll(
+      req.user.id,
+      startDate,
+      endDate,
+      walletId,
+      categoryId,
+      type,
+    );
   }
 
   @Get(":id")

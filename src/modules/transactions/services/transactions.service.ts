@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Between, FindOptionsWhere, Repository } from "typeorm";
 import { Transaction } from "../entities/transaction.entity";
 import { CreateTransactionDto } from "../dto/create-transaction.dto";
 import { UpdateTransactionDto } from "../dto/update-transaction.dto";
+import { CategoryType } from "../../categories/entities/category.entity";
 
 @Injectable()
 export class TransactionsService {
@@ -23,8 +24,30 @@ export class TransactionsService {
     return this.transactionsRepository.save(transaction);
   }
 
-  async findAll(userId: string): Promise<Transaction[]> {
-    return this.transactionsRepository.find({ where: { user_id: userId } });
+  async findAll(
+    userId: string,
+    startDate?: Date,
+    endDate?: Date,
+    walletId?: string,
+    categoryId?: string,
+    type?: CategoryType,
+  ): Promise<Transaction[]> {
+    const where: FindOptionsWhere<Transaction> = { user_id: userId };
+
+    if (startDate && endDate) {
+      where.date = Between(startDate, endDate);
+    }
+    if (walletId) {
+      where.wallet_id = walletId;
+    }
+    if (categoryId) {
+      where.category_id = categoryId;
+    }
+    if (type) {
+      where.type = type;
+    }
+
+    return this.transactionsRepository.find({ where });
   }
 
   async findOne(id: string, userId: string): Promise<Transaction> {

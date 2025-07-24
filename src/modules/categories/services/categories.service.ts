@@ -23,18 +23,18 @@ export class CategoriesService {
     return this.categoriesRepository.save(category);
   }
 
-  async findAll(userId: string, type?: CategoryType): Promise<Category[]> {
-    const where: FindOptionsWhere<Category>[] = [
-      { user_id: userId },
-      { user_id: null },
-    ];
+  async findAll(userId?: string, type?: CategoryType): Promise<Category[]> {
+    const baseConditions: FindOptionsWhere<Category> = {};
 
+    if (userId) {
+      baseConditions.user_id = userId;
+    }
     if (type) {
-      where.forEach((condition) => (condition.type = type));
+      baseConditions.type = type;
     }
 
     return this.categoriesRepository.find({
-      where,
+      where: [baseConditions],
     });
   }
 

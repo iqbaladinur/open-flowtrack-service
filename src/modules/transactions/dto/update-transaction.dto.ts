@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import {
-  IsDateString,
+  IsDate,
   IsEnum,
   IsNumber,
   IsOptional,
@@ -9,6 +9,7 @@ import {
 } from "class-validator";
 import { CategoryType } from "../../categories/entities/category.entity";
 import { RecurringPattern } from "../entities/transaction.entity";
+import { Type } from "class-transformer";
 
 export class UpdateTransactionDto {
   @ApiProperty({ enum: CategoryType, required: false })
@@ -32,9 +33,10 @@ export class UpdateTransactionDto {
   category_id?: string;
 
   @ApiProperty({ required: false })
-  @IsDateString()
+  @IsDate()
+  @Type(() => Date)
   @IsOptional()
-  date?: string;
+  date?: Date;
 
   @ApiProperty({ required: false })
   @IsString()
