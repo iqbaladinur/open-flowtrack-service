@@ -31,8 +31,9 @@ export class AuthService {
     const password_hash = await bcrypt.hash(createUserDto.password, salt);
 
     const user = await this.usersService.create({
-      ...createUserDto,
-      password: password_hash, // This will be mapped to password_hash in the service
+      email: createUserDto.email,
+      full_name: createUserDto.full_name,
+      password_hash,
     });
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
