@@ -6,17 +6,16 @@ export class ExportService {
   constructor(private readonly transactionsService: TransactionsService) {}
 
   async exportTransactionsToCsv(userId: string): Promise<string> {
-    const transactions = await this.transactionsService.findAll(userId, {});
+    const transactions = await this.transactionsService.findAll(userId);
     if (transactions.length === 0) {
       return "";
     }
 
-    const header =
-      "id,amount,type,description,transaction_date,created_at,updated_at\n";
+    const header = "id,amount,type,note,date,created_at,updated_at\n";
     const rows = transactions
       .map(
         (t) =>
-          `${t.id},${t.amount},${t.type},"${t.description}",${t.transaction_date},${t.created_at},${t.updated_at}`,
+          `${t.id},${t.amount},${t.type},"${t.note}",${t.date},${t.created_at},${t.updated_at}`,
       )
       .join("\n");
 

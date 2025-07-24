@@ -4,9 +4,12 @@ import { ValidationPipe } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import { ConfigService } from "@nestjs/config";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
+  const port = configService.get<number>("port");
 
   // Security
   app.use(helmet());
@@ -36,6 +39,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("docs", app, document);
 
-  await app.listen(process.env.PORT || 3000);
+  await app.listen(port);
 }
 bootstrap();

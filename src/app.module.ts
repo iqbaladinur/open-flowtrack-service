@@ -9,11 +9,15 @@ import { TransactionsModule } from "./modules/transactions/transactions.module";
 import { BudgetsModule } from "./modules/budgets/budgets.module";
 import { ReportsModule } from "./modules/reports/reports.module";
 import { ExportModule } from "./modules/export/export.module";
+import configuration from "./infrastructure/config/configuration";
+import { validationSchema } from "./infrastructure/config/validation";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      load: [configuration],
+      validationSchema,
       envFilePath: ".env",
     }),
     TypeOrmModule.forRootAsync({
@@ -21,7 +25,7 @@ import { ExportModule } from "./modules/export/export.module";
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: "postgres",
-        url: configService.get("DATABASE_URL"),
+        url: configService.get<string>("database.url"),
         entities: [__dirname + "/**/*.entity{.ts,.js}"],
         synchronize: true, // Should be false in production
         autoLoadEntities: true,
