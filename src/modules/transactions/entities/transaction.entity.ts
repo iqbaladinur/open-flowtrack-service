@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  Index,
 } from "typeorm";
 import { User } from "../../users/entities/user.entity";
 import { Wallet } from "../../wallets/entities/wallet.entity";
@@ -24,6 +25,7 @@ export class Transaction {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
+  @Index()
   @Column({
     type: "enum",
     enum: CategoryType,
@@ -33,6 +35,7 @@ export class Transaction {
   @Column("decimal", { precision: 10, scale: 2 })
   amount: number;
 
+  @Index()
   @Column()
   wallet_id: string;
 
@@ -40,6 +43,7 @@ export class Transaction {
   @JoinColumn({ name: "wallet_id" })
   wallet: Wallet;
 
+  @Index()
   @Column()
   category_id: string;
 
@@ -47,6 +51,7 @@ export class Transaction {
   @JoinColumn({ name: "category_id" })
   category: Category;
 
+  @Index()
   @Column()
   date: Date;
 
@@ -63,6 +68,7 @@ export class Transaction {
   })
   recurring_pattern: RecurringPattern;
 
+  @Index()
   @Column()
   user_id: string;
 
