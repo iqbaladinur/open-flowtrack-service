@@ -8,6 +8,7 @@ import {
   Request,
   UseGuards,
   Param,
+  Req,
 } from "@nestjs/common";
 import { AuthService } from "../services/auth.service";
 import { CreateUserDto } from "../dto/create-user.dto";
@@ -21,11 +22,25 @@ import {
 import { JwtAuthGuard } from "../guards/jwt-auth.guard";
 import { ForgotPasswordDto } from "../dto/forgot-password.dto";
 import { ResetPasswordDto } from "../dto/reset-password.dto";
+import { AuthGuard } from "@nestjs/passport";
 
 @ApiTags("Authentication")
 @Controller("auth")
 export class AuthController {
   constructor(private authService: AuthService) {}
+
+  @Get("google")
+  @UseGuards(AuthGuard("google"))
+  @ApiOperation({ summary: "Redirect to Google for authentication" })
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  async googleAuth() {}
+
+  @Get("google/callback")
+  @UseGuards(AuthGuard("google"))
+  @ApiOperation({ summary: "Google callback for authentication" })
+  googleAuthRedirect(@Req() req) {
+    return this.authService.googleLogin(req);
+  }
 
   @Post("register")
   @ApiOperation({ summary: "Register a new user" })

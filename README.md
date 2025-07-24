@@ -23,6 +23,7 @@ Saya ingin kamu membuat backend lengkap untuk aplikasi pencatat keuangan pribadi
 - JWT token-based auth
 - Middleware / guard untuk endpoint yang perlu login
 - Optional: role-based access control
+- Login with Google
 
 ---
 
@@ -200,9 +201,28 @@ Clean code dan documented
 
 Pastikan semua endpoint memiliki validasi dan dokumentasi swagger
 
-yaml
-Copy
-Edit
+---
+
+## Google Authentication Setup
+
+To enable Google authentication, you need to create a project in the Google Cloud Platform Console and get the client ID and client secret.
+
+1.  Go to the [Google Cloud Platform Console](https://console.cloud.google.com/).
+2.  Create a new project.
+3.  Go to **APIs & Services > Credentials**.
+4.  Click **Create Credentials > OAuth client ID**.
+5.  Select **Web application** as the application type.
+6.  Add `http://localhost:3000` to the **Authorized JavaScript origins**.
+7.  Add `http://localhost:3000/auth/google/callback` to the **Authorized redirect URIs**.
+8.  Click **Create**.
+9.  Copy the **Client ID** and **Client Secret**.
+10. Add the following environment variables to your `.env` file:
+
+```
+GOOGLE_CLIENT_ID=<your-client-id>
+GOOGLE_CLIENT_SECRET=<your-client-secret>
+GOOGLE_CALLBACK_URL=http://localhost:3000/auth/google/callback
+```
 
 ---
 

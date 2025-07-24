@@ -21,6 +21,27 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
+  async googleLogin(req): Promise<{ access_token: string }> {
+    if (!req.user) {
+      throw new UnauthorizedException("No user from google");
+    }
+
+    const { email, firstName, lastName } = req.user;
+    let user = await this.usersService.findOneByEmail(email);
+    if (!user) {
+      const newUser = {
+        email,
+        full_name: `${firstName} ${lastName}`,
+      };
+      user = await this.usersService.create(newUser);
+    }
+
+    const payload = { sub: user.id, email: user.email };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
+  }
+
   async register(
     createUserDto: CreateUserDto,
   ): Promise<Omit<User, "password_hash">> {

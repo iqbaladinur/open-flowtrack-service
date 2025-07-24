@@ -19,7 +19,7 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
   password_hash: string;
 
   @Column({ nullable: true })
