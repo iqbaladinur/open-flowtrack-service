@@ -67,7 +67,10 @@ export class TransactionsService {
       where.type = type;
     }
 
-    return this.transactionsRepository.find({ where });
+    return this.transactionsRepository.find({
+      where,
+      relations: ["category", "wallet"],
+    });
   }
 
   async findOne(id: string, userId: string): Promise<Transaction> {

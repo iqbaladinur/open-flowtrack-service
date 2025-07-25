@@ -5,3 +5,5 @@ Finished changing google auth callback.
 Modified wallets module to include balance calculation and date filters.
 Fixed incorrect import path for Transaction entity in wallets service.
 Increased precision of numeric columns in Transaction and Wallet entities.
+Included category data in the transaction list response.
+Included wallet data in the transaction list response.
