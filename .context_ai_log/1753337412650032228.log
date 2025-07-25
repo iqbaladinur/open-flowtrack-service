@@ -1,1 +1,0 @@
-Fixed a `QueryFailedError` by adding a default value to the `currency` column in the `Wallet` entity in `src/modules/wallets/entities/wallet.entity.ts`.

@@ -8,5 +8,6 @@ import { WalletsController } from "./controllers/wallets.controller";
   imports: [TypeOrmModule.forFeature([Wallet])],
   controllers: [WalletsController],
   providers: [WalletsService],
+  exports: [WalletsService],
 })
 export class WalletsModule {}

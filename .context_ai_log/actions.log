@@ -1,1 +1,2 @@
 User wanted to add an Nginx reverse proxy. I created an 'nginx' directory with a suitable 'nginx.conf' and updated the 'docker-compose.yml' to include a new Nginx service. The new service proxies requests to the backend service, which no longer exposes its port directly.
+Log: Created backup module directory structure and files

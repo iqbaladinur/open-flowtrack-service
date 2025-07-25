@@ -1,1 +1,0 @@
-Updated transactions module: date format is now Date, and findAll supports filtering by date range, wallet, category, and type.

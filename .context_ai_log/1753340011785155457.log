@@ -1,1 +1,0 @@
-Corrected regression in `findAll` in the categories module to ensure default categories are always included.

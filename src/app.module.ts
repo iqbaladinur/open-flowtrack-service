@@ -9,6 +9,7 @@ import { TransactionsModule } from "./modules/transactions/transactions.module";
 import { BudgetsModule } from "./modules/budgets/budgets.module";
 import { ReportsModule } from "./modules/reports/reports.module";
 import { ExportModule } from "./modules/export/export.module";
+import { BackupModule } from "./modules/backup/backup.module";
 import configuration from "./infrastructure/config/configuration";
 import { validationSchema } from "./infrastructure/config/validation";
 
@@ -39,6 +40,7 @@ import { validationSchema } from "./infrastructure/config/validation";
     BudgetsModule,
     ReportsModule,
     ExportModule,
+    BackupModule,
   ],
   controllers: [],
   providers: [],

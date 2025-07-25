@@ -1,1 +1,0 @@
-Replaced `findAll` in categories service with a robust QueryBuilder implementation to fix filtering.
