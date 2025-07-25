@@ -1,0 +1,1296 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/auth/google": {
+      "get": {
+        "operationId": "AuthController_googleAuth",
+        "summary": "Redirect to Google for authentication",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/auth/google/callback": {
+      "get": {
+        "operationId": "AuthController_googleAuthRedirect",
+        "summary": "Google callback for authentication",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "operationId": "AuthController_register",
+        "summary": "Register a new user",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User successfully registered."
+          },
+          "409": {
+            "description": "Email already registered."
+          }
+        },
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "summary": "Log in a user",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User successfully logged in."
+          },
+          "401": {
+            "description": "Invalid credentials."
+          }
+        },
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/auth/forgot-password": {
+      "post": {
+        "operationId": "AuthController_forgotPassword",
+        "summary": "Send password reset link",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset link sent."
+          }
+        },
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/auth/reset-password/{token}": {
+      "post": {
+        "operationId": "AuthController_resetPassword",
+        "summary": "Reset user password",
+        "parameters": [
+          {
+            "name": "token",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password successfully reset."
+          },
+          "401": {
+            "description": "Invalid or expired token."
+          }
+        },
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/auth/profile": {
+      "get": {
+        "operationId": "AuthController_getProfile",
+        "summary": "Get user profile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "User profile retrieved successfully."
+          }
+        },
+        "tags": [
+          "Authentication"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/wallets": {
+      "post": {
+        "operationId": "WalletsController_create",
+        "summary": "Create a new wallet",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWalletDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The wallet has been successfully created."
+          }
+        },
+        "tags": [
+          "Wallets"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "WalletsController_findAll",
+        "summary": "Get all wallets for the current user",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Wallets"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/wallets/{id}": {
+      "get": {
+        "operationId": "WalletsController_findOne",
+        "summary": "Get a specific wallet by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Wallets"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "WalletsController_update",
+        "summary": "Update a wallet",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWalletDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Wallets"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "WalletsController_remove",
+        "summary": "Delete a wallet",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The wallet has been successfully deleted."
+          }
+        },
+        "tags": [
+          "Wallets"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/categories": {
+      "post": {
+        "operationId": "CategoriesController_create",
+        "summary": "Create a new category",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The category has been successfully created."
+          }
+        },
+        "tags": [
+          "Categories"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "CategoriesController_findAll",
+        "summary": "Get all categories for the current user (including defaults)",
+        "parameters": [
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "income",
+                "expense"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Categories"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/categories/{id}": {
+      "get": {
+        "operationId": "CategoriesController_findOne",
+        "summary": "Get a specific category by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Categories"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "CategoriesController_update",
+        "summary": "Update a category",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Categories"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "CategoriesController_remove",
+        "summary": "Delete a category",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The category has been successfully deleted."
+          }
+        },
+        "tags": [
+          "Categories"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/transactions": {
+      "post": {
+        "operationId": "TransactionsController_create",
+        "summary": "Create a new transaction",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTransactionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The transaction has been successfully created."
+          }
+        },
+        "tags": [
+          "Transactions"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "TransactionsController_findAll",
+        "summary": "Get all transactions for the current user",
+        "parameters": [
+          {
+            "name": "start_date",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "end_date",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "wallet_id",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category_id",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "income",
+                "expense"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Transactions"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/transactions/{id}": {
+      "get": {
+        "operationId": "TransactionsController_findOne",
+        "summary": "Get a specific transaction by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Transactions"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "TransactionsController_update",
+        "summary": "Update a transaction",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTransactionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Transactions"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "TransactionsController_remove",
+        "summary": "Delete a transaction",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The transaction has been successfully deleted."
+          }
+        },
+        "tags": [
+          "Transactions"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/budgets": {
+      "post": {
+        "operationId": "BudgetsController_create",
+        "summary": "Create a new budget",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBudgetDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The budget has been successfully created."
+          }
+        },
+        "tags": [
+          "Budgets"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "BudgetsController_findAll",
+        "summary": "Get all budgets for the current user",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Budgets"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/budgets/{id}": {
+      "get": {
+        "operationId": "BudgetsController_findOne",
+        "summary": "Get a specific budget by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Budgets"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "BudgetsController_update",
+        "summary": "Update a budget",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBudgetDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Budgets"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "BudgetsController_remove",
+        "summary": "Delete a budget",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The budget has been successfully deleted."
+          }
+        },
+        "tags": [
+          "Budgets"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/reports/summary": {
+      "get": {
+        "operationId": "ReportsController_getSummary",
+        "parameters": [
+          {
+            "name": "startDate",
+            "required": false,
+            "in": "query",
+            "description": "YYYY-MM-DD",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "description": "YYYY-MM-DD",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Reports"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/reports/by-category": {
+      "get": {
+        "operationId": "ReportsController_getCategoryReport",
+        "parameters": [
+          {
+            "name": "startDate",
+            "required": false,
+            "in": "query",
+            "description": "YYYY-MM-DD",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "description": "YYYY-MM-DD",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Reports"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/reports/by-wallet": {
+      "get": {
+        "operationId": "ReportsController_getWalletReport",
+        "parameters": [
+          {
+            "name": "startDate",
+            "required": false,
+            "in": "query",
+            "description": "YYYY-MM-DD",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "description": "YYYY-MM-DD",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Reports"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/export/transactions/csv": {
+      "get": {
+        "operationId": "ExportController_exportTransactions",
+        "summary": "Export user transactions to CSV",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Export"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/backup": {
+      "get": {
+        "operationId": "BackupController_backup",
+        "summary": "Backup user data",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Backup & Restore"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/backup/restore": {
+      "post": {
+        "operationId": "BackupController_restore",
+        "summary": "Restore user data",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Backup & Restore"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Wallport API",
+    "description": "API for Personal Finance Tracker Application",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "CreateUserDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "test@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "password123"
+          },
+          "full_name": {
+            "type": "string",
+            "example": "John Doe"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "test@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "password123"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "ForgotPasswordDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "test@example.com"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "ResetPasswordDto": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string",
+            "example": "newPassword123"
+          }
+        },
+        "required": [
+          "password"
+        ]
+      },
+      "CreateWalletDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "My Bank Account"
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "IDR",
+              "USD"
+            ],
+            "example": "USD"
+          },
+          "initial_balance": {
+            "type": "number",
+            "example": 1000
+          }
+        },
+        "required": [
+          "name",
+          "currency",
+          "initial_balance"
+        ]
+      },
+      "UpdateWalletDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "My Primary Bank Account"
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "IDR",
+              "USD"
+            ],
+            "example": "IDR"
+          },
+          "initial_balance": {
+            "type": "number",
+            "example": 1500
+          }
+        }
+      },
+      "CreateCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Salary"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "income",
+              "expense"
+            ],
+            "example": "income"
+          },
+          "icon": {
+            "type": "string",
+            "example": "briefcase-outline"
+          },
+          "color": {
+            "type": "string",
+            "example": "#26de81"
+          }
+        },
+        "required": [
+          "name",
+          "type",
+          "icon",
+          "color"
+        ]
+      },
+      "UpdateCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Freelance Income"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "income",
+              "expense"
+            ],
+            "example": "income"
+          },
+          "icon": {
+            "type": "string",
+            "example": "laptop-outline"
+          },
+          "color": {
+            "type": "string",
+            "example": "#45aaf2"
+          }
+        }
+      },
+      "CreateTransactionDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "income",
+              "expense"
+            ],
+            "example": "expense"
+          },
+          "amount": {
+            "type": "number",
+            "example": 50
+          },
+          "wallet_id": {
+            "type": "string"
+          },
+          "category_id": {
+            "type": "string"
+          },
+          "date": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "is_recurring": {
+            "type": "boolean",
+            "default": false
+          },
+          "recurring_pattern": {
+            "type": "string",
+            "enum": [
+              "daily",
+              "weekly",
+              "monthly",
+              "yearly"
+            ]
+          }
+        },
+        "required": [
+          "type",
+          "amount",
+          "wallet_id",
+          "category_id",
+          "date"
+        ]
+      },
+      "UpdateTransactionDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "income",
+              "expense"
+            ]
+          },
+          "amount": {
+            "type": "number"
+          },
+          "wallet_id": {
+            "type": "string"
+          },
+          "category_id": {
+            "type": "string"
+          },
+          "date": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "is_recurring": {
+            "type": "boolean"
+          },
+          "recurring_pattern": {
+            "type": "string",
+            "enum": [
+              "daily",
+              "weekly",
+              "monthly",
+              "yearly"
+            ]
+          }
+        }
+      },
+      "CreateBudgetDto": {
+        "type": "object",
+        "properties": {
+          "category_id": {
+            "type": "string"
+          },
+          "limit_amount": {
+            "type": "number",
+            "example": 500
+          },
+          "month": {
+            "type": "number",
+            "example": 7
+          },
+          "year": {
+            "type": "number",
+            "example": 2025
+          }
+        },
+        "required": [
+          "category_id",
+          "limit_amount",
+          "month",
+          "year"
+        ]
+      },
+      "UpdateBudgetDto": {
+        "type": "object",
+        "properties": {
+          "limit_amount": {
+            "type": "number",
+            "example": 600
+          }
+        }
+      }
+    }
+  }
+}

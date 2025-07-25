@@ -8,7 +8,7 @@ language_clients:
   - javascript: ""
 toc_footers: []
 includes: []
-search: false
+search: true
 highlight_theme: darkula
 headingLevel: 2
 
@@ -1819,6 +1819,118 @@ fetch('/export/transactions/csv',
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|none|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer
+</aside>
+
+<h1 id="wallport-api-backup-and-restore">Backup & Restore</h1>
+
+## Backup user data
+
+<a id="opIdBackupController_backup"></a>
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X GET /backup \
+  -H 'Authorization: Bearer {access-token}'
+
+```
+
+```javascript
+
+const headers = {
+  'Authorization':'Bearer {access-token}'
+};
+
+fetch('/backup',
+{
+  method: 'GET',
+
+  headers: headers
+})
+.then(function(res) {
+    return res.json();
+}).then(function(body) {
+    console.log(body);
+});
+
+```
+
+`GET /backup`
+
+<h3 id="backup-user-data-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|none|None|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer
+</aside>
+
+## Restore user data
+
+<a id="opIdBackupController_restore"></a>
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X POST /backup/restore \
+  -H 'Content-Type: multipart/form-data' \
+  -H 'Authorization: Bearer {access-token}'
+
+```
+
+```javascript
+const inputBody = '{
+  "file": "string"
+}';
+const headers = {
+  'Content-Type':'multipart/form-data',
+  'Authorization':'Bearer {access-token}'
+};
+
+fetch('/backup/restore',
+{
+  method: 'POST',
+  body: inputBody,
+  headers: headers
+})
+.then(function(res) {
+    return res.json();
+}).then(function(body) {
+    console.log(body);
+});
+
+```
+
+`POST /backup/restore`
+
+> Body parameter
+
+```yaml
+file: string
+
+```
+
+<h3 id="restore-user-data-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|object|true|none|
+|» file|body|string(binary)|false|none|
+
+<h3 id="restore-user-data-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|none|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
