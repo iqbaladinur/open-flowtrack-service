@@ -21,7 +21,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async googleLogin(req): Promise<{ access_token: string }> {
+  async googleLogin(req): Promise<{ access_token: string; user: Omit<User, "password_hash"> }> {
     if (!req.user) {
       throw new UnauthorizedException("No user from google");
     }
@@ -32,13 +32,18 @@ export class AuthService {
       const newUser = {
         email,
         full_name: `${firstName} ${lastName}`,
+        provider: "google",
       };
       user = await this.usersService.create(newUser);
     }
 
     const payload = { sub: user.id, email: user.email };
+    const access_token = this.jwtService.sign(payload);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password_hash, ...result } = user;
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token,
+      user: result,
     };
   }
 

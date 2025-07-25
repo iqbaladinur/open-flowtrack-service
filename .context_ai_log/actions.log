@@ -1,2 +1,7 @@
 User wanted to add an Nginx reverse proxy. I created an 'nginx' directory with a suitable 'nginx.conf' and updated the 'docker-compose.yml' to include a new Nginx service. The new service proxies requests to the backend service, which no longer exposes its port directly.
 Log: Created backup module directory structure and files
+Change google auth callback to redirect to frontend with token and user data
+Finished changing google auth callback.
+Modified wallets module to include balance calculation and date filters.
+Fixed incorrect import path for Transaction entity in wallets service.
+Increased precision of numeric columns in Transaction and Wallet entities.

@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Request,
+  Query,
 } from "@nestjs/common";
 import { WalletsService } from "../services/wallets.service";
 import { CreateWalletDto } from "../dto/create-wallet.dto";
@@ -18,6 +19,7 @@ import {
   ApiBearerAuth,
   ApiOperation,
   ApiResponse,
+  ApiQuery,
 } from "@nestjs/swagger";
 
 @ApiTags("Wallets")
@@ -39,8 +41,14 @@ export class WalletsController {
 
   @Get()
   @ApiOperation({ summary: "Get all wallets for the current user" })
-  findAll(@Request() req) {
-    return this.walletsService.findAll(req.user.id);
+  @ApiQuery({ name: "start_date", required: false, type: Date })
+  @ApiQuery({ name: "end_date", required: false, type: Date })
+  findAll(
+    @Request() req,
+    @Query("start_date") startDate?: Date,
+    @Query("end_date") endDate?: Date,
+  ) {
+    return this.walletsService.findAll(req.user.id, startDate, endDate);
   }
 
   @Get(":id")

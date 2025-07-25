@@ -32,7 +32,7 @@ export class Transaction {
   })
   type: CategoryType;
 
-  @Column("decimal", { precision: 10, scale: 2 })
+  @Column("decimal", { precision: 15, scale: 2 })
   amount: number;
 
   @Index()

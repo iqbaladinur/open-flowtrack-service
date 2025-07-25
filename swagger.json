@@ -201,7 +201,26 @@
       "get": {
         "operationId": "WalletsController_findAll",
         "summary": "Get all wallets for the current user",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "start_date",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "end_date",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": ""
@@ -1290,6 +1309,26 @@
             "example": 600
           }
         }
+      },
+      "User": {
+        "type": "object",
+        "properties": {}
+      },
+      "Budget": {
+        "type": "object",
+        "properties": {}
+      },
+      "Category": {
+        "type": "object",
+        "properties": {}
+      },
+      "Transaction": {
+        "type": "object",
+        "properties": {}
+      },
+      "Wallet": {
+        "type": "object",
+        "properties": {}
       }
     }
   }

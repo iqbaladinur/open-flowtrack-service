@@ -9,7 +9,9 @@ import {
   UseGuards,
   Param,
   Req,
+  Res,
 } from "@nestjs/common";
+import { Response } from "express";
 import { AuthService } from "../services/auth.service";
 import { CreateUserDto } from "../dto/create-user.dto";
 import { LoginDto } from "../dto/login.dto";
@@ -23,11 +25,15 @@ import { JwtAuthGuard } from "../guards/jwt-auth.guard";
 import { ForgotPasswordDto } from "../dto/forgot-password.dto";
 import { ResetPasswordDto } from "../dto/reset-password.dto";
 import { AuthGuard } from "@nestjs/passport";
+import { ConfigService } from "@nestjs/config";
 
 @ApiTags("Authentication")
 @Controller("auth")
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private configService: ConfigService,
+  ) {}
 
   @Get("google")
   @UseGuards(AuthGuard("google"))
@@ -38,8 +44,13 @@ export class AuthController {
   @Get("google/callback")
   @UseGuards(AuthGuard("google"))
   @ApiOperation({ summary: "Google callback for authentication" })
-  googleAuthRedirect(@Req() req) {
-    return this.authService.googleLogin(req);
+  async googleAuthRedirect(@Req() req, @Res() res: Response) {
+    const { access_token, user } = await this.authService.googleLogin(req);
+    const frontendUrl = this.configService.get<string>("frontend.url");
+    const redirectUrl = `${frontendUrl}/auth/callback?token=${access_token}&user=${JSON.stringify(
+      user,
+    )}`;
+    res.redirect(redirectUrl);
   }
 
   @Post("register")

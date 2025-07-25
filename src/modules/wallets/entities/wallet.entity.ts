@@ -30,7 +30,7 @@ export class Wallet {
   })
   currency: Currency;
 
-  @Column("decimal", { precision: 10, scale: 2 })
+  @Column("decimal", { precision: 15, scale: 2 })
   initial_balance: number;
 
   @Column()
