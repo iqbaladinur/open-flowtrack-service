@@ -19,3 +19,6 @@ Fixed data-source.ts to use DATABASE_URL
 Refactored Currency enum to a separate file to fix circular dependency
 Fixed incorrect import paths for Currency enum
 Made the budget update endpoint return total_spent for consistency
+Standardized the response for budget create and update endpoints
+Added optional year filter to the list budgets endpoint
+Fixed missing argument for findAll in backup.service.ts

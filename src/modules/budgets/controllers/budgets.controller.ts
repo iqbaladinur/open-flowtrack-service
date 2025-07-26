@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Request,
+  Query,
 } from "@nestjs/common";
 import { BudgetsService } from "../services/budgets.service";
 import { CreateBudgetDto } from "../dto/create-budget.dto";
@@ -19,6 +20,7 @@ import {
   ApiOperation,
   ApiResponse,
 } from "@nestjs/swagger";
+import { FindAllBudgetsDto } from "../dto/find-all-budgets.dto";
 
 @ApiTags("Budgets")
 @ApiBearerAuth()
@@ -39,8 +41,8 @@ export class BudgetsController {
 
   @Get()
   @ApiOperation({ summary: "Get all budgets for the current user" })
-  findAll(@Request() req) {
-    return this.budgetsService.findAll(req.user.id);
+  findAll(@Request() req, @Query() query: FindAllBudgetsDto) {
+    return this.budgetsService.findAll(req.user.id, query);
   }
 
   @Get(":id")

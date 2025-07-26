@@ -1,12 +1,13 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { FindManyOptions, Repository } from "typeorm";
 import { Budget } from "../entities/budget.entity";
 import { CreateBudgetDto } from "../dto/create-budget.dto";
 import { UpdateBudgetDto } from "../dto/update-budget.dto";
 import { Transaction } from "../../transactions/entities/transaction.entity";
 import { CategoryType } from "../../categories/entities/category.entity";
 import { Currency } from "../../wallets/entities/currency.enum";
+import { FindAllBudgetsDto } from "../dto/find-all-budgets.dto";
 
 @Injectable()
 export class BudgetsService {
@@ -20,19 +21,30 @@ export class BudgetsService {
   async create(
     createBudgetDto: CreateBudgetDto,
     userId: string,
-  ): Promise<Budget> {
+  ): Promise<any> {
     const budget = this.budgetsRepository.create({
       ...createBudgetDto,
       user_id: userId,
     });
-    return this.budgetsRepository.save(budget);
+    const savedBudget = await this.budgetsRepository.save(budget);
+    return this.findOne(savedBudget.id, userId);
   }
 
-  async findAll(userId: string): Promise<any[]> {
-    const budgets = await this.budgetsRepository.find({
+  async findAll(
+    userId: string,
+    query: FindAllBudgetsDto,
+  ): Promise<any[]> {
+    const findOptions: FindManyOptions<Budget> = {
       where: { user_id: userId },
       relations: ["category"],
-    });
+      order: { year: "DESC", month: "DESC" },
+    };
+
+    if (query.year) {
+      findOptions.where = { ...findOptions.where, year: query.year };
+    }
+
+    const budgets = await this.budgetsRepository.find(findOptions);
 
     const budgetsWithSpent = await Promise.all(
       budgets.map(async (budget) => {
@@ -83,17 +95,9 @@ export class BudgetsService {
     }
 
     Object.assign(budget, updateBudgetDto);
-    const updatedBudget = await this.budgetsRepository.save(budget);
+    await this.budgetsRepository.save(budget);
 
-    const totalSpent = await this.calculateSpent(
-      userId,
-      updatedBudget.category_id,
-      updatedBudget.year,
-      updatedBudget.month,
-      updatedBudget.currency,
-    );
-
-    return { ...updatedBudget, total_spent: totalSpent };
+    return this.findOne(id, userId);
   }
 
   async remove(id: string, userId: string): Promise<void> {

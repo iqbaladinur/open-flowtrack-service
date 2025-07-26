@@ -17,8 +17,8 @@ export class BackupService {
   async backup(user: User) {
     const wallets = await this.walletsService.findAll(user.id);
     const categories = await this.categoriesService.findAll(user.id);
-    const transactions = await this.transactionsService.findAll(user.id);
-    const budgets = await this.budgetsService.findAll(user.id);
+    const transactions = await this.transactionsService.findAll(user.id, {});
+    const budgets = await this.budgetsService.findAll(user.id, {});
 
     return {
       wallets,
