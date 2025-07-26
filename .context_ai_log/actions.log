@@ -7,3 +7,6 @@ Fixed incorrect import path for Transaction entity in wallets service.
 Increased precision of numeric columns in Transaction and Wallet entities.
 Included category data in the transaction list response.
 Included wallet data in the transaction list response.
+Updated reports to be grouped by currency
+Improved findAll in transactions to support sorting and updated API_SPECS.md
+Updated getCategoryReport to include income and expense transactions

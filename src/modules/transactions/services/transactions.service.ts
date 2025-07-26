@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import {
   Between,
+  FindOptionsOrder,
   FindOptionsWhere,
   LessThanOrEqual,
   MoreThanOrEqual,
@@ -10,7 +11,7 @@ import {
 import { Transaction } from "../entities/transaction.entity";
 import { CreateTransactionDto } from "../dto/create-transaction.dto";
 import { UpdateTransactionDto } from "../dto/update-transaction.dto";
-import { CategoryType } from "../../categories/entities/category.entity";
+import { FindAllTransactionsDto } from "../dto/find-all-transactions.dto";
 
 @Injectable()
 export class TransactionsService {
@@ -32,20 +33,16 @@ export class TransactionsService {
 
   async findAll(
     userId: string,
-    startDate?: Date,
-    endDate?: Date,
-    walletId?: string,
-    categoryId?: string,
-    type?: CategoryType,
+    query?: FindAllTransactionsDto,
   ): Promise<Transaction[]> {
     const where: FindOptionsWhere<Transaction> = { user_id: userId };
 
-    const start = startDate ? new Date(startDate) : undefined;
+    const start = query.start_date ? new Date(query.start_date) : undefined;
     if (start) {
       start.setHours(0, 0, 0, 0);
     }
 
-    const end = endDate ? new Date(endDate) : undefined;
+    const end = query.end_date ? new Date(query.end_date) : undefined;
     if (end) {
       end.setHours(23, 59, 59, 999);
     }
@@ -57,19 +54,24 @@ export class TransactionsService {
     } else if (end) {
       where.date = LessThanOrEqual(end);
     }
-    if (walletId) {
-      where.wallet_id = walletId;
+    if (query.wallet_id) {
+      where.wallet_id = query.wallet_id;
     }
-    if (categoryId) {
-      where.category_id = categoryId;
+    if (query.category_id) {
+      where.category_id = query.category_id;
     }
-    if (type) {
-      where.type = type;
+    if (query.type) {
+      where.type = query.type;
     }
+
+    const order: FindOptionsOrder<Transaction> = {
+      date: query.sortBy || "DESC",
+    };
 
     return this.transactionsRepository.find({
       where,
       relations: ["category", "wallet"],
+      order,
     });
   }
 

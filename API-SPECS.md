@@ -1172,6 +1172,7 @@ fetch('/transactions',
 |wallet_id|query|string|false|none|
 |category_id|query|string|false|none|
 |type|query|string|false|none|
+|sortBy|query|string|false|Sort by date. Default to DESC|
 
 #### Enumerated Values
 
@@ -1179,6 +1180,8 @@ fetch('/transactions',
 |---|---|
 |type|income|
 |type|expense|
+|sortBy|ASC|
+|sortBy|DESC|
 
 <h3 id="transactionscontroller_findall-responses">Responses</h3>
 
