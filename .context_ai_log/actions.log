@@ -10,3 +10,12 @@ Included wallet data in the transaction list response.
 Updated reports to be grouped by currency
 Improved findAll in transactions to support sorting and updated API_SPECS.md
 Updated getCategoryReport to include income and expense transactions
+Added API versioning configuration to src/main.ts
+Updated budgets service to include total_spent calculation
+Fixed dependency injection error in BudgetsModule
+Updated budgets to be currency-aware and created a migration script
+Created TypeORM migration script and configured package.json
+Fixed data-source.ts to use DATABASE_URL
+Refactored Currency enum to a separate file to fix circular dependency
+Fixed incorrect import paths for Currency enum
+Made the budget update endpoint return total_spent for consistency

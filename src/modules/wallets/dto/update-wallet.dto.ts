@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEnum, IsOptional, IsString, IsNumber } from "class-validator";
-import { Currency } from "../entities/wallet.entity";
+import { Currency } from "../entities/currency.enum";
 
 export class UpdateWalletDto {
   @ApiProperty({ example: "My Primary Bank Account", required: false })

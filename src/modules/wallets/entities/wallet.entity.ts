@@ -9,11 +9,7 @@ import {
   Index,
 } from "typeorm";
 import { User } from "../../users/entities/user.entity";
-
-export enum Currency {
-  IDR = "IDR",
-  USD = "USD",
-}
+import { Currency } from "./currency.enum";
 
 @Entity("wallets")
 export class Wallet {

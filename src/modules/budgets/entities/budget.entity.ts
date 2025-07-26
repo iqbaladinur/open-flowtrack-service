@@ -10,9 +10,10 @@ import {
 } from "typeorm";
 import { User } from "../../users/entities/user.entity";
 import { Category } from "../../categories/entities/category.entity";
+import { Currency } from "../../wallets/entities/currency.enum";
 
 @Entity("budgets")
-@Unique(["user_id", "category_id", "month", "year"])
+@Unique(["user_id", "category_id", "month", "year", "currency"])
 export class Budget {
   @PrimaryGeneratedColumn("uuid")
   id: string;
@@ -32,6 +33,13 @@ export class Budget {
 
   @Column()
   year: number;
+
+  @Column({
+    type: "enum",
+    enum: Currency,
+    default: Currency.IDR,
+  })
+  currency: Currency;
 
   @Column()
   user_id: string;
