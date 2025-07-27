@@ -29,31 +29,81 @@ export class BackupService {
   }
 
   async restore(user: User, data: any) {
+    const walletIdMap = new Map<string, string>();
+    const categoryIdMap = new Map<string, string>();
+
     // Restore wallets
     if (data.wallets) {
       for (const walletData of data.wallets) {
-        await this.walletsService.create(walletData, user.id);
+        const newWallet = await this.walletsService.create(
+          {
+            name: walletData.name,
+            currency: walletData.currency,
+            initial_balance: walletData.initial_balance,
+          },
+          user.id,
+        );
+        walletIdMap.set(walletData.id, newWallet.id);
       }
     }
 
     // Restore categories
     if (data.categories) {
       for (const categoryData of data.categories) {
-        await this.categoriesService.create(categoryData, user.id);
+        const newCategory = await this.categoriesService.create(
+          {
+            name: categoryData.name,
+            type: categoryData.type,
+            icon: categoryData.icon,
+            color: categoryData.color,
+          },
+          user.id,
+        );
+        categoryIdMap.set(categoryData.id, newCategory.id);
       }
     }
 
     // Restore transactions
     if (data.transactions) {
       for (const transactionData of data.transactions) {
-        await this.transactionsService.create(transactionData, user.id);
+        const newWalletId = walletIdMap.get(transactionData.wallet_id);
+        const newCategoryId = categoryIdMap.get(transactionData.category_id);
+
+        if (newWalletId && newCategoryId) {
+          await this.transactionsService.create(
+            {
+              type: transactionData.type,
+              amount: transactionData.amount,
+              wallet_id: newWalletId,
+              category_id: newCategoryId,
+              date: transactionData.date,
+              note: transactionData.note,
+              is_recurring: transactionData.is_recurring,
+              recurring_pattern: transactionData.recurring_pattern,
+            },
+            user.id,
+          );
+        }
       }
     }
 
     // Restore budgets
     if (data.budgets) {
       for (const budgetData of data.budgets) {
-        await this.budgetsService.create(budgetData, user.id);
+        const newCategoryId = categoryIdMap.get(budgetData.category_id);
+
+        if (newCategoryId) {
+          await this.budgetsService.create(
+            {
+              category_id: newCategoryId,
+              limit_amount: budgetData.limit_amount,
+              month: budgetData.month,
+              year: budgetData.year,
+              currency: budgetData.currency,
+            },
+            user.id,
+          );
+        }
       }
     }
 

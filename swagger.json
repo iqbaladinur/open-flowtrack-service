@@ -520,6 +520,7 @@
             "name": "start_date",
             "required": false,
             "in": "query",
+            "description": "The start date for the transactions.",
             "schema": {
               "format": "date-time",
               "type": "string"
@@ -529,6 +530,7 @@
             "name": "end_date",
             "required": false,
             "in": "query",
+            "description": "The end date for the transactions.",
             "schema": {
               "format": "date-time",
               "type": "string"
@@ -538,6 +540,7 @@
             "name": "wallet_id",
             "required": false,
             "in": "query",
+            "description": "Filter by wallet ID.",
             "schema": {
               "type": "string"
             }
@@ -546,6 +549,7 @@
             "name": "category_id",
             "required": false,
             "in": "query",
+            "description": "Filter by category ID.",
             "schema": {
               "type": "string"
             }
@@ -554,10 +558,25 @@
             "name": "type",
             "required": false,
             "in": "query",
+            "description": "Filter by transaction type.",
             "schema": {
               "enum": [
                 "income",
                 "expense"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": false,
+            "in": "query",
+            "description": "Sort by date.",
+            "schema": {
+              "default": "DESC",
+              "enum": [
+                "ASC",
+                "DESC"
               ],
               "type": "string"
             }
@@ -703,7 +722,18 @@
       "get": {
         "operationId": "BudgetsController_findAll",
         "summary": "Get all budgets for the current user",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "year",
+            "required": false,
+            "in": "query",
+            "description": "Filter budgets by year",
+            "schema": {
+              "example": 2025,
+              "type": "number"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": ""
@@ -1292,13 +1322,22 @@
           "year": {
             "type": "number",
             "example": 2025
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "IDR",
+              "USD"
+            ],
+            "example": "IDR"
           }
         },
         "required": [
           "category_id",
           "limit_amount",
           "month",
-          "year"
+          "year",
+          "currency"
         ]
       },
       "UpdateBudgetDto": {
