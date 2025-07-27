@@ -32,4 +32,4 @@ COPY --from=builder /usr/src/app/dist ./dist
 EXPOSE 3000
 
 # Command to run the application via PM2
-CMD ["npm", "run", "start:prod"]
+ CMD ["node", "dist/src/main.js"]
