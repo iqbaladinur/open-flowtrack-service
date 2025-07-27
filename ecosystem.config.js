@@ -3,7 +3,7 @@ module.exports = {
     {
       name: 'wallport-api',
       script: 'dist/src/main.js',
-      instances: 'max', // Creates one instance per CPU core
+      instances: 1, // Creates one instance per CPU core
       exec_mode: 'cluster',
       autorestart: true,
       watch: false, // Should be false in production
