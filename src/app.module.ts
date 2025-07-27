@@ -19,7 +19,7 @@ import { validationSchema } from "./infrastructure/config/validation";
       isGlobal: true,
       load: [configuration],
       validationSchema,
-      envFilePath: ".env",
+      // envFilePath: ".env", siable because we deploy in railsways
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

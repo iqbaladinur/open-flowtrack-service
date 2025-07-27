@@ -24,3 +24,4 @@ Added optional year filter to the list budgets endpoint
 Fixed missing argument for findAll in backup.service.ts
 Updating docker-compose.yml to use PostgreSQL 14 and apply production settings.
 Changing PM2 instances from 'max' to 1 in ecosystem.config.js to prevent memory issues on Railway.
+Removing envFilePath from ConfigModule in app.module.ts to rely on platform-provided environment variables.
