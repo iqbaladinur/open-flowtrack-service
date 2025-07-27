@@ -22,3 +22,4 @@ Made the budget update endpoint return total_spent for consistency
 Standardized the response for budget create and update endpoints
 Added optional year filter to the list budgets endpoint
 Fixed missing argument for findAll in backup.service.ts
+Updating docker-compose.yml to use PostgreSQL 14 and apply production settings.
