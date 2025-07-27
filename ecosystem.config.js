@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'wallport-api',
-      script: 'dist/main.js',
+      script: 'dist/src/main.js',
       instances: 'max', // Creates one instance per CPU core
       exec_mode: 'cluster',
       autorestart: true,

@@ -4,7 +4,7 @@ services:
     image: postgres:12
     restart: always
     env_file:
-      - .env
+      - .env.prod
     ports:
       - "5432:5432"
     volumes:
@@ -19,7 +19,7 @@ services:
     build: .
     # Port 3000 tidak lagi diekspos ke host, hanya bisa diakses dari dalam jaringan docker
     env_file:
-      - .env
+      - .env.prod
     depends_on:
       db:
         condition: service_healthy
