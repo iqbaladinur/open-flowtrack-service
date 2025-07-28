@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   db:
-    image: postgres:12
+    image: postgres:14
     restart: always
     env_file:
       - .env
@@ -10,7 +10,7 @@ services:
     volumes:
       - postgres_data_v14:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTG-RES_USER} -d ${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5

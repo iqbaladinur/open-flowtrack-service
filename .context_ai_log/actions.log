@@ -25,3 +25,37 @@ Fixed missing argument for findAll in backup.service.ts
 Updating docker-compose.yml to use PostgreSQL 14 and apply production settings.
 Changing PM2 instances from 'max' to 1 in ecosystem.config.js to prevent memory issues on Railway.
 Removing envFilePath from ConfigModule in app.module.ts to rely on platform-provided environment variables.
+[2025-07-28 01:45:00] Fixed typo in docker-compose.db.yml: Changed POSTG-RES_USER to POSTGRES_USER in healthcheck.
+[2025-07-28 01:46:00] Informed user about the fix in docker-compose.db.yml.
+[2025-07-28 01:47:00] Deleted migration file: src/migrations/1721997788000-AddCurrencyToBudgets.ts
+[2025-07-28 01:47:01] Removed currency from src/modules/wallets/entities/wallet.entity.ts
+[2025-07-28 01:47:02] Removed currency from src/modules/budgets/entities/budget.entity.ts
+[2025-07-28 01:47:03] Deleted file src/modules/wallets/entities/currency.enum.ts
+[2025-07-28 01:47:04] Removed currency from src/modules/wallets/dto/create-wallet.dto.ts
+[2025-07-28 01:47:05] Removed currency from src/modules/wallets/dto/update-wallet.dto.ts
+[2025-07-28 01:47:06] Removed currency from src/modules/budgets/dto/create-budget.dto.ts
+[2025-07-28 01:47:07] Updated src/modules/reports/services/reports.service.ts to work without currency
+[2025-07-28 01:47:08] Updated src/modules/budgets/services/budgets.service.ts to work without currency
+[2025-07-28 01:47:09] Updated src/modules/backup/services/backup.service.ts to work without currency
+[2025-07-28 01:48:00] Created config module to manage global currency settings.
+[2025-07-28 01:48:01] Created config.service.ts to read/write currency config to config.json.
+[2025-07-28 01:48:02] Created config.module.ts.
+[2025-07-28 01:48:03] Created config.controller.ts and update-config.dto.ts.
+[2025-07-28 01:48:04] Imported ConfigModule into app.module.ts.
+[2025-07-28 01:49:00] Refactored config module to store currency settings in the database per user.
+[2025-07-28 01:49:01] Deleted config.json.
+[2025-07-28 01:49:02] Created config.entity.ts.
+[2025-07-28 01:49:03] Updated config.service.ts to use TypeORM.
+[2025-07-28 01:49:04] Updated config.controller.ts to handle user-specific configs.
+[2025-07-28 01:49:05] Updated config.module.ts to import TypeOrmModule.
+[2025-07-28 01:50:00] Fixed lint script in package.json.
+[2025-07-28 01:51:00] Integrated config module into user registration flow.
+[2025-07-28 01:51:01] Imported ConfigModule into AuthModule.
+[2025-07-28 01:51:02] Updated auth.service.ts to create default config for new users.
+[2025-07-28 01:52:00] Fixed dependency injection error in AuthModule by importing the custom ConfigModule.
+[2025-07-28 01:53:00] Created migration to add configs table and backfill existing users.
+[2025-07-28 01:54:00] Made the AddConfigsTableAndBackfill migration conditional.
+[2025-07-28 01:55:00] Updated auth flow to include user config in responses.
+[2025-07-28 01:55:01] Modified auth.service.ts to return config on login, register, and google auth.
+[2025-07-28 01:55:02] Added getProfile method to auth.service.ts.
+[2025-07-28 01:55:03] Updated auth.controller.ts to handle new service responses and update getProfile endpoint.

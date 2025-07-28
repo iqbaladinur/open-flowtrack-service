@@ -1,13 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import {
-  IsNotEmpty,
-  IsNumber,
-  IsUUID,
-  Max,
-  Min,
-  IsEnum,
-} from "class-validator";
-import { Currency } from "../../wallets/entities/currency.enum";
+import { IsNotEmpty, IsNumber, IsUUID, Max, Min } from "class-validator";
 
 export class CreateBudgetDto {
   @ApiProperty()
@@ -31,9 +23,4 @@ export class CreateBudgetDto {
   @IsNumber()
   @IsNotEmpty()
   year: number;
-
-  @ApiProperty({ enum: Currency, example: Currency.IDR })
-  @IsEnum(Currency)
-  @IsNotEmpty()
-  currency: Currency;
 }

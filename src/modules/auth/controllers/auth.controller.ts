@@ -45,10 +45,12 @@ export class AuthController {
   @UseGuards(AuthGuard("google"))
   @ApiOperation({ summary: "Google callback for authentication" })
   async googleAuthRedirect(@Req() req, @Res() res: Response) {
-    const { access_token, user } = await this.authService.googleLogin(req);
+    const { access_token, user, config } =
+      await this.authService.googleLogin(req);
     const frontendUrl = this.configService.get<string>("frontend.url");
+    const userWithConfig = { ...user, config };
     const redirectUrl = `${frontendUrl}/auth/callback?token=${access_token}&user=${JSON.stringify(
-      user,
+      userWithConfig,
     )}`;
     res.redirect(redirectUrl);
   }
@@ -98,9 +100,7 @@ export class AuthController {
     status: 200,
     description: "User profile retrieved successfully.",
   })
-  getProfile(@Request() req) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password_hash, ...user } = req.user;
-    return user;
+  async getProfile(@Request() req) {
+    return this.authService.getProfile(req.user.id);
   }
 }

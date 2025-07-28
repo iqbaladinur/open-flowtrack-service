@@ -41,6 +41,7 @@ import { validationSchema } from "./infrastructure/config/validation";
     ReportsModule,
     ExportModule,
     BackupModule,
+    ConfigModule,
   ],
   controllers: [],
   providers: [],

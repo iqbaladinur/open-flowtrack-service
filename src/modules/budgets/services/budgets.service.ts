@@ -6,7 +6,6 @@ import { CreateBudgetDto } from "../dto/create-budget.dto";
 import { UpdateBudgetDto } from "../dto/update-budget.dto";
 import { Transaction } from "../../transactions/entities/transaction.entity";
 import { CategoryType } from "../../categories/entities/category.entity";
-import { Currency } from "../../wallets/entities/currency.enum";
 import { FindAllBudgetsDto } from "../dto/find-all-budgets.dto";
 
 @Injectable()
@@ -18,10 +17,7 @@ export class BudgetsService {
     private transactionsRepository: Repository<Transaction>,
   ) {}
 
-  async create(
-    createBudgetDto: CreateBudgetDto,
-    userId: string,
-  ): Promise<any> {
+  async create(createBudgetDto: CreateBudgetDto, userId: string): Promise<any> {
     const budget = this.budgetsRepository.create({
       ...createBudgetDto,
       user_id: userId,
@@ -30,10 +26,7 @@ export class BudgetsService {
     return this.findOne(savedBudget.id, userId);
   }
 
-  async findAll(
-    userId: string,
-    query: FindAllBudgetsDto,
-  ): Promise<any[]> {
+  async findAll(userId: string, query: FindAllBudgetsDto): Promise<any[]> {
     const findOptions: FindManyOptions<Budget> = {
       where: { user_id: userId },
       relations: ["category"],
@@ -53,7 +46,6 @@ export class BudgetsService {
           budget.category_id,
           budget.year,
           budget.month,
-          budget.currency,
         );
         return { ...budget, total_spent: totalSpent };
       }),
@@ -76,7 +68,6 @@ export class BudgetsService {
       budget.category_id,
       budget.year,
       budget.month,
-      budget.currency,
     );
 
     return { ...budget, total_spent: totalSpent };
@@ -112,19 +103,16 @@ export class BudgetsService {
     categoryId: string,
     year: number,
     month: number,
-    currency: Currency,
   ): Promise<number> {
     const startDate = new Date(year, month - 1, 1);
     const endDate = new Date(year, month, 0);
 
     const { total } = await this.transactionsRepository
       .createQueryBuilder("transaction")
-      .leftJoin("transaction.wallet", "wallet")
       .select("SUM(transaction.amount)", "total")
       .where("transaction.user_id = :userId", { userId })
       .andWhere("transaction.category_id = :categoryId", { categoryId })
       .andWhere("transaction.type = :type", { type: CategoryType.EXPENSE })
-      .andWhere("wallet.currency = :currency", { currency })
       .andWhere("transaction.date BETWEEN :startDate AND :endDate", {
         startDate,
         endDate,

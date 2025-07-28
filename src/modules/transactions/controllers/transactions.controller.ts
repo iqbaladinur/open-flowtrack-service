@@ -19,7 +19,6 @@ import {
   ApiBearerAuth,
   ApiOperation,
   ApiResponse,
-  ApiQuery,
 } from "@nestjs/swagger";
 import { FindAllTransactionsDto } from "../dto/find-all-transactions.dto";
 

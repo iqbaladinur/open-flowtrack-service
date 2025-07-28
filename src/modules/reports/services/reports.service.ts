@@ -22,11 +22,10 @@ export class ReportsService {
   async getSummary(userId: string, startDate?: string, endDate?: string) {
     const qb = this.transactionsRepository.createQueryBuilder("transaction");
 
-    qb.select("wallet.currency", "currency")
-      .addSelect(
-        "SUM(CASE WHEN transaction.type = :income THEN transaction.amount ELSE 0 END)",
-        "totalIncome",
-      )
+    qb.select(
+      "SUM(CASE WHEN transaction.type = :income THEN transaction.amount ELSE 0 END)",
+      "totalIncome",
+    )
       .addSelect(
         "SUM(CASE WHEN transaction.type = :expense THEN transaction.amount ELSE 0 END)",
         "totalExpense",
@@ -46,22 +45,17 @@ export class ReportsService {
       qb.andWhere("transaction.date <= :endDate", { endDate });
     }
 
-    qb.groupBy("wallet.currency");
+    const result = await qb.getRawOne();
 
-    const results = await qb.getRawMany();
+    const totalIncome = parseFloat(result.totalIncome) || 0;
+    const totalExpense = parseFloat(result.totalExpense) || 0;
+    const net = totalIncome - totalExpense;
 
-    return results.map((result) => {
-      const totalIncome = parseFloat(result.totalIncome) || 0;
-      const totalExpense = parseFloat(result.totalExpense) || 0;
-      const net = totalIncome - totalExpense;
-
-      return {
-        currency: result.currency,
-        totalIncome,
-        totalExpense,
-        net,
-      };
-    });
+    return {
+      totalIncome,
+      totalExpense,
+      net,
+    };
   }
 
   async getCategoryReport(
@@ -71,14 +65,12 @@ export class ReportsService {
   ) {
     const qb = this.transactionsRepository
       .createQueryBuilder("transaction")
-      .select("wallet.currency", "currency")
-      .addSelect("category.name", "name")
+      .select("category.name", "name")
       .addSelect("category.color", "color")
       .addSelect("category.icon", "icon")
       .addSelect("SUM(transaction.amount)", "total")
       .addSelect("transaction.type", "type")
       .innerJoin("transaction.category", "category")
-      .innerJoin("transaction.wallet", "wallet")
       .where("transaction.user_id = :userId", { userId });
 
     if (startDate) {
@@ -88,27 +80,22 @@ export class ReportsService {
       qb.andWhere("transaction.date <= :endDate", { endDate });
     }
 
-    qb.groupBy("wallet.currency")
-      .addGroupBy("category.id")
+    qb.groupBy("category.id")
       .addGroupBy("category.name")
       .addGroupBy("category.color")
       .addGroupBy("category.icon")
       .addGroupBy("transaction.type")
-      .orderBy("wallet.currency")
       .addOrderBy("transaction.type")
       .addOrderBy("total", "DESC");
 
     const result = await qb.getRawMany();
 
     const reports = result.reduce((acc, item) => {
-      const { currency, name, color, icon, total, type } = item;
+      const { name, color, icon, total, type } = item;
       if (!acc[type]) {
-        acc[type] = {};
+        acc[type] = [];
       }
-      if (!acc[type][currency]) {
-        acc[type][currency] = [];
-      }
-      acc[type][currency].push({
+      acc[type].push({
         name,
         color,
         icon,
@@ -181,7 +168,6 @@ export class ReportsService {
 
       reports.push({
         name: wallet.name,
-        currency: wallet.currency,
         initialBalance,
         totalIncome,
         totalExpense,
@@ -189,13 +175,6 @@ export class ReportsService {
       });
     }
 
-    return reports.reduce((acc, report) => {
-      const { currency } = report;
-      if (!acc[currency]) {
-        acc[currency] = [];
-      }
-      acc[currency].push(report);
-      return acc;
-    }, {});
+    return reports;
   }
 }

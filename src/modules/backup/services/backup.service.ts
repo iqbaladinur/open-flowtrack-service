@@ -38,7 +38,6 @@ export class BackupService {
         const newWallet = await this.walletsService.create(
           {
             name: walletData.name,
-            currency: walletData.currency,
             initial_balance: walletData.initial_balance,
           },
           user.id,
@@ -99,7 +98,6 @@ export class BackupService {
               limit_amount: budgetData.limit_amount,
               month: budgetData.month,
               year: budgetData.year,
-              currency: budgetData.currency,
             },
             user.id,
           );
