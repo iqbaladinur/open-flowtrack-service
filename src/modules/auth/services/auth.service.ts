@@ -13,8 +13,8 @@ import { User } from "src/modules/users/entities/user.entity";
 import { ForgotPasswordDto } from "../dto/forgot-password.dto";
 import { ResetPasswordDto } from "../dto/reset-password.dto";
 import * as crypto from "crypto";
-import { ConfigService } from "src/modules/config/services/config.service";
-import { Config } from "src/modules/config/entities/config.entity";
+import { ConfigService } from "../../config/services/config.service";
+import { Config } from "../../config/entities/config.entity";
 
 @Injectable()
 export class AuthService {

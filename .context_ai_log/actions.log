@@ -59,3 +59,6 @@ Removing envFilePath from ConfigModule in app.module.ts to rely on platform-prov
 [2025-07-28 01:55:01] Modified auth.service.ts to return config on login, register, and google auth.
 [2025-07-28 01:55:02] Added getProfile method to auth.service.ts.
 [2025-07-28 01:55:03] Updated auth.controller.ts to handle new service responses and update getProfile endpoint.
+[2025-07-28 01:56:00] Added example response bodies to Swagger documentation.
+[2025-07-28 01:56:01] Generated new swagger.json file.
+[2025-07-28 01:56:02] Generated new API-SPECS.md file.

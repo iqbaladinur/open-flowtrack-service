@@ -6,7 +6,7 @@ import {
   ApiOperation,
   ApiResponse,
 } from "@nestjs/swagger";
-import { JwtAuthGuard } from "src/modules/auth/guards/jwt-auth.guard";
+import { JwtAuthGuard } from "../../auth/guards/jwt-auth.guard";
 import { UpdateConfigDto } from "../dto/update-config.dto";
 
 @ApiTags("Config")
@@ -21,6 +21,14 @@ export class ConfigController {
   @ApiResponse({
     status: 200,
     description: "Returns the currency configuration for the current user.",
+    schema: {
+      example: {
+        id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+        currency: "IDR",
+        fractions: 2,
+        user_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+      },
+    },
   })
   getCurrencyConfig(@Req() req) {
     return this.configService.getCurrencyConfig(req.user.id);
@@ -34,6 +42,14 @@ export class ConfigController {
     status: 200,
     description:
       "Updates and returns the new currency configuration for the current user.",
+    schema: {
+      example: {
+        id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+        currency: "USD",
+        fractions: 2,
+        user_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+      },
+    },
   })
   updateCurrencyConfig(@Req() req, @Body() updateConfigDto: UpdateConfigDto) {
     return this.configService.updateCurrencyConfig(

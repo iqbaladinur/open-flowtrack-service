@@ -48,7 +48,29 @@
         },
         "responses": {
           "201": {
-            "description": "User successfully registered."
+            "description": "User successfully registered.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "user": {
+                      "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "email": "test@example.com",
+                      "full_name": "John Doe",
+                      "provider": "local",
+                      "created_at": "2025-07-28T00:00:00.000Z",
+                      "updated_at": "2025-07-28T00:00:00.000Z"
+                    },
+                    "config": {
+                      "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "currency": "IDR",
+                      "fractions": 2,
+                      "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                    }
+                  }
+                }
+              }
+            }
           },
           "409": {
             "description": "Email already registered."
@@ -76,7 +98,30 @@
         },
         "responses": {
           "200": {
-            "description": "User successfully logged in."
+            "description": "User successfully logged in.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "access_token": "your_jwt_token",
+                    "user": {
+                      "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "email": "test@example.com",
+                      "full_name": "John Doe",
+                      "provider": "local",
+                      "created_at": "2025-07-28T00:00:00.000Z",
+                      "updated_at": "2025-07-28T00:00:00.000Z"
+                    },
+                    "config": {
+                      "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "currency": "IDR",
+                      "fractions": 2,
+                      "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                    }
+                  }
+                }
+              }
+            }
           },
           "401": {
             "description": "Invalid credentials."
@@ -156,11 +201,105 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": "User profile retrieved successfully."
+            "description": "User profile retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "user": {
+                      "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "email": "test@example.com",
+                      "full_name": "John Doe",
+                      "provider": "local",
+                      "created_at": "2025-07-28T00:00:00.000Z",
+                      "updated_at": "2025-07-28T00:00:00.000Z"
+                    },
+                    "config": {
+                      "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "currency": "IDR",
+                      "fractions": 2,
+                      "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
           "Authentication"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/config": {
+      "get": {
+        "operationId": "ConfigController_getCurrencyConfig",
+        "summary": "Get currency configuration for the current user",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Returns the currency configuration for the current user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "currency": "IDR",
+                    "fractions": 2,
+                    "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Config"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "ConfigController_updateCurrencyConfig",
+        "summary": "Update currency configuration for the current user",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateConfigDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updates and returns the new currency configuration for the current user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "currency": "USD",
+                    "fractions": 2,
+                    "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Config"
         ],
         "security": [
           {
@@ -186,7 +325,21 @@
         },
         "responses": {
           "201": {
-            "description": "The wallet has been successfully created."
+            "description": "The wallet has been successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "name": "My Bank Account",
+                    "initial_balance": 1000,
+                    "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "created_at": "2025-07-28T00:00:00.000Z",
+                    "updated_at": "2025-07-28T00:00:00.000Z"
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -223,7 +376,24 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "A list of wallets with their current balances.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": [
+                    {
+                      "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "name": "My Bank Account",
+                      "initial_balance": 1000,
+                      "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "created_at": "2025-07-28T00:00:00.000Z",
+                      "updated_at": "2025-07-28T00:00:00.000Z",
+                      "current_balance": 1250.5
+                    }
+                  ]
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -252,7 +422,22 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "The wallet with its current balance.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "name": "My Bank Account",
+                    "initial_balance": 1000,
+                    "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "created_at": "2025-07-28T00:00:00.000Z",
+                    "updated_at": "2025-07-28T00:00:00.000Z",
+                    "current_balance": 1250.5
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -289,7 +474,21 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "The updated wallet.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "name": "My Updated Bank Account",
+                    "initial_balance": 1500,
+                    "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "created_at": "2025-07-28T00:00:00.000Z",
+                    "updated_at": "2025-07-28T00:00:00.000Z"
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -346,7 +545,23 @@
         },
         "responses": {
           "201": {
-            "description": "The category has been successfully created."
+            "description": "The category has been successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "name": "Salary",
+                    "type": "income",
+                    "icon": "briefcase-outline",
+                    "color": "#26de81",
+                    "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "created_at": "2025-07-28T00:00:00.000Z",
+                    "updated_at": "2025-07-28T00:00:00.000Z"
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -377,7 +592,25 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "A list of categories.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": [
+                    {
+                      "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "name": "Salary",
+                      "type": "income",
+                      "icon": "briefcase-outline",
+                      "color": "#26de81",
+                      "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "created_at": "2025-07-28T00:00:00.000Z",
+                      "updated_at": "2025-07-28T00:00:00.000Z"
+                    }
+                  ]
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -406,7 +639,23 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "The category.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "name": "Salary",
+                    "type": "income",
+                    "icon": "briefcase-outline",
+                    "color": "#26de81",
+                    "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "created_at": "2025-07-28T00:00:00.000Z",
+                    "updated_at": "2025-07-28T00:00:00.000Z"
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -443,7 +692,23 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "The updated category.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "name": "Freelance Income",
+                    "type": "income",
+                    "icon": "laptop-outline",
+                    "color": "#45aaf2",
+                    "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "created_at": "2025-07-28T00:00:00.000Z",
+                    "updated_at": "2025-07-28T00:00:00.000Z"
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -500,7 +765,27 @@
         },
         "responses": {
           "201": {
-            "description": "The transaction has been successfully created."
+            "description": "The transaction has been successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "type": "expense",
+                    "amount": 50,
+                    "wallet_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "category_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "date": "2025-07-28T00:00:00.000Z",
+                    "note": "Lunch",
+                    "is_recurring": false,
+                    "recurring_pattern": null,
+                    "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "created_at": "2025-07-28T00:00:00.000Z",
+                    "updated_at": "2025-07-28T00:00:00.000Z"
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -584,7 +869,29 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "A list of transactions.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": [
+                    {
+                      "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "type": "expense",
+                      "amount": 50,
+                      "wallet_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "category_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "date": "2025-07-28T00:00:00.000Z",
+                      "note": "Lunch",
+                      "is_recurring": false,
+                      "recurring_pattern": null,
+                      "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "created_at": "2025-07-28T00:00:00.000Z",
+                      "updated_at": "2025-07-28T00:00:00.000Z"
+                    }
+                  ]
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -613,7 +920,27 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "The transaction.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "type": "expense",
+                    "amount": 50,
+                    "wallet_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "category_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "date": "2025-07-28T00:00:00.000Z",
+                    "note": "Lunch",
+                    "is_recurring": false,
+                    "recurring_pattern": null,
+                    "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "created_at": "2025-07-28T00:00:00.000Z",
+                    "updated_at": "2025-07-28T00:00:00.000Z"
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -650,7 +977,27 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "The updated transaction.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "type": "expense",
+                    "amount": 75,
+                    "wallet_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "category_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "date": "2025-07-28T00:00:00.000Z",
+                    "note": "Dinner",
+                    "is_recurring": false,
+                    "recurring_pattern": null,
+                    "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "created_at": "2025-07-28T00:00:00.000Z",
+                    "updated_at": "2025-07-28T00:00:00.000Z"
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -707,7 +1054,24 @@
         },
         "responses": {
           "201": {
-            "description": "The budget has been successfully created."
+            "description": "The budget has been successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "category_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "limit_amount": 500,
+                    "month": 7,
+                    "year": 2025,
+                    "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "created_at": "2025-07-28T00:00:00.000Z",
+                    "updated_at": "2025-07-28T00:00:00.000Z",
+                    "total_spent": 150
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -736,7 +1100,26 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "A list of budgets with their spent amounts.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": [
+                    {
+                      "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "category_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "limit_amount": 500,
+                      "month": 7,
+                      "year": 2025,
+                      "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "created_at": "2025-07-28T00:00:00.000Z",
+                      "updated_at": "2025-07-28T00:00:00.000Z",
+                      "total_spent": 150
+                    }
+                  ]
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -765,7 +1148,24 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "The budget with its spent amount.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "category_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "limit_amount": 500,
+                    "month": 7,
+                    "year": 2025,
+                    "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "created_at": "2025-07-28T00:00:00.000Z",
+                    "updated_at": "2025-07-28T00:00:00.000Z",
+                    "total_spent": 150
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -802,7 +1202,24 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "The updated budget.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "category_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "limit_amount": 600,
+                    "month": 7,
+                    "year": 2025,
+                    "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "created_at": "2025-07-28T00:00:00.000Z",
+                    "updated_at": "2025-07-28T00:00:00.000Z",
+                    "total_spent": 150
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -867,7 +1284,18 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "A summary of income, expense, and net.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "totalIncome": 5000,
+                    "totalExpense": 2500,
+                    "net": 2500
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -905,7 +1333,31 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "A report of transactions grouped by category.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "income": [
+                      {
+                        "name": "Salary",
+                        "color": "#26de81",
+                        "icon": "briefcase-outline",
+                        "total": 5000
+                      }
+                    ],
+                    "expense": [
+                      {
+                        "name": "Groceries",
+                        "color": "#ff4757",
+                        "icon": "cart-outline",
+                        "total": 1500
+                      }
+                    ]
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -943,7 +1395,22 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "A report of transactions grouped by wallet.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": [
+                    {
+                      "name": "My Bank Account",
+                      "initialBalance": 1000,
+                      "totalIncome": 2000,
+                      "totalExpense": 500,
+                      "finalBalance": 2500
+                    }
+                  ]
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1112,20 +1579,25 @@
           "password"
         ]
       },
+      "UpdateConfigDto": {
+        "type": "object",
+        "properties": {
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "fractions": {
+            "type": "number",
+            "example": 2
+          }
+        }
+      },
       "CreateWalletDto": {
         "type": "object",
         "properties": {
           "name": {
             "type": "string",
             "example": "My Bank Account"
-          },
-          "currency": {
-            "type": "string",
-            "enum": [
-              "IDR",
-              "USD"
-            ],
-            "example": "USD"
           },
           "initial_balance": {
             "type": "number",
@@ -1134,7 +1606,6 @@
         },
         "required": [
           "name",
-          "currency",
           "initial_balance"
         ]
       },
@@ -1144,14 +1615,6 @@
           "name": {
             "type": "string",
             "example": "My Primary Bank Account"
-          },
-          "currency": {
-            "type": "string",
-            "enum": [
-              "IDR",
-              "USD"
-            ],
-            "example": "IDR"
           },
           "initial_balance": {
             "type": "number",
@@ -1322,22 +1785,13 @@
           "year": {
             "type": "number",
             "example": 2025
-          },
-          "currency": {
-            "type": "string",
-            "enum": [
-              "IDR",
-              "USD"
-            ],
-            "example": "IDR"
           }
         },
         "required": [
           "category_id",
           "limit_amount",
           "month",
-          "year",
-          "currency"
+          "year"
         ]
       },
       "UpdateBudgetDto": {
