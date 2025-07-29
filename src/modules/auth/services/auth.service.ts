@@ -24,9 +24,7 @@ export class AuthService {
     private configService: ConfigService,
   ) {}
 
-  async googleLogin(
-    req,
-  ): Promise<{
+  async googleLogin(req): Promise<{
     access_token: string;
     user: Omit<User, "password_hash">;
     config: Config;
@@ -86,9 +84,7 @@ export class AuthService {
     return { user: result, config };
   }
 
-  async login(
-    loginDto: LoginDto,
-  ): Promise<{
+  async login(loginDto: LoginDto): Promise<{
     access_token: string;
     user: Omit<User, "password_hash">;
     config: Config;

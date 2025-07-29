@@ -62,3 +62,6 @@ Removing envFilePath from ConfigModule in app.module.ts to rely on platform-prov
 [2025-07-28 01:56:00] Added example response bodies to Swagger documentation.
 [2025-07-28 01:56:01] Generated new swagger.json file.
 [2025-07-28 01:56:02] Generated new API-SPECS.md file.
+Modified src/modules/categories/services/categories.service.ts to add bulkCreate method. Modified src/modules/categories/controllers/categories.controller.ts to add createBulk method for bulk category creation.
+Create a new DTO to handle the bulk creation
+Updated the CategoriesController to use the new BulkCreateCategoryDto

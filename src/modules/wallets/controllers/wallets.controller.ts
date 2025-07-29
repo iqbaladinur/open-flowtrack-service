@@ -63,7 +63,7 @@ export class WalletsController {
           user_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
           created_at: "2025-07-28T00:00:00.000Z",
           updated_at: "2025-07-28T00:00:00.000Z",
-          current_balance: 1250.50,
+          current_balance: 1250.5,
         },
       ],
     },
@@ -91,7 +91,7 @@ export class WalletsController {
         user_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
         created_at: "2025-07-28T00:00:00.000Z",
         updated_at: "2025-07-28T00:00:00.000Z",
-        current_balance: 1250.50,
+        current_balance: 1250.5,
       },
     },
   })

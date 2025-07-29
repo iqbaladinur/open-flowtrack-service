@@ -23,6 +23,19 @@ export class CategoriesService {
     return this.categoriesRepository.save(category);
   }
 
+  async bulkCreate(
+    createCategoryDtos: CreateCategoryDto[],
+    userId: string,
+  ): Promise<Category[]> {
+    const categories = createCategoryDtos.map((dto) =>
+      this.categoriesRepository.create({
+        ...dto,
+        user_id: userId,
+      }),
+    );
+    return this.categoriesRepository.save(categories);
+  }
+
   async findAll(userId?: string, type?: CategoryType): Promise<Category[]> {
     const baseConditions: FindOptionsWhere<Category> = {};
 
