@@ -32,4 +32,4 @@ COPY --from=builder /usr/src/app/dist ./dist
 EXPOSE 3000
 
 # Command to run the application via PM2
- CMD ["node", "dist/src/main.js"]
+CMD ["sh", "-c", "npm run migrate && node dist/src/main.js"]

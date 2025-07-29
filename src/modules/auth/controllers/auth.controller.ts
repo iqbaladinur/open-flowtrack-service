@@ -45,17 +45,40 @@ export class AuthController {
   @UseGuards(AuthGuard("google"))
   @ApiOperation({ summary: "Google callback for authentication" })
   async googleAuthRedirect(@Req() req, @Res() res: Response) {
-    const { access_token, user } = await this.authService.googleLogin(req);
+    const { access_token, user, config } =
+      await this.authService.googleLogin(req);
     const frontendUrl = this.configService.get<string>("frontend.url");
+    const userWithConfig = { ...user, config };
     const redirectUrl = `${frontendUrl}/auth/callback?token=${access_token}&user=${JSON.stringify(
-      user,
+      userWithConfig,
     )}`;
     res.redirect(redirectUrl);
   }
 
   @Post("register")
   @ApiOperation({ summary: "Register a new user" })
-  @ApiResponse({ status: 201, description: "User successfully registered." })
+  @ApiResponse({
+    status: 201,
+    description: "User successfully registered.",
+    schema: {
+      example: {
+        user: {
+          id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+          email: "test@example.com",
+          full_name: "John Doe",
+          provider: "local",
+          created_at: "2025-07-28T00:00:00.000Z",
+          updated_at: "2025-07-28T00:00:00.000Z",
+        },
+        config: {
+          id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+          currency: "IDR",
+          fractions: 2,
+          user_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+        },
+      },
+    },
+  })
   @ApiResponse({ status: 409, description: "Email already registered." })
   async register(@Body() createUserDto: CreateUserDto) {
     return this.authService.register(createUserDto);
@@ -64,7 +87,29 @@ export class AuthController {
   @Post("login")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Log in a user" })
-  @ApiResponse({ status: 200, description: "User successfully logged in." })
+  @ApiResponse({
+    status: 200,
+    description: "User successfully logged in.",
+    schema: {
+      example: {
+        access_token: "your_jwt_token",
+        user: {
+          id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+          email: "test@example.com",
+          full_name: "John Doe",
+          provider: "local",
+          created_at: "2025-07-28T00:00:00.000Z",
+          updated_at: "2025-07-28T00:00:00.000Z",
+        },
+        config: {
+          id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+          currency: "IDR",
+          fractions: 2,
+          user_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+        },
+      },
+    },
+  })
   @ApiResponse({ status: 401, description: "Invalid credentials." })
   async login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
@@ -97,10 +142,26 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: "User profile retrieved successfully.",
+    schema: {
+      example: {
+        user: {
+          id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+          email: "test@example.com",
+          full_name: "John Doe",
+          provider: "local",
+          created_at: "2025-07-28T00:00:00.000Z",
+          updated_at: "2025-07-28T00:00:00.000Z",
+        },
+        config: {
+          id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+          currency: "IDR",
+          fractions: 2,
+          user_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+        },
+      },
+    },
   })
-  getProfile(@Request() req) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password_hash, ...user } = req.user;
-    return user;
+  async getProfile(@Request() req) {
+    return this.authService.getProfile(req.user.id);
   }
 }

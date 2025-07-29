@@ -13,21 +13,29 @@ import { User } from "src/modules/users/entities/user.entity";
 import { ForgotPasswordDto } from "../dto/forgot-password.dto";
 import { ResetPasswordDto } from "../dto/reset-password.dto";
 import * as crypto from "crypto";
+import { ConfigService } from "../../config/services/config.service";
+import { Config } from "../../config/entities/config.entity";
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
-  async googleLogin(req): Promise<{ access_token: string; user: Omit<User, "password_hash"> }> {
+  async googleLogin(req): Promise<{
+    access_token: string;
+    user: Omit<User, "password_hash">;
+    config: Config;
+  }> {
     if (!req.user) {
       throw new UnauthorizedException("No user from google");
     }
 
     const { email, firstName, lastName } = req.user;
     let user = await this.usersService.findOneByEmail(email);
+    let config: Config;
     if (!user) {
       const newUser = {
         email,
@@ -35,6 +43,9 @@ export class AuthService {
         provider: "google",
       };
       user = await this.usersService.create(newUser);
+      config = await this.configService.getCurrencyConfig(user.id);
+    } else {
+      config = await this.configService.getCurrencyConfig(user.id);
     }
 
     const payload = { sub: user.id, email: user.email };
@@ -44,12 +55,13 @@ export class AuthService {
     return {
       access_token,
       user: result,
+      config,
     };
   }
 
   async register(
     createUserDto: CreateUserDto,
-  ): Promise<Omit<User, "password_hash">> {
+  ): Promise<{ user: Omit<User, "password_hash">; config: Config }> {
     const existingUser = await this.usersService.findOneByEmail(
       createUserDto.email,
     );
@@ -65,13 +77,18 @@ export class AuthService {
       full_name: createUserDto.full_name,
       password_hash,
     });
+    const config = await this.configService.getCurrencyConfig(user.id);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password_hash: _, ...result } = user;
-    return result;
+    return { user: result, config };
   }
 
-  async login(loginDto: LoginDto): Promise<{ access_token: string }> {
+  async login(loginDto: LoginDto): Promise<{
+    access_token: string;
+    user: Omit<User, "password_hash">;
+    config: Config;
+  }> {
     const user = await this.usersService.findOneByEmail(loginDto.email);
     if (!user) {
       throw new UnauthorizedException("Invalid credentials");
@@ -85,10 +102,24 @@ export class AuthService {
       throw new UnauthorizedException("Invalid credentials");
     }
 
+    const config = await this.configService.getCurrencyConfig(user.id);
     const payload = { sub: user.id, email: user.email };
+    const { password_hash, ...result } = user;
     return {
       access_token: this.jwtService.sign(payload),
+      user: result,
+      config,
     };
+  }
+
+  async getProfile(
+    userId: string,
+  ): Promise<{ user: Omit<User, "password_hash">; config: Config }> {
+    const user = await this.usersService.findOneById(userId);
+    const config = await this.configService.getCurrencyConfig(userId);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password_hash, ...result } = user;
+    return { user: result, config };
   }
 
   async forgotPassword(forgotPasswordDto: ForgotPasswordDto): Promise<void> {

@@ -9,7 +9,6 @@ import {
   Index,
 } from "typeorm";
 import { User } from "../../users/entities/user.entity";
-import { Currency } from "./currency.enum";
 
 @Entity("wallets")
 export class Wallet {
@@ -18,13 +17,6 @@ export class Wallet {
 
   @Column()
   name: string;
-
-  @Column({
-    type: "enum",
-    enum: Currency,
-    default: Currency.IDR,
-  })
-  currency: Currency;
 
   @Column("decimal", { precision: 15, scale: 2 })
   initial_balance: number;

@@ -31,7 +31,7 @@ export class WalletsService {
     userId: string,
     startDate?: Date,
     endDate?: Date,
-  ): Promise<(Wallet & { balance: number })[]> {
+  ): Promise<(Wallet & { current_balance: number })[]> {
     const wallets = await this.walletsRepository.find({
       where: { user_id: userId },
     });
@@ -92,7 +92,7 @@ export class WalletsService {
         Number(wallet.initial_balance) + totals.income - totals.expense;
       return {
         ...wallet,
-        balance,
+        current_balance: balance,
       };
     });
 
