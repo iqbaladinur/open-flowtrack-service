@@ -28,7 +28,7 @@ import { validationSchema } from "./infrastructure/config/validation";
         type: "postgres",
         url: configService.get<string>("database.url"),
         entities: [__dirname + "/**/*.entity{.ts,.js}"],
-        synchronize: false, // Should be false in production
+        synchronize: true, // Should be false in production
         autoLoadEntities: true,
       }),
     }),
@@ -41,7 +41,6 @@ import { validationSchema } from "./infrastructure/config/validation";
     ReportsModule,
     ExportModule,
     BackupModule,
-    ConfigModule,
   ],
   controllers: [],
   providers: [],

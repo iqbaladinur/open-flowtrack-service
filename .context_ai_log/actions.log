@@ -65,3 +65,4 @@ Removing envFilePath from ConfigModule in app.module.ts to rely on platform-prov
 Modified src/modules/categories/services/categories.service.ts to add bulkCreate method. Modified src/modules/categories/controllers/categories.controller.ts to add createBulk method for bulk category creation.
 Create a new DTO to handle the bulk creation
 Updated the CategoriesController to use the new BulkCreateCategoryDto
+modifying src/main.ts to enable 'trust proxy' setting
