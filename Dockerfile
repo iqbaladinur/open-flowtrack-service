@@ -14,7 +14,7 @@ COPY . .
 RUN npm run build
 
 # Prune dev dependencies for a smaller node_modules
-RUN npm prune --production
+# RUN npm prune --production
 
 # Stage 2: Create the final production image
 FROM node:22.14.0-alpine
