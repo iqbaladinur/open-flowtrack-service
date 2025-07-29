@@ -28,6 +28,7 @@ COPY --from=builder /usr/src/app/ecosystem.config.js ./
 COPY --from=builder /usr/src/app/node_modules ./node_modules
 COPY --from=builder /usr/src/app/package*.json ./
 COPY --from=builder /usr/src/app/dist ./dist
+COPY --from=builder /usr/src/app/src/migrations ./src/migrations
 COPY --from=builder /usr/src/app/data-source.ts ./
 COPY --from=builder /usr/src/app/tsconfig.json ./
 
