@@ -95,8 +95,15 @@ export class WalletsController {
       },
     },
   })
-  findOne(@Param("id") id: string, @Request() req) {
-    return this.walletsService.findOne(id, req.user.id);
+  @ApiQuery({ name: "start_date", required: false, type: Date })
+  @ApiQuery({ name: "end_date", required: false, type: Date })
+  findOne(
+    @Param("id") id: string,
+    @Request() req,
+    @Query("start_date") startDate?: Date,
+    @Query("end_date") endDate?: Date,
+  ) {
+    return this.walletsService.findOne(id, req.user.id, startDate, endDate);
   }
 
   @Patch(":id")

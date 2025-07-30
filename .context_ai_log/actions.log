@@ -66,3 +66,4 @@ Modified src/modules/categories/services/categories.service.ts to add bulkCreate
 Create a new DTO to handle the bulk creation
 Updated the CategoriesController to use the new BulkCreateCategoryDto
 modifying src/main.ts to enable 'trust proxy' setting
+Modified 'findOne' in wallets service and controller to include current balance and date filters. Files changed: src/modules/wallets/services/wallets.service.ts, src/modules/wallets/controllers/wallets.controller.ts

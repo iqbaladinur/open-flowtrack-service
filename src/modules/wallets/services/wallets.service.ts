@@ -99,14 +99,60 @@ export class WalletsService {
     return walletsWithBalance;
   }
 
-  async findOne(id: string, userId: string): Promise<Wallet> {
+  async findOne(
+    id: string,
+    userId: string,
+    startDate?: Date,
+    endDate?: Date,
+  ): Promise<Wallet & { current_balance: number }> {
     const wallet = await this.walletsRepository.findOne({
       where: { id, user_id: userId },
     });
     if (!wallet) {
       throw new NotFoundException(`Wallet with ID "${id}" not found`);
     }
-    return wallet;
+
+    const transactionQuery = this.transactionRepository
+      .createQueryBuilder("transaction")
+      .select("transaction.type", "type")
+      .addSelect("SUM(transaction.amount)", "total")
+      .where("transaction.wallet_id = :walletId", { walletId: id })
+      .groupBy("transaction.type");
+
+    if (startDate) {
+      const start = new Date(startDate);
+      start.setHours(0, 0, 0, 0);
+      transactionQuery.andWhere("transaction.date >= :startDate", {
+        startDate: start,
+      });
+    }
+    if (endDate) {
+      const end = new Date(endDate);
+      end.setHours(23, 59, 59, 999);
+      transactionQuery.andWhere("transaction.date <= :endDate", {
+        endDate: end,
+      });
+    }
+
+    const transactionSums = await transactionQuery.getRawMany();
+
+    let income = 0;
+    let expense = 0;
+
+    for (const sum of transactionSums) {
+      if (sum.type === CategoryType.INCOME) {
+        income = parseFloat(sum.total);
+      } else if (sum.type === CategoryType.EXPENSE) {
+        expense = parseFloat(sum.total);
+      }
+    }
+
+    const balance = Number(wallet.initial_balance) + income - expense;
+
+    return {
+      ...wallet,
+      current_balance: balance,
+    };
   }
 
   async update(
@@ -114,7 +160,12 @@ export class WalletsService {
     updateWalletDto: UpdateWalletDto,
     userId: string,
   ): Promise<Wallet> {
-    const wallet = await this.findOne(id, userId);
+    const wallet = await this.walletsRepository.findOne({
+      where: { id, user_id: userId },
+    });
+    if (!wallet) {
+      throw new NotFoundException(`Wallet with ID "${id}" not found`);
+    }
     Object.assign(wallet, updateWalletDto);
     return this.walletsRepository.save(wallet);
   }
