@@ -38,14 +38,14 @@ export class TransactionsService {
     const where: FindOptionsWhere<Transaction> = { user_id: userId };
 
     const start = query.start_date ? new Date(query.start_date) : undefined;
-    if (start) {
-      start.setHours(0, 0, 0, 0);
-    }
+    // if (start) {
+    //   start.setHours(0, 0, 0, 0);
+    // }
 
     const end = query.end_date ? new Date(query.end_date) : undefined;
-    if (end) {
-      end.setHours(23, 59, 59, 999);
-    }
+    // if (end) {
+    //   end.setHours(23, 59, 59, 999);
+    // }
 
     if (start && end) {
       where.date = Between(start, end);
