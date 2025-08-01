@@ -51,14 +51,14 @@ export class WalletsService {
 
     if (startDate) {
       const start = new Date(startDate);
-      start.setHours(0, 0, 0, 0);
+      // start.setHours(0, 0, 0, 0);
       transactionQuery.andWhere("transaction.date >= :startDate", {
         startDate: start,
       });
     }
     if (endDate) {
       const end = new Date(endDate);
-      end.setHours(23, 59, 59, 999);
+      // end.setHours(23, 59, 59, 999);
       transactionQuery.andWhere("transaction.date <= :endDate", {
         endDate: end,
       });
@@ -121,14 +121,14 @@ export class WalletsService {
 
     if (startDate) {
       const start = new Date(startDate);
-      start.setHours(0, 0, 0, 0);
+      // start.setHours(0, 0, 0, 0);
       transactionQuery.andWhere("transaction.date >= :startDate", {
         startDate: start,
       });
     }
     if (endDate) {
       const end = new Date(endDate);
-      end.setHours(23, 59, 59, 999);
+      // end.setHours(23, 59, 59, 999);
       transactionQuery.andWhere("transaction.date <= :endDate", {
         endDate: end,
       });
