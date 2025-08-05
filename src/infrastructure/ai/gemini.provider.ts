@@ -15,7 +15,7 @@ export class GeminiAiProvider extends AiProvider {
   }
 
   async generateText(prompt: string): Promise<string> {
-    const model = this.generativeAi.getGenerativeModel({ model: "gemini-pro" });
+    const model = this.generativeAi.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
     const result = await model.generateContent(prompt);
     const response = await result.response;
     return response.text();

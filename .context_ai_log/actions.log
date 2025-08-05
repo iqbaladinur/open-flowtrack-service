@@ -72,3 +72,5 @@ read entity files to define the database schema
 generating DB-SPECS.md
 Created analytics module directories and files
 Finished implementing analytics module and fixed linting issues.
+Created seeds directory and transaction seeder file
+Finished creating transaction seeder.
