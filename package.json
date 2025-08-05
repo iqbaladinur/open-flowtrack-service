@@ -20,11 +20,13 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "seed": "ts-node -r tsconfig-paths/register data-source.ts seed"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.11.3",
+    "@nestjs/cache-manager": "^3.0.1",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.2.2",
     "@nestjs/core": "^10.0.0",
@@ -35,6 +37,7 @@
     "@nestjs/typeorm": "^10.0.2",
     "@types/joi": "^17.2.2",
     "bcrypt": "^5.1.1",
+    "cache-manager": "^7.1.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "express-rate-limit": "^7.3.1",
@@ -76,6 +79,7 @@
     "ts-loader": "^9.4.3",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
+    "typeorm-extension": "^3.7.1",
     "typescript": "^5.1.3"
   },
   "jest": {

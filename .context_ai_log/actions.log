@@ -70,3 +70,7 @@ Modified 'findOne' in wallets service and controller to include current balance 
 find all entity files
 read entity files to define the database schema
 generating DB-SPECS.md
+Created analytics module directories and files
+Finished implementing analytics module and fixed linting issues.
+Created seeds directory and transaction seeder file
+Finished creating transaction seeder.

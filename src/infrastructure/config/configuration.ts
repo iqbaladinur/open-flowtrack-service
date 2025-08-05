@@ -15,4 +15,7 @@ export default () => ({
   frontend: {
     url: process.env.FRONTEND_URL,
   },
+  gemini: {
+    apiKey: process.env.GEMINI_API_KEY,
+  },
 });

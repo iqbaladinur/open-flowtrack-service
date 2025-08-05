@@ -2,13 +2,13 @@ import 'reflect-metadata';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { config } from 'dotenv';
 import { join } from 'path';
+import { SeederOptions, runSeeders } from 'typeorm-extension';
+import TransactionSeeder from './src/seeds/transaction.seeder';
 
 // Load environment variables from .env file
 config();
 
-// This configuration is specifically for TypeORM CLI
-// It reads the DATABASE_URL environment variable, as it runs outside the NestJS context.
-export const AppDataSource = new DataSource({
+const options: DataSourceOptions & SeederOptions = {
   type: 'postgres',
   url: process.env.DATABASE_URL,
   synchronize: false, // Never use TRUE in production
@@ -16,4 +16,15 @@ export const AppDataSource = new DataSource({
   entities: [join(__dirname, '**', '*.entity.{ts,js}')],
   migrations: [join(__dirname, 'src/migrations', '*.{ts,js}')],
   migrationsTableName: 'migrations',
-} as DataSourceOptions);
+  seeds: [TransactionSeeder],
+};
+
+export const AppDataSource = new DataSource(options);
+
+AppDataSource.initialize().then(async () => {
+  if (process.argv.includes('seed')) {
+    await runSeeders(AppDataSource);
+    console.log('Seeding complete!');
+    process.exit();
+  }
+});
