@@ -104,6 +104,7 @@ export class AuthService {
 
     const config = await this.configService.getCurrencyConfig(user.id);
     const payload = { sub: user.id, email: user.email };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password_hash, ...result } = user;
     return {
       access_token: this.jwtService.sign(payload),
