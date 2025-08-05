@@ -27,7 +27,6 @@ export class AnalyticsService {
     const budgets = await this.budgetsService.findAll(user.id, {});
 
     const prompt = this.constructPrompt(transactions, budgets);
-
     const analyticsResult = await this.aiProvider.generateText(prompt);
 
     return {
@@ -41,7 +40,7 @@ export class AnalyticsService {
         (t) =>
           `- ${t.date.toISOString().split("T")[0]}: ${t.type} of ${
             t.amount
-          } for ${t.category.name} (${t.note || "no note"})`,
+          } for ${t.category.name} (${t.note || "no note"}) on wallet ${t.wallet?.name}`,
       )
       .join("\n");
 
@@ -58,7 +57,7 @@ export class AnalyticsService {
       Budgets:
       ${budgetsSummary}
 
-      Based on this data, please provide a friendly and insightful analysis of my spending habits. 
+      Based on this data period, please provide a friendly and insightful analysis of my spending habits. 
       Include observations about my income vs. expenses, spending by category, and how I'm doing against my budgets, if the budget data is not available, do not give any data about budget.
       Summarize as sugestive information with short explanation. make it max 100 character every line, separate by "|" character for every summarize.
     `;
