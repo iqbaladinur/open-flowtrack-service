@@ -59,8 +59,8 @@ export class AnalyticsService {
       ${budgetsSummary}
 
       Based on this data, please provide a friendly and insightful analysis of my spending habits. 
-      Include observations about my income vs. expenses, spending by category, and how I'm doing against my budgets.
-      Summarize as sugestive information with short explanation. make it max 100 character every line, separate by | character for every summarize.
+      Include observations about my income vs. expenses, spending by category, and how I'm doing against my budgets, if the budget data is not available, do not give any data about budget.
+      Summarize as sugestive information with short explanation. make it max 100 character every line, separate by "|" character for every summarize.
     `;
   }
 }
