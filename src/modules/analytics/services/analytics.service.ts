@@ -1,9 +1,11 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { TransactionsService } from "../../transactions/services/transactions.service";
 import { BudgetsService } from "../../budgets/services/budgets.service";
 import { AiProvider } from "../../../infrastructure/ai/ai.provider";
 import { GenerateAnalyticsDto } from "../dto/generate-analytics.dto";
 import { User } from "src/modules/users/entities/user.entity";
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
+import { Cache } from "cache-manager";
 
 @Injectable()
 export class AnalyticsService {
@@ -11,6 +13,7 @@ export class AnalyticsService {
     private readonly transactionsService: TransactionsService,
     private readonly budgetsService: BudgetsService,
     private readonly aiProvider: AiProvider,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   async generateAnalytics(
@@ -18,6 +21,15 @@ export class AnalyticsService {
     generateAnalyticsDto: GenerateAnalyticsDto,
   ): Promise<any> {
     const { startDate, endDate } = generateAnalyticsDto;
+    const cacheKey = `analytics:${user.id}:${startDate}:${endDate}`;
+
+    const cachedResult = await this.cacheManager.get(cacheKey);
+    if (cachedResult) {
+      return {
+        analytics: cachedResult,
+        source: "cache",
+      };
+    }
 
     const transactions = await this.transactionsService.findAll(user.id, {
       start_date: new Date(startDate),
@@ -29,8 +41,11 @@ export class AnalyticsService {
     const prompt = this.constructPrompt(transactions, budgets);
     const analyticsResult = await this.aiProvider.generateText(prompt);
 
+    await this.cacheManager.set(cacheKey, analyticsResult);
+
     return {
       analytics: analyticsResult,
+      source: "api",
     };
   }
 
