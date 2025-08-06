@@ -55,26 +55,39 @@ export class AnalyticsService {
         (t) =>
           `- ${t.date.toISOString().split("T")[0]}: ${t.type} of ${
             t.amount
-          } for ${t.category.name} (${t.note || "no note"}) on wallet ${t.wallet?.name}`,
+          } for ${t.category.name}[${t.category.id}] (${t.note || "no note"}) on wallet ${t.wallet?.name}`,
       )
       .join("\n");
 
     const budgetsSummary = budgets
-      .map((b) => `- Budget for ${b.category.name}: ${b.limit_amount}`)
+      .map(
+        (b) =>
+          `- Budget limit for ${b.category.name}[${b.category.id}]: ${b.limit_amount}`,
+      )
       .join("\n");
 
     return `
-      Here is my financial data for a period:
+      Here is my financial data for the selected period:
 
       Transactions:
       ${transactionsSummary}
 
-      Budgets:
+      Budgets (if available):
       ${budgetsSummary}
 
-      Based on this data period, please provide a friendly and insightful analysis of my spending habits. 
-      Include observations about my income vs. expenses, spending by category, and how I'm doing against my budgets, if the budget data is not available, do not give any summarize about budget.
-      Summarize as sugestive information with short explanation. make it max 100 character every line, separate by "|" character for every summarize.
+      Please analyze my spending habits in a friendly and insightful way.
+      Focus on:
+      - Income vs. expenses
+      - Spending by category
+      - Budget performance (only if budget data is provided)
+      - Higlight higest expense and income in total by category id that written in format "[uuid]" inside transaction summary
+
+      Summarize your analysis using short, helpful suggestions or observations.
+      Each line should:
+      - Be no longer than 100 characters
+      - Be separated by a "|" character
+
+      Do not include any budget-related insight if the budget data is missing.
     `;
   }
 }
