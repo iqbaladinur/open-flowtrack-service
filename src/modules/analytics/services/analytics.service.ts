@@ -21,7 +21,11 @@ export class AnalyticsService {
     generateAnalyticsDto: GenerateAnalyticsDto,
   ): Promise<any> {
     const { startDate, endDate } = generateAnalyticsDto;
-    const cacheKey = `analytics:${user.id}:${startDate}:${endDate}`;
+    const key = {
+      st: new Date(startDate).toDateString(),
+      en: new Date(endDate).toDateString(),
+    };
+    const cacheKey = `analytics:${user.id}:${key.st}:${key.en}:`;
 
     const cachedResult = await this.cacheManager.get(cacheKey);
     if (cachedResult) {
@@ -41,7 +45,7 @@ export class AnalyticsService {
     const prompt = this.constructPrompt(transactions, budgets);
     const analyticsResult = await this.aiProvider.generateText(prompt);
 
-    await this.cacheManager.set(cacheKey, analyticsResult);
+    await this.cacheManager.set(cacheKey, analyticsResult, 1000 * 60 * 60 * 24);
 
     return {
       analytics: analyticsResult,
