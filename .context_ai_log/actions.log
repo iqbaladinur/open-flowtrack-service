@@ -74,3 +74,19 @@ Created analytics module directories and files
 Finished implementing analytics module and fixed linting issues.
 Created seeds directory and transaction seeder file
 Finished creating transaction seeder.
+
+- Created src/modules/transactions/dto/create-transaction-by-text.dto.ts
+- Added a new POST endpoint to src/modules/transactions/controllers/transactions.controller.ts
+- Injected CategoriesService into TransactionsService in src/modules/transactions/services/transactions.service.ts
+- Implemented the createByText method in src/modules/transactions/services/transactions.service.ts
+- Updated TransactionsModule in src/modules/transactions/transactions.module.ts to include CategoriesModule
+
+---
+Action: Created src/infrastructure/ai/ai.module.ts
+---
+---
+Action: Modified src/modules/transactions/transactions.module.ts
+---
+---
+Action: Modified src/modules/transactions/services/transactions.service.ts
+---

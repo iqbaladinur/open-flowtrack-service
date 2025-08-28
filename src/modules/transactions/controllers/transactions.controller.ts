@@ -21,6 +21,7 @@ import {
   ApiResponse,
 } from "@nestjs/swagger";
 import { FindAllTransactionsDto } from "../dto/find-all-transactions.dto";
+import { CreateTransactionByTextDto } from "../dto/create-transaction-by-text.dto";
 
 @ApiTags("Transactions")
 @ApiBearerAuth()
@@ -28,6 +29,22 @@ import { FindAllTransactionsDto } from "../dto/find-all-transactions.dto";
 @Controller("transactions")
 export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
+
+  @Post("/bulk-expense")
+  @ApiOperation({ summary: "Create a new transaction using text" })
+  @ApiResponse({
+    status: 201,
+    description: "The transaction has been successfully created.",
+  })
+  createByText(
+    @Body() createTransactionByTextDto: CreateTransactionByTextDto,
+    @Request() req,
+  ) {
+    return this.transactionsService.createByText(
+      createTransactionByTextDto,
+      req.user.id,
+    );
+  }
 
   @Post()
   @ApiOperation({ summary: "Create a new transaction" })

@@ -12,13 +12,75 @@ import { Transaction } from "../entities/transaction.entity";
 import { CreateTransactionDto } from "../dto/create-transaction.dto";
 import { UpdateTransactionDto } from "../dto/update-transaction.dto";
 import { FindAllTransactionsDto } from "../dto/find-all-transactions.dto";
+import { CreateTransactionByTextDto } from "../dto/create-transaction-by-text.dto";
+import { CategoriesService } from "src/modules/categories/services/categories.service";
+import { CategoryType } from "src/modules/categories/entities/category.entity";
+import { AiProvider } from "src/infrastructure/ai/ai.provider";
 
 @Injectable()
 export class TransactionsService {
   constructor(
     @InjectRepository(Transaction)
     private transactionsRepository: Repository<Transaction>,
+    private categoriesService: CategoriesService,
+    private aiProvider: AiProvider,
   ) {}
+
+  async createByText(
+    createTransactionByTextDto: CreateTransactionByTextDto,
+    userId: string,
+  ): Promise<any> {
+    const categories = await this.categoriesService.findAll(
+      userId,
+      CategoryType.EXPENSE,
+    );
+
+    const categoryList = JSON.stringify(
+      categories.map((c) => ({ id: c.id, name: c.name })),
+    );
+
+    const ocrText = createTransactionByTextDto.content;
+
+    const prompt = `
+    Extract transactions from the OCR receipt text into JSON.
+    Rules:
+    - Output must be a valid JSON array only (no explanation).
+    - Each object format:
+      {
+        "amount": number,
+        "category_id": string,
+        "note": string
+      }
+    - Match category_id from provided categories.
+    - Parse date from receipt.
+    - If unsure about note, keep it empty.
+
+    OCR text:
+    """
+    ${ocrText}
+    """
+
+    Categories:
+    """
+    ${categoryList}
+    """
+    `;
+
+    const aiResult = await this.aiProvider.generateText(prompt);
+    const cleanedJson = aiResult
+      .replace(/```json\n/g, "")
+      .replace(/\n```/g, "");
+
+    try {
+      const parsedResult = JSON.parse(cleanedJson);
+      return parsedResult;
+    } catch (error) {
+      console.error("Failed to parse AI response:", cleanedJson);
+      throw new Error(
+        "Could not interpret the transaction from the provided text.",
+      );
+    }
+  }
 
   async create(
     createTransactionDto: CreateTransactionDto,
