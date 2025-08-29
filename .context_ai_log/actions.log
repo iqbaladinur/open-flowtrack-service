@@ -90,3 +90,4 @@ Action: Modified src/modules/transactions/transactions.module.ts
 ---
 Action: Modified src/modules/transactions/services/transactions.service.ts
 ---
+Updated Dockerfile to use pm2 for production.
