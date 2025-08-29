@@ -21,6 +21,10 @@ async function bootstrap() {
   // Security
   app.use(helmet());
   app.enableCors();
+  if (process.env.NODE_ENV === "production") {
+    const expressInstance = app.getHttpAdapter().getInstance();
+    expressInstance.set("trust proxy", 1);
+  }
   app.use(
     rateLimit({
       windowMs: 15 * 60 * 1000, // 15 minutes
