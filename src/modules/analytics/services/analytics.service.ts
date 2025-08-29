@@ -89,7 +89,8 @@ export class AnalyticsService {
       Summarize your analysis using short, helpful suggestions or observations.
       Each line should:
       - Use friendly words, do not show any of id format "[uuid]"
-      - Be no longer than 100 characters
+      - Be no longer than 130 characters
+      - Use some emoticons to laverage emotions
       - Be separated by a "|" character
 
       Do not include any budget-related insight if the budget data is missing.
