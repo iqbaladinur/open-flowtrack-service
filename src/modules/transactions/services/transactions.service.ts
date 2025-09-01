@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { 
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import {
   Between,
@@ -16,6 +20,7 @@ import { CreateTransactionByTextDto } from "../dto/create-transaction-by-text.dt
 import { CategoriesService } from "src/modules/categories/services/categories.service";
 import { CategoryType } from "src/modules/categories/entities/category.entity";
 import { AiProvider } from "src/infrastructure/ai/ai.provider";
+import { ConfigService } from "src/modules/config/services/config.service";
 
 @Injectable()
 export class TransactionsService {
@@ -24,12 +29,20 @@ export class TransactionsService {
     private transactionsRepository: Repository<Transaction>,
     private categoriesService: CategoriesService,
     private aiProvider: AiProvider,
+    private configService: ConfigService,
   ) {}
 
   async createByText(
     createTransactionByTextDto: CreateTransactionByTextDto,
     userId: string,
   ): Promise<any> {
+    const config = await this.configService.getCurrencyConfig(userId);
+    if (!config.gemini_api_key) {
+      throw new BadRequestException(
+        "AI features are not available. Please configure your Gemini API key in settings.",
+      );
+    }
+
     const categories = await this.categoriesService.findAll(
       userId,
       CategoryType.EXPENSE,

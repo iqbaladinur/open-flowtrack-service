@@ -5,17 +5,21 @@ import { AiProvider } from "./ai.provider";
 
 @Injectable()
 export class GeminiAiProvider extends AiProvider {
-  private generativeAi: GoogleGenerativeAI;
+  private globalApiKey: string;
 
   constructor(private configService: ConfigService) {
     super();
-    this.generativeAi = new GoogleGenerativeAI(
-      this.configService.get<string>("gemini.apiKey"),
-    );
+    this.globalApiKey = this.configService.get<string>("gemini.apiKey");
   }
 
-  async generateText(prompt: string): Promise<string> {
-    const model = this.generativeAi.getGenerativeModel({
+  async generateText(prompt: string, apiKey?: string): Promise<string> {
+    const key = apiKey || this.globalApiKey;
+    if (!key) {
+      throw new Error("Gemini API key not provided.");
+    }
+
+    const generativeAi = new GoogleGenerativeAI(key);
+    const model = generativeAi.getGenerativeModel({
       model: "gemini-1.5-flash-latest",
     });
     const result = await model.generateContent(prompt);

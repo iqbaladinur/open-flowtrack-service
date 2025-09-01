@@ -91,3 +91,4 @@ Action: Modified src/modules/transactions/transactions.module.ts
 Action: Modified src/modules/transactions/services/transactions.service.ts
 ---
 Updated Dockerfile to use pm2 for production.
+AI provider updated to use user-specific Gemini API keys. Analytics and Transactions services now use these keys with conditional logic.
