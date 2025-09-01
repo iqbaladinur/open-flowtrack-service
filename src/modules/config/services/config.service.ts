@@ -21,6 +21,7 @@ export class ConfigService {
         user_id: userId,
         currency: "IDR",
         fractions: 2,
+        gemini_api_key: null,
       });
       await this.configRepository.save(config);
     }
