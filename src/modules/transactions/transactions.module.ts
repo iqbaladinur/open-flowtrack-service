@@ -6,10 +6,11 @@ import { TransactionsController } from "./controllers/transactions.controller";
 import { CategoriesModule } from "../categories/categories.module";
 import { AiModule } from "src/infrastructure/ai/ai.module";
 import { ConfigModule } from "../config/config.module";
+import { Wallet } from "../wallets/entities/wallet.entity";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Transaction]),
+    TypeOrmModule.forFeature([Transaction, Wallet]),
     CategoriesModule,
     AiModule,
     ConfigModule,

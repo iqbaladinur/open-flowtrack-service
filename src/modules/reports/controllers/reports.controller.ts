@@ -35,11 +35,18 @@ export class ReportsController {
     type: String,
     description: "YYYY-MM-DD",
   })
+  @ApiQuery({
+    name: "includeHidden",
+    required: false,
+    type: Boolean,
+    description: "Include hidden wallets in the report",
+  })
   getSummary(@Request() req, @Query() query: ReportQueryDto) {
     return this.reportsService.getSummary(
       req.user.id,
       query.startDate,
       query.endDate,
+      query.includeHidden,
     );
   }
 
@@ -80,11 +87,18 @@ export class ReportsController {
     type: String,
     description: "YYYY-MM-DD",
   })
+  @ApiQuery({
+    name: "includeHidden",
+    required: false,
+    type: Boolean,
+    description: "Include hidden wallets in the report",
+  })
   getCategoryReport(@Request() req, @Query() query: ReportQueryDto) {
     return this.reportsService.getCategoryReport(
       req.user.id,
       query.startDate,
       query.endDate,
+      query.includeHidden,
     );
   }
 
@@ -116,11 +130,18 @@ export class ReportsController {
     type: String,
     description: "YYYY-MM-DD",
   })
+  @ApiQuery({
+    name: "includeHidden",
+    required: false,
+    type: Boolean,
+    description: "Include hidden wallets in the report",
+  })
   getWalletReport(@Request() req, @Query() query: ReportQueryDto) {
     return this.reportsService.getWalletReport(
       req.user.id,
       query.startDate,
       query.endDate,
+      query.includeHidden,
     );
   }
 }

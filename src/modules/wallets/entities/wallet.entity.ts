@@ -21,6 +21,9 @@ export class Wallet {
   @Column("decimal", { precision: 15, scale: 2 })
   initial_balance: number;
 
+  @Column({ default: false })
+  hidden: boolean;
+
   @Column()
   @Index()
   user_id: string;

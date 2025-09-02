@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsOptional, IsDateString } from "class-validator";
+import { IsOptional, IsDateString, IsBooleanString } from "class-validator";
 
 export class ReportQueryDto {
   @ApiProperty({
@@ -17,4 +17,13 @@ export class ReportQueryDto {
   @IsOptional()
   @IsDateString()
   endDate?: string;
+
+  @ApiProperty({
+    description: "Include hidden wallets in the report",
+    required: false,
+    type: Boolean,
+  })
+  @IsOptional()
+  @IsBooleanString()
+  includeHidden?: boolean;
 }
