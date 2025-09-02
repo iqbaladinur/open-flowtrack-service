@@ -21,12 +21,15 @@ import { CategoriesService } from "src/modules/categories/services/categories.se
 import { CategoryType } from "src/modules/categories/entities/category.entity";
 import { AiProvider } from "src/infrastructure/ai/ai.provider";
 import { ConfigService } from "src/modules/config/services/config.service";
+import { Wallet } from "src/modules/wallets/entities/wallet.entity";
 
 @Injectable()
 export class TransactionsService {
   constructor(
     @InjectRepository(Transaction)
     private transactionsRepository: Repository<Transaction>,
+    @InjectRepository(Wallet)
+    private walletsRepository: Repository<Wallet>,
     private categoriesService: CategoriesService,
     private aiProvider: AiProvider,
     private configService: ConfigService,
@@ -99,6 +102,14 @@ export class TransactionsService {
     createTransactionDto: CreateTransactionDto,
     userId: string,
   ): Promise<Transaction> {
+    const wallet = await this.walletsRepository.findOne({
+      where: { id: createTransactionDto.wallet_id, user_id: userId },
+    });
+
+    if (!wallet) {
+      throw new NotFoundException("Wallet not found");
+    }
+
     const transaction = this.transactionsRepository.create({
       ...createTransactionDto,
       user_id: userId,
@@ -141,6 +152,7 @@ export class TransactionsService {
 
     const order: FindOptionsOrder<Transaction> = {
       date: query.sortBy || "DESC",
+      created_at: query.sortBy || "DESC",
     };
 
     return this.transactionsRepository.find({

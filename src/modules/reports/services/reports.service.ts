@@ -19,7 +19,12 @@ export class ReportsService {
     private walletsRepository: Repository<Wallet>,
   ) {}
 
-  async getSummary(userId: string, startDate?: string, endDate?: string) {
+  async getSummary(
+    userId: string,
+    startDate?: string,
+    endDate?: string,
+    includeHidden?: boolean,
+  ) {
     const qb = this.transactionsRepository.createQueryBuilder("transaction");
 
     qb.select(
@@ -36,6 +41,11 @@ export class ReportsService {
         income: CategoryType.INCOME,
         expense: CategoryType.EXPENSE,
       });
+
+    const shouldIncludeHidden = String(includeHidden) === "true";
+    if (!shouldIncludeHidden) {
+      qb.andWhere("wallet.hidden = :hidden", { hidden: false });
+    }
 
     if (startDate) {
       qb.andWhere("transaction.date >= :startDate", { startDate });
@@ -62,6 +72,7 @@ export class ReportsService {
     userId: string,
     startDate?: string,
     endDate?: string,
+    includeHidden?: boolean,
   ) {
     const qb = this.transactionsRepository
       .createQueryBuilder("transaction")
@@ -71,7 +82,13 @@ export class ReportsService {
       .addSelect("SUM(transaction.amount)", "total")
       .addSelect("transaction.type", "type")
       .innerJoin("transaction.category", "category")
+      .innerJoin("transaction.wallet", "wallet")
       .where("transaction.user_id = :userId", { userId });
+
+    const shouldIncludeHidden = String(includeHidden) === "true";
+    if (!shouldIncludeHidden) {
+      qb.andWhere("wallet.hidden = :hidden", { hidden: false });
+    }
 
     if (startDate) {
       qb.andWhere("transaction.date >= :startDate", { startDate });
@@ -107,9 +124,18 @@ export class ReportsService {
     return reports;
   }
 
-  async getWalletReport(userId: string, startDate?: string, endDate?: string) {
+  async getWalletReport(
+    userId: string,
+    startDate?: string,
+    endDate?: string,
+    includeHidden?: boolean,
+  ) {
+    const shouldIncludeHidden = String(includeHidden) === "true";
     const wallets = await this.walletsRepository.find({
-      where: { user_id: userId },
+      where: {
+        user_id: userId,
+        ...(shouldIncludeHidden ? {} : { hidden: false }),
+      },
     });
 
     const reports = [];
