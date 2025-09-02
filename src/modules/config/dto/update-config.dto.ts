@@ -12,4 +12,9 @@ export class UpdateConfigDto {
   @Min(0)
   @IsOptional()
   fractions?: number;
+
+  @ApiProperty({ example: "ysgdjsyhgdjshdgajs", required: false })
+  @IsString()
+  @IsOptional()
+  gemini_api_key?: string;
 }

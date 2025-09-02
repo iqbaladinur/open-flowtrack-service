@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, BadRequestException } from "@nestjs/common";
 import { TransactionsService } from "../../transactions/services/transactions.service";
 import { BudgetsService } from "../../budgets/services/budgets.service";
 import { AiProvider } from "../../../infrastructure/ai/ai.provider";
@@ -6,6 +6,7 @@ import { GenerateAnalyticsDto } from "../dto/generate-analytics.dto";
 import { User } from "src/modules/users/entities/user.entity";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { Cache } from "cache-manager";
+import { ConfigService } from "src/modules/config/services/config.service";
 
 @Injectable()
 export class AnalyticsService {
@@ -14,12 +15,20 @@ export class AnalyticsService {
     private readonly budgetsService: BudgetsService,
     private readonly aiProvider: AiProvider,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private readonly configService: ConfigService,
   ) {}
 
   async generateAnalytics(
     user: User,
     generateAnalyticsDto: GenerateAnalyticsDto,
   ): Promise<any> {
+    const config = await this.configService.getCurrencyConfig(user.id);
+    if (!config.gemini_api_key) {
+      throw new BadRequestException(
+        "AI features are not available. Please configure your Gemini API key in settings.",
+      );
+    }
+
     const { startDate, endDate } = generateAnalyticsDto;
     const key = {
       st: new Date(startDate).toDateString(),
@@ -43,7 +52,10 @@ export class AnalyticsService {
     const budgets = await this.budgetsService.findAll(user.id, {});
 
     const prompt = this.constructPrompt(transactions, budgets);
-    const analyticsResult = await this.aiProvider.generateText(prompt);
+    const analyticsResult = await this.aiProvider.generateText(
+      prompt,
+      config.gemini_api_key,
+    );
 
     await this.cacheManager.set(cacheKey, analyticsResult, 1000 * 60 * 60 * 24);
 

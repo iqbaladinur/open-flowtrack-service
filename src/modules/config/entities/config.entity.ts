@@ -19,6 +19,9 @@ export class Config {
   @Column({ default: 2 })
   fractions: number;
 
+  @Column({ nullable: true })
+  gemini_api_key: string;
+
   @Column()
   @Index({ unique: true })
   user_id: string;
