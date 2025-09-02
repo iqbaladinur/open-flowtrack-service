@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, BadRequestException } from "@nestjs/common";
 import { TransactionsService } from "../../transactions/services/transactions.service";
 import { BudgetsService } from "../../budgets/services/budgets.service";
 import { AiProvider } from "../../../infrastructure/ai/ai.provider";
@@ -24,11 +24,9 @@ export class AnalyticsService {
   ): Promise<any> {
     const config = await this.configService.getCurrencyConfig(user.id);
     if (!config.gemini_api_key) {
-      return {
-        analytics:
-          "AI features are not available. Please configure your Gemini API key in settings.",
-        source: "api",
-      };
+      throw new BadRequestException(
+        "AI features are not available. Please configure your Gemini API key in settings.",
+      );
     }
 
     const { startDate, endDate } = generateAnalyticsDto;
