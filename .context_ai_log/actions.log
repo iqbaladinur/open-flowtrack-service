@@ -95,3 +95,15 @@ AI provider updated to use user-specific Gemini API keys. Analytics and Transact
               total        used        free      shared  buff/cache   available
 Mem:          7.8Gi       5.8Gi       990Mi        16Mi       1.0Gi       1.7Gi
 Swap:         2.0Gi       272Mi       1.7Gi
+- Modify wallet entity
+
+- Modify create-wallet DTO
+
+- Modify update-wallet DTO
+
+- Modify wallets service
+
+- End modification
+
+- Refactor wallets service with transactions
+

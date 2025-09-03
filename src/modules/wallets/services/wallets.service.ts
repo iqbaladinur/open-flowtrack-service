@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Repository, Not } from "typeorm";
 import { Wallet } from "../entities/wallet.entity";
 import { CreateWalletDto } from "../dto/create-wallet.dto";
 import { UpdateWalletDto } from "../dto/update-wallet.dto";
@@ -20,11 +20,22 @@ export class WalletsService {
     createWalletDto: CreateWalletDto,
     userId: string,
   ): Promise<Wallet> {
-    const wallet = this.walletsRepository.create({
-      ...createWalletDto,
-      user_id: userId,
-    });
-    return this.walletsRepository.save(wallet);
+    return this.walletsRepository.manager.transaction(
+      async (transactionalEntityManager) => {
+        if (createWalletDto.is_main_wallet) {
+          await transactionalEntityManager.update(
+            Wallet,
+            { user_id: userId },
+            { is_main_wallet: false },
+          );
+        }
+        const wallet = transactionalEntityManager.create(Wallet, {
+          ...createWalletDto,
+          user_id: userId,
+        });
+        return transactionalEntityManager.save(wallet);
+      },
+    );
   }
 
   async findAll(
@@ -160,14 +171,25 @@ export class WalletsService {
     updateWalletDto: UpdateWalletDto,
     userId: string,
   ): Promise<Wallet> {
-    const wallet = await this.walletsRepository.findOne({
-      where: { id, user_id: userId },
-    });
-    if (!wallet) {
-      throw new NotFoundException(`Wallet with ID "${id}" not found`);
-    }
-    Object.assign(wallet, updateWalletDto);
-    return this.walletsRepository.save(wallet);
+    return this.walletsRepository.manager.transaction(
+      async (transactionalEntityManager) => {
+        if (updateWalletDto.is_main_wallet) {
+          await transactionalEntityManager.update(
+            Wallet,
+            { user_id: userId, id: Not(id) },
+            { is_main_wallet: false },
+          );
+        }
+        const wallet = await transactionalEntityManager.findOne(Wallet, {
+          where: { id, user_id: userId },
+        });
+        if (!wallet) {
+          throw new NotFoundException(`Wallet with ID "${id}" not found`);
+        }
+        Object.assign(wallet, updateWalletDto);
+        return transactionalEntityManager.save(wallet);
+      },
+    );
   }
 
   async remove(id: string, userId: string): Promise<void> {

@@ -11,6 +11,10 @@ import {
 import { User } from "../../users/entities/user.entity";
 
 @Entity("wallets")
+@Index("user_main_wallet_unique", ["user_id"], {
+  where: `"is_main_wallet" = true`,
+  unique: true,
+})
 export class Wallet {
   @PrimaryGeneratedColumn("uuid")
   id: string;
@@ -23,6 +27,9 @@ export class Wallet {
 
   @Column({ default: false })
   hidden: boolean;
+
+  @Column({ default: false })
+  is_main_wallet: boolean;
 
   @Column()
   @Index()
