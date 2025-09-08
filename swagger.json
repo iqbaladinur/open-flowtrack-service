@@ -251,6 +251,7 @@
                     "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
                     "currency": "IDR",
                     "fractions": 2,
+                    "gemini_api_key": "yourapikey",
                     "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef"
                   }
                 }
@@ -291,6 +292,7 @@
                     "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
                     "currency": "USD",
                     "fractions": 2,
+                    "gemini_api_key": "yourapikey",
                     "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef"
                   }
                 }
@@ -416,6 +418,24 @@
             "required": true,
             "in": "path",
             "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "end_date",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "date-time",
               "type": "string"
             }
           }
@@ -623,6 +643,64 @@
         ]
       }
     },
+    "/categories/bulk": {
+      "post": {
+        "operationId": "CategoriesController_createBulk",
+        "summary": "Create multiple categories in bulk",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkCreateCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The categories have been successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": [
+                    {
+                      "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "name": "Salary",
+                      "type": "income",
+                      "icon": "briefcase-outline",
+                      "color": "#26de81",
+                      "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "created_at": "2025-07-28T00:00:00.000Z",
+                      "updated_at": "2025-07-28T00:00:00.000Z"
+                    },
+                    {
+                      "id": "b2c3d4e5-f6g7-8901-2345-67890abcdef1",
+                      "name": "Groceries",
+                      "type": "expense",
+                      "icon": "cart-outline",
+                      "color": "#ff6b6b",
+                      "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "created_at": "2025-07-28T00:00:01.000Z",
+                      "updated_at": "2025-07-28T00:00:01.000Z"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Categories"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
     "/categories/{id}": {
       "get": {
         "operationId": "CategoriesController_findOne",
@@ -740,6 +818,36 @@
         },
         "tags": [
           "Categories"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/transactions/bulk-expense": {
+      "post": {
+        "operationId": "TransactionsController_createByText",
+        "summary": "Create a new transaction using text",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTransactionByTextDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The transaction has been successfully created."
+          }
+        },
+        "tags": [
+          "Transactions"
         ],
         "security": [
           {
@@ -1280,6 +1388,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "includeHidden",
+            "required": false,
+            "in": "query",
+            "description": "Include hidden wallets in the report",
+            "schema": {
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
@@ -1328,6 +1445,15 @@
             "description": "YYYY-MM-DD",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "includeHidden",
+            "required": false,
+            "in": "query",
+            "description": "Include hidden wallets in the report",
+            "schema": {
+              "type": "boolean"
             }
           }
         ],
@@ -1390,6 +1516,15 @@
             "description": "YYYY-MM-DD",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "includeHidden",
+            "required": false,
+            "in": "query",
+            "description": "Include hidden wallets in the report",
+            "schema": {
+              "type": "boolean"
             }
           }
         ],
@@ -1498,6 +1633,36 @@
           }
         ]
       }
+    },
+    "/analytics/generate": {
+      "post": {
+        "operationId": "AnalyticsController_generateAnalytics",
+        "summary": "Generate financial analytics using AI",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateAnalyticsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The analytics has been successfully generated."
+          }
+        },
+        "tags": [
+          "Analytics"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
     }
   },
   "info": {
@@ -1589,6 +1754,10 @@
           "fractions": {
             "type": "number",
             "example": 2
+          },
+          "gemini_api_key": {
+            "type": "string",
+            "example": "ysgdjsyhgdjshdgajs"
           }
         }
       },
@@ -1602,6 +1771,14 @@
           "initial_balance": {
             "type": "number",
             "example": 1000
+          },
+          "hidden": {
+            "type": "boolean",
+            "default": false
+          },
+          "is_main_wallet": {
+            "type": "boolean",
+            "default": false
           }
         },
         "required": [
@@ -1619,6 +1796,12 @@
           "initial_balance": {
             "type": "number",
             "example": 1500
+          },
+          "hidden": {
+            "type": "boolean"
+          },
+          "is_main_wallet": {
+            "type": "boolean"
           }
         }
       },
@@ -1653,6 +1836,20 @@
           "color"
         ]
       },
+      "BulkCreateCategoryDto": {
+        "type": "object",
+        "properties": {
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateCategoryDto"
+            }
+          }
+        },
+        "required": [
+          "categories"
+        ]
+      },
       "UpdateCategoryDto": {
         "type": "object",
         "properties": {
@@ -1677,6 +1874,18 @@
             "example": "#45aaf2"
           }
         }
+      },
+      "CreateTransactionByTextDto": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "example": "i just eat burger for 10 dollar"
+          }
+        },
+        "required": [
+          "content"
+        ]
       },
       "CreateTransactionDto": {
         "type": "object",
@@ -1802,6 +2011,23 @@
             "example": 600
           }
         }
+      },
+      "GenerateAnalyticsDto": {
+        "type": "object",
+        "properties": {
+          "startDate": {
+            "type": "string",
+            "description": "The start date for the analytics period (YYYY-MM-DD)"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "The end date for the analytics period (YYYY-MM-DD)"
+          }
+        },
+        "required": [
+          "startDate",
+          "endDate"
+        ]
       },
       "User": {
         "type": "object",

@@ -30,7 +30,7 @@ Saya ingin kamu membuat backend lengkap untuk aplikasi pencatat keuangan pribadi
 ### 2. 💼 Wallet Management
 - CRUD dompet pengguna (cash, bank, e-wallet)
 - Tiap wallet punya:
-  - `id`, `name`, `currency`, `initialBalance`, `userId`, `createdAt`, `updatedAt`
+  - `id`, `name`, `initialBalance`, `hidden`, `is_main_wallet`, `userId`, `createdAt`, `updatedAt`
 - Support multi-wallet per user
 - Support transfer antar-wallet
 
@@ -40,6 +40,7 @@ Saya ingin kamu membuat backend lengkap untuk aplikasi pencatat keuangan pribadi
 - CRUD kategori pengeluaran/pemasukan
 - Default category saat user baru dibuat
 - Field: `id`, `name`, `type` (income/expense), `icon`, `color`, `userId`, `createdAt`
+- Support bulk-create kategori
 
 ---
 
@@ -49,6 +50,7 @@ Saya ingin kamu membuat backend lengkap untuk aplikasi pencatat keuangan pribadi
   - daily, weekly, monthly, yearly
 - Field:
   - `id`, `type`, `amount`, `walletId`, `categoryId`, `date`, `note`, `isRecurring`, `recurringPattern`, `userId`
+- Support create transaction by text (AI-powered)
 
 ---
 
@@ -66,6 +68,12 @@ Saya ingin kamu membuat backend lengkap untuk aplikasi pencatat keuangan pribadi
   - Pie chart data (total per kategori)
   - Cashflow per wallet
   - Filter waktu: daily, weekly, monthly, custom
+
+---
+
+### 6.1. 📈 Analytics
+- Endpoint untuk:
+  - Generate analytics from transactions data (AI-powered)
 
 ---
 

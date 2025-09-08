@@ -9,7 +9,12 @@ import { Transaction } from "./src/modules/transactions/entities/transaction.ent
 import { Wallet } from "./src/modules/wallets/entities/wallet.entity";
 
 async function generateSwaggerSpec() {
-  const app = await NestFactory.create(AppModule, { logger: false });
+  console.log("=== Start Swagger Generation ===");
+
+  const app = await NestFactory.create(AppModule, {
+    logger: ["log", "error", "warn", "debug"],
+  });
+  console.log("NestJS AppModule initialized");
 
   const config = new DocumentBuilder()
     .setTitle("Wallport API")
@@ -17,14 +22,24 @@ async function generateSwaggerSpec() {
     .setVersion("1.0")
     .addBearerAuth()
     .build();
+  console.log("Swagger config built");
+
   const document = SwaggerModule.createDocument(app, config, {
     extraModels: [User, Budget, Category, Transaction, Wallet],
   });
+  console.log("Swagger document created");
 
   fs.writeFileSync("./swagger.json", JSON.stringify(document, null, 2));
+  console.log("Swagger file written to swagger.json");
+
   await app.close();
+  console.log("NestJS application closed");
 }
 
-generateSwaggerSpec().then(() => {
-  console.log("Swagger spec generated.");
-});
+generateSwaggerSpec()
+  .then(() => {
+    console.log("Swagger spec generated.");
+  })
+  .catch((e: any) => {
+    console.log(e);
+  });

@@ -14,6 +14,7 @@
     "start:prod": "pm2-runtime start ecosystem.config.js --env production",
     "lint": "eslint 'src/**/*.ts' --fix",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --dataSource data-source.ts",
+    "generate:swagger": "ts-node -r tsconfig-paths/register generate-spec.ts",
     "migrate": "npm run typeorm -- migration:run",
     "migrate:revert": "npm run typeorm -- migration:revert",
     "migrate:generate": "npm run typeorm -- migration:generate src/migrations/new-migration",
