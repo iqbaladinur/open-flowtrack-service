@@ -67,12 +67,16 @@ export class AnalyticsService {
 
   private constructPrompt(transactions: any[], budgets: any[]): string {
     const transactionsSummary = transactions
-      .map(
-        (t) =>
-          `- ${t.date.toISOString().split("T")[0]}: ${t.type} of ${
+      .map((t) => {
+        if (t.type === "transfer") {
+          return `- ${t.date.toISOString().split("T")[0]}: Transfer of ${
             t.amount
-          } for ${t.category.name}[${t.category.id}] (${t.note || "no note"}) on wallet ${t.wallet?.name}`,
-      )
+          } from ${t.wallet?.name} to ${t.destinationWallet?.name}`;  
+        }
+        return `- ${t.date.toISOString().split("T")[0]}: ${t.type} of ${
+            t.amount
+          } for ${t.category.name}[${t.category.id}] (${t.note || "no note"}) on wallet ${t.wallet?.name}`
+      })
       .join("\n");
 
     const budgetsSummary = budgets
@@ -93,7 +97,7 @@ export class AnalyticsService {
 
       Please analyze my spending habits in a friendly and insightful way.
       Focus on:
-      - Income vs. expenses
+      - Income vs. expenses ratio
       - Spending by category
       - Budget performance (only if budget data is provided)
       - Higlight higest expense and income in total by category id that written in format "[uuid]" inside transaction summary
@@ -104,6 +108,8 @@ export class AnalyticsService {
       - Be no longer than 130 characters
       - Use some emoticons to laverage emotions
       - Be separated by a "|" character
+      - Try to find interesting patterns or anomalies
+      - Make it max 8 suggestions
 
       Do not include any budget-related insight if the budget data is missing.
     `;
