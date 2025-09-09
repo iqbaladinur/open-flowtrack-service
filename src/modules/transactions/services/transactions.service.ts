@@ -18,7 +18,7 @@ import { UpdateTransactionDto } from "../dto/update-transaction.dto";
 import { FindAllTransactionsDto } from "../dto/find-all-transactions.dto";
 import { CreateTransactionByTextDto } from "../dto/create-transaction-by-text.dto";
 import { CategoriesService } from "src/modules/categories/services/categories.service";
-import { CategoryType } from "src/modules/categories/entities/category.entity";
+import { Category, CategoryType } from "src/modules/categories/entities/category.entity";
 import { AiProvider } from "src/infrastructure/ai/ai.provider";
 import { ConfigService } from "src/modules/config/services/config.service";
 import { Wallet } from "src/modules/wallets/entities/wallet.entity";
@@ -33,6 +33,8 @@ export class TransactionsService {
     private categoriesService: CategoriesService,
     private aiProvider: AiProvider,
     private configService: ConfigService,
+    @InjectRepository(Category)
+    private categoryRepository: Repository<Category>,
   ) {}
 
   async createByText(
@@ -114,7 +116,7 @@ export class TransactionsService {
         );
       }
       if (
-        createTransactionDto.wallet_id === 
+        createTransactionDto.wallet_id ===
         createTransactionDto.destination_wallet_id
       ) {
         throw new BadRequestException(
@@ -223,7 +225,72 @@ export class TransactionsService {
     userId: string,
   ): Promise<Transaction> {
     const transaction = await this.findOne(id, userId);
+
+    // Apply incoming changes to the entity
     Object.assign(transaction, updateTransactionDto);
+
+    // Re-validate and adjust based on transaction type
+    if (transaction.type === CategoryType.TRANSFER) {
+      if (!transaction.destination_wallet_id) {
+        throw new BadRequestException(
+          "Destination wallet is required for transfer transactions.",
+        );
+      }
+      if (transaction.wallet_id === transaction.destination_wallet_id) {
+        throw new BadRequestException(
+          "Source and destination wallets cannot be the same.",
+        );
+      }
+      // Transfers must not have a category
+      transaction.category = null;
+      transaction.category_id = null;
+    } else {
+      // INCOME or EXPENSE
+      if (!transaction.category_id) {
+        throw new BadRequestException(
+          "Category is required for income/expense transactions.",
+        );
+      }
+      // Non-transfers must not have a destination wallet
+      transaction.destinationWallet = null;
+      transaction.destination_wallet_id = null;
+    }
+
+    // If wallet ID was part of the update, fetch and validate it
+    if (updateTransactionDto.wallet_id) {
+      const wallet = await this.walletsRepository.findOne({
+        where: { id: updateTransactionDto.wallet_id, user_id: userId },
+      });
+      if (!wallet) {
+        throw new NotFoundException("Wallet not found");
+      }
+      transaction.wallet = wallet;
+    }
+
+    // If destination wallet ID was part of the update, fetch and validate it
+    if (updateTransactionDto.destination_wallet_id) {
+      const destinationWallet = await this.walletsRepository.findOne({
+        where: {
+          id: updateTransactionDto.destination_wallet_id,
+          user_id: userId,
+        },
+      });
+      if (!destinationWallet) {
+        throw new NotFoundException("Destination wallet not found");
+      }
+      transaction.destinationWallet = destinationWallet;
+    }
+
+    if (updateTransactionDto.category_id) {
+      const category = await this.categoryRepository.findOne({
+        where: { id: updateTransactionDto.category_id, user_id: userId },
+      });
+      if (!category) {
+        throw new NotFoundException("Category not found");
+      }
+      transaction.category = category;
+    }
+
     return this.transactionsRepository.save(transaction);
   }
 

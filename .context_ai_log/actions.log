@@ -143,3 +143,4 @@ Swap:         2.0Gi       272Mi       1.7Gi
 
 - Updated 'TransactionsService' 'findAll' to include transactions where the wallet is either the source or the destination when filtering by wallet ID.
 
+Fixing bug in transaction update service

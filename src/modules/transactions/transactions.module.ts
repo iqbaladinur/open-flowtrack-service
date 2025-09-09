@@ -7,10 +7,11 @@ import { CategoriesModule } from "../categories/categories.module";
 import { AiModule } from "src/infrastructure/ai/ai.module";
 import { ConfigModule } from "../config/config.module";
 import { Wallet } from "../wallets/entities/wallet.entity";
+import { Category } from "../categories/entities/category.entity";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Transaction, Wallet]),
+    TypeOrmModule.forFeature([Transaction, Wallet, Category]),
     CategoriesModule,
     AiModule,
     ConfigModule,
