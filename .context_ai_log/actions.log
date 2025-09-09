@@ -107,3 +107,39 @@ Swap:         2.0Gi       272Mi       1.7Gi
 
 - Refactor wallets service with transactions
 
+
+- Added 'TRANSFER' to CategoryType enum in 'src/modules/categories/entities/category.entity.ts'
+- Modified 'Transaction' entity in 'src/modules/transactions/entities/transaction.entity.ts' to support transfers:
+    - Made 'category_id' nullable
+    - Added 'destination_wallet_id' and relation
+- Updated 'CreateTransactionDto' in 'src/modules/transactions/dto/create-transaction.dto.ts':
+    - Made 'category_id' optional
+    - Added 'destination_wallet_id'
+- Updated 'UpdateTransactionDto' in 'src/modules/transactions/dto/update-transaction.dto.ts':
+    - Added 'destination_wallet_id'
+- Updated 'FindAllTransactionsDto' in 'src/modules/transactions/dto/find-all-transactions.dto.ts' to allow filtering by 'TRANSFER' type
+- Updated 'TransactionsService' in 'src/modules/transactions/services/transactions.service.ts' to handle transfer creation and validation
+- Updated 'ReportsService' in 'src/modules/reports/services/reports.service.ts' to correctly calculate wallet balances with transfers in 'getWalletReport'
+
+
+- Regenerated 'swagger.json' to include the new 'TRANSFER' transaction type and related schema changes.
+- Updated 'API-SPECS.md' based on the new 'swagger.json'.
+
+
+- Updated 'TransactionsService' to include 'destinationWallet' in 'findAll' and 'findOne' responses.
+
+
+- Updated 'WalletsService' to correctly calculate 'current_balance' in 'findAll' and 'findOne' by including transfer transactions.
+
+
+- Updated 'ReportsService' 'getSummary' to include 'totalTransfer' in the summary calculation.
+
+
+- Updated 'BackupService' to correctly handle 'TRANSFER' transactions during data restoration.
+
+
+- Fixed a missing import for 'CategoryType' in 'BackupService' to resolve a TypeScript error.
+
+
+- Updated 'TransactionsService' 'findAll' to include transactions where the wallet is either the source or the destination when filtering by wallet ID.
+

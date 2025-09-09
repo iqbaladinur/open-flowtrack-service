@@ -38,7 +38,7 @@ export class FindAllTransactionsDto {
     description: "Filter by transaction type.",
   })
   @IsOptional()
-  @IsIn([CategoryType.INCOME, CategoryType.EXPENSE])
+  @IsIn([CategoryType.INCOME, CategoryType.EXPENSE, CategoryType.TRANSFER])
   type?: CategoryType;
 
   @ApiProperty({

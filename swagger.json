@@ -604,7 +604,8 @@
             "schema": {
               "enum": [
                 "income",
-                "expense"
+                "expense",
+                "transfer"
               ],
               "type": "string"
             }
@@ -955,7 +956,8 @@
             "schema": {
               "enum": [
                 "income",
-                "expense"
+                "expense",
+                "transfer"
               ],
               "type": "string"
             }
@@ -1816,7 +1818,8 @@
             "type": "string",
             "enum": [
               "income",
-              "expense"
+              "expense",
+              "transfer"
             ],
             "example": "income"
           },
@@ -1861,7 +1864,8 @@
             "type": "string",
             "enum": [
               "income",
-              "expense"
+              "expense",
+              "transfer"
             ],
             "example": "income"
           },
@@ -1894,7 +1898,8 @@
             "type": "string",
             "enum": [
               "income",
-              "expense"
+              "expense",
+              "transfer"
             ],
             "example": "expense"
           },
@@ -1906,6 +1911,9 @@
             "type": "string"
           },
           "category_id": {
+            "type": "string"
+          },
+          "destination_wallet_id": {
             "type": "string"
           },
           "date": {
@@ -1933,7 +1941,6 @@
           "type",
           "amount",
           "wallet_id",
-          "category_id",
           "date"
         ]
       },
@@ -1944,7 +1951,8 @@
             "type": "string",
             "enum": [
               "income",
-              "expense"
+              "expense",
+              "transfer"
             ]
           },
           "amount": {
@@ -1954,6 +1962,9 @@
             "type": "string"
           },
           "category_id": {
+            "type": "string"
+          },
+          "destination_wallet_id": {
             "type": "string"
           },
           "date": {

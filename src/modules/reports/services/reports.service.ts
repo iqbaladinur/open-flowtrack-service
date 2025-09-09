@@ -35,11 +35,16 @@ export class ReportsService {
         "SUM(CASE WHEN transaction.type = :expense THEN transaction.amount ELSE 0 END)",
         "totalExpense",
       )
+      .addSelect(
+        "SUM(CASE WHEN transaction.type = :transfer THEN transaction.amount ELSE 0 END)",
+        "totalTransfer",
+      )
       .innerJoin("transaction.wallet", "wallet")
       .where("transaction.user_id = :userId", {
         userId,
         income: CategoryType.INCOME,
         expense: CategoryType.EXPENSE,
+        transfer: CategoryType.TRANSFER,
       });
 
     const shouldIncludeHidden = String(includeHidden) === "true";
@@ -59,11 +64,13 @@ export class ReportsService {
 
     const totalIncome = parseFloat(result.totalIncome) || 0;
     const totalExpense = parseFloat(result.totalExpense) || 0;
+    const totalTransfer = parseFloat(result.totalTransfer) || 0;
     const net = totalIncome - totalExpense;
 
     return {
       totalIncome,
       totalExpense,
+      totalTransfer,
       net,
     };
   }
@@ -144,12 +151,26 @@ export class ReportsService {
       const balanceChangeQb = this.transactionsRepository
         .createQueryBuilder("transaction")
         .select(
-          "SUM(CASE WHEN transaction.type = :income THEN transaction.amount ELSE -transaction.amount END)",
+          `SUM(
+          CASE
+            WHEN transaction.wallet_id = :walletId AND transaction.type = :income THEN transaction.amount
+            WHEN transaction.wallet_id = :walletId AND transaction.type = :expense THEN -transaction.amount
+            WHEN transaction.wallet_id = :walletId AND transaction.type = :transfer THEN -transaction.amount
+            WHEN transaction.destination_wallet_id = :walletId AND transaction.type = :transfer THEN transaction.amount
+            ELSE 0
+          END
+        )`,
           "change",
         )
-        .where("transaction.wallet_id = :walletId", { walletId: wallet.id })
+        .where("transaction.user_id = :userId", { userId })
+        .andWhere(
+          "(transaction.wallet_id = :walletId OR transaction.destination_wallet_id = :walletId)",
+        )
         .setParameters({
+          walletId: wallet.id,
           income: CategoryType.INCOME,
+          expense: CategoryType.EXPENSE,
+          transfer: CategoryType.TRANSFER,
         });
 
       if (startDate) {
@@ -167,17 +188,34 @@ export class ReportsService {
       const periodQb = this.transactionsRepository
         .createQueryBuilder("transaction")
         .select(
-          "SUM(CASE WHEN transaction.type = :income THEN transaction.amount ELSE 0 END)",
+          `SUM(
+          CASE
+            WHEN transaction.type = :income AND transaction.wallet_id = :walletId THEN transaction.amount
+            WHEN transaction.type = :transfer AND transaction.destination_wallet_id = :walletId THEN transaction.amount
+            ELSE 0
+          END
+        )`,
           "totalIncome",
         )
         .addSelect(
-          "SUM(CASE WHEN transaction.type = :expense THEN transaction.amount ELSE 0 END)",
+          `SUM(
+          CASE
+            WHEN transaction.type = :expense AND transaction.wallet_id = :walletId THEN transaction.amount
+            WHEN transaction.type = :transfer AND transaction.wallet_id = :walletId THEN transaction.amount
+            ELSE 0
+          END
+        )`,
           "totalExpense",
         )
-        .where("transaction.wallet_id = :walletId", { walletId: wallet.id })
+        .where("transaction.user_id = :userId", { userId })
+        .andWhere(
+          "(transaction.wallet_id = :walletId OR transaction.destination_wallet_id = :walletId)",
+        )
         .setParameters({
+          walletId: wallet.id,
           income: CategoryType.INCOME,
           expense: CategoryType.EXPENSE,
+          transfer: CategoryType.TRANSFER,
         });
 
       if (startDate) {

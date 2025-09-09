@@ -102,6 +102,48 @@ export class TransactionsService {
     createTransactionDto: CreateTransactionDto,
     userId: string,
   ): Promise<Transaction> {
+    if (createTransactionDto.type === CategoryType.TRANSFER) {
+      if (!createTransactionDto.destination_wallet_id) {
+        throw new BadRequestException(
+          "Destination wallet is required for transfer transactions.",
+        );
+      }
+      if (createTransactionDto.category_id) {
+        throw new BadRequestException(
+          "Category should not be specified for transfer transactions.",
+        );
+      }
+      if (
+        createTransactionDto.wallet_id === 
+        createTransactionDto.destination_wallet_id
+      ) {
+        throw new BadRequestException(
+          "Source and destination wallets cannot be the same.",
+        );
+      }
+      const destinationWallet = await this.walletsRepository.findOne({
+        where: {
+          id: createTransactionDto.destination_wallet_id,
+          user_id: userId,
+        },
+      });
+      if (!destinationWallet) {
+        throw new NotFoundException("Destination wallet not found");
+      }
+      createTransactionDto.category_id = null;
+    } else {
+      if (!createTransactionDto.category_id) {
+        throw new BadRequestException(
+          "Category is required for income/expense transactions.",
+        );
+      }
+      if (createTransactionDto.destination_wallet_id) {
+        throw new BadRequestException(
+          "Destination wallet should not be specified for income/expense transactions.",
+        );
+      }
+    }
+
     const wallet = await this.walletsRepository.findOne({
       where: { id: createTransactionDto.wallet_id, user_id: userId },
     });
@@ -121,33 +163,35 @@ export class TransactionsService {
     userId: string,
     query?: FindAllTransactionsDto,
   ): Promise<Transaction[]> {
-    const where: FindOptionsWhere<Transaction> = { user_id: userId };
+    const baseWhere: FindOptionsWhere<Transaction> = { user_id: userId };
 
     const start = query.start_date ? new Date(query.start_date) : undefined;
-    // if (start) {
-    //   start.setHours(0, 0, 0, 0);
-    // }
-
     const end = query.end_date ? new Date(query.end_date) : undefined;
-    // if (end) {
-    //   end.setHours(23, 59, 59, 999);
-    // }
 
     if (start && end) {
-      where.date = Between(start, end);
+      baseWhere.date = Between(start, end);
     } else if (start) {
-      where.date = MoreThanOrEqual(start);
+      baseWhere.date = MoreThanOrEqual(start);
     } else if (end) {
-      where.date = LessThanOrEqual(end);
+      baseWhere.date = LessThanOrEqual(end);
     }
-    if (query.wallet_id) {
-      where.wallet_id = query.wallet_id;
-    }
+
     if (query.category_id) {
-      where.category_id = query.category_id;
+      baseWhere.category_id = query.category_id;
     }
     if (query.type) {
-      where.type = query.type;
+      baseWhere.type = query.type;
+    }
+
+    let where: FindOptionsWhere<Transaction> | FindOptionsWhere<Transaction>[];
+
+    if (query.wallet_id) {
+      where = [
+        { ...baseWhere, wallet_id: query.wallet_id },
+        { ...baseWhere, destination_wallet_id: query.wallet_id },
+      ];
+    } else {
+      where = baseWhere;
     }
 
     const order: FindOptionsOrder<Transaction> = {
@@ -157,7 +201,7 @@ export class TransactionsService {
 
     return this.transactionsRepository.find({
       where,
-      relations: ["category", "wallet"],
+      relations: ["category", "wallet", "destinationWallet"],
       order,
     });
   }
@@ -165,6 +209,7 @@ export class TransactionsService {
   async findOne(id: string, userId: string): Promise<Transaction> {
     const transaction = await this.transactionsRepository.findOne({
       where: { id, user_id: userId },
+      relations: ["category", "wallet", "destinationWallet"],
     });
     if (!transaction) {
       throw new NotFoundException(`Transaction with ID "${id}" not found`);

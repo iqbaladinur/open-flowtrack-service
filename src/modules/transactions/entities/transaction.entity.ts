@@ -44,12 +44,20 @@ export class Transaction {
   wallet: Wallet;
 
   @Index()
-  @Column()
+  @Column({ nullable: true })
   category_id: string;
 
   @ManyToOne(() => Category)
   @JoinColumn({ name: "category_id" })
   category: Category;
+
+  @Index()
+  @Column({ nullable: true })
+  destination_wallet_id: string;
+
+  @ManyToOne(() => Wallet)
+  @JoinColumn({ name: "destination_wallet_id" })
+  destinationWallet: Wallet;
 
   @Index()
   @Column()

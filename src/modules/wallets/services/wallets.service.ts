@@ -52,55 +52,67 @@ export class WalletsService {
       return [];
     }
 
-    const transactionQuery = this.transactionRepository
+    const changesMap = new Map<string, number>();
+
+    // 1. Outgoing transactions (expense, transfer) and income
+    const sourceTransactionsQb = this.transactionRepository
       .createQueryBuilder("transaction")
       .select("transaction.wallet_id", "wallet_id")
-      .addSelect("transaction.type", "type")
-      .addSelect("SUM(transaction.amount)", "total")
+      .addSelect(
+        "SUM(CASE WHEN transaction.type = :income THEN transaction.amount ELSE -transaction.amount END)",
+        "change",
+      )
       .where("transaction.wallet_id IN (:...walletIds)", { walletIds })
-      .groupBy("transaction.wallet_id, transaction.type");
+      .setParameters({ income: CategoryType.INCOME })
+      .groupBy("transaction.wallet_id");
+
+    // 2. Incoming transfers
+    const destinationTransfersQb = this.transactionRepository
+      .createQueryBuilder("transaction")
+      .select("transaction.destination_wallet_id", "wallet_id")
+      .addSelect("SUM(transaction.amount)", "change")
+      .where("transaction.destination_wallet_id IN (:...walletIds)", {
+        walletIds,
+      })
+      .andWhere("transaction.type = :transfer", {
+        transfer: CategoryType.TRANSFER,
+      })
+      .groupBy("transaction.destination_wallet_id");
 
     if (startDate) {
       const start = new Date(startDate);
-      // start.setHours(0, 0, 0, 0);
-      transactionQuery.andWhere("transaction.date >= :startDate", {
+      sourceTransactionsQb.andWhere("transaction.date >= :startDate", {
+        startDate: start,
+      });
+      destinationTransfersQb.andWhere("transaction.date >= :startDate", {
         startDate: start,
       });
     }
     if (endDate) {
       const end = new Date(endDate);
-      // end.setHours(23, 59, 59, 999);
-      transactionQuery.andWhere("transaction.date <= :endDate", {
+      sourceTransactionsQb.andWhere("transaction.date <= :endDate", {
+        endDate: end,
+      });
+      destinationTransfersQb.andWhere("transaction.date <= :endDate", {
         endDate: end,
       });
     }
 
-    const transactionSums = await transactionQuery.getRawMany();
+    const sourceChanges = await sourceTransactionsQb.getRawMany();
+    const destinationChanges = await destinationTransfersQb.getRawMany();
 
-    const transactionMap = new Map<
-      string,
-      { income: number; expense: number }
-    >();
+    sourceChanges.forEach((c) =>
+      changesMap.set(c.wallet_id, parseFloat(c.change)),
+    );
 
-    for (const sum of transactionSums) {
-      if (!transactionMap.has(sum.wallet_id)) {
-        transactionMap.set(sum.wallet_id, { income: 0, expense: 0 });
-      }
-      const totals = transactionMap.get(sum.wallet_id);
-      if (sum.type === CategoryType.INCOME) {
-        totals.income = parseFloat(sum.total);
-      } else if (sum.type === CategoryType.EXPENSE) {
-        totals.expense = parseFloat(sum.total);
-      }
-    }
+    destinationChanges.forEach((c) => {
+      const existingChange = changesMap.get(c.wallet_id) || 0;
+      changesMap.set(c.wallet_id, existingChange + parseFloat(c.change));
+    });
 
     const walletsWithBalance = wallets.map((wallet) => {
-      const totals = transactionMap.get(wallet.id) || {
-        income: 0,
-        expense: 0,
-      };
-      const balance =
-        Number(wallet.initial_balance) + totals.income - totals.expense;
+      const change = changesMap.get(wallet.id) || 0;
+      const balance = Number(wallet.initial_balance) + change;
       return {
         ...wallet,
         current_balance: balance,
@@ -123,42 +135,47 @@ export class WalletsService {
       throw new NotFoundException(`Wallet with ID "${id}" not found`);
     }
 
-    const transactionQuery = this.transactionRepository
+    const qb = this.transactionRepository
       .createQueryBuilder("transaction")
-      .select("transaction.type", "type")
-      .addSelect("SUM(transaction.amount)", "total")
-      .where("transaction.wallet_id = :walletId", { walletId: id })
-      .groupBy("transaction.type");
+      .select(
+        `SUM(
+        CASE
+          WHEN transaction.wallet_id = :walletId AND transaction.type = :income THEN transaction.amount
+          WHEN transaction.wallet_id = :walletId AND transaction.type = :expense THEN -transaction.amount
+          WHEN transaction.wallet_id = :walletId AND transaction.type = :transfer THEN -transaction.amount
+          WHEN transaction.destination_wallet_id = :walletId AND transaction.type = :transfer THEN transaction.amount
+          ELSE 0
+        END
+      )`,
+        "change",
+      )
+      .where("transaction.user_id = :userId", { userId })
+      .andWhere(
+        "(transaction.wallet_id = :walletId OR transaction.destination_wallet_id = :walletId)",
+      )
+      .setParameters({
+        walletId: id,
+        income: CategoryType.INCOME,
+        expense: CategoryType.EXPENSE,
+        transfer: CategoryType.TRANSFER,
+      });
 
     if (startDate) {
       const start = new Date(startDate);
-      // start.setHours(0, 0, 0, 0);
-      transactionQuery.andWhere("transaction.date >= :startDate", {
+      qb.andWhere("transaction.date >= :startDate", {
         startDate: start,
       });
     }
     if (endDate) {
       const end = new Date(endDate);
-      // end.setHours(23, 59, 59, 999);
-      transactionQuery.andWhere("transaction.date <= :endDate", {
+      qb.andWhere("transaction.date <= :endDate", {
         endDate: end,
       });
     }
 
-    const transactionSums = await transactionQuery.getRawMany();
-
-    let income = 0;
-    let expense = 0;
-
-    for (const sum of transactionSums) {
-      if (sum.type === CategoryType.INCOME) {
-        income = parseFloat(sum.total);
-      } else if (sum.type === CategoryType.EXPENSE) {
-        expense = parseFloat(sum.total);
-      }
-    }
-
-    const balance = Number(wallet.initial_balance) + income - expense;
+    const result = await qb.getRawOne();
+    const change = parseFloat(result.change) || 0;
+    const balance = Number(wallet.initial_balance) + change;
 
     return {
       ...wallet,

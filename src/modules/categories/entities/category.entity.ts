@@ -12,6 +12,7 @@ import { User } from "../../users/entities/user.entity";
 export enum CategoryType {
   INCOME = "income",
   EXPENSE = "expense",
+  TRANSFER = "transfer",
 }
 
 @Entity("categories")
