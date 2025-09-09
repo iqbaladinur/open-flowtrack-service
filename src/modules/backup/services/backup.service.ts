@@ -4,6 +4,7 @@ import { CategoriesService } from "../../categories/services/categories.service"
 import { TransactionsService } from "../../transactions/services/transactions.service";
 import { BudgetsService } from "../../budgets/services/budgets.service";
 import { User } from "src/modules/users/entities/user.entity";
+import { CategoryType } from "src/modules/categories/entities/category.entity";
 
 @Injectable()
 export class BackupService {
@@ -66,9 +67,31 @@ export class BackupService {
     if (data.transactions) {
       for (const transactionData of data.transactions) {
         const newWalletId = walletIdMap.get(transactionData.wallet_id);
-        const newCategoryId = categoryIdMap.get(transactionData.category_id);
+        if (!newWalletId) continue;
 
-        if (newWalletId && newCategoryId) {
+        if (transactionData.type === CategoryType.TRANSFER) {
+          const newDestinationWalletId = walletIdMap.get(
+            transactionData.destination_wallet_id,
+          );
+          if (!newDestinationWalletId) continue;
+
+          await this.transactionsService.create(
+            {
+              type: transactionData.type,
+              amount: transactionData.amount,
+              wallet_id: newWalletId,
+              destination_wallet_id: newDestinationWalletId,
+              date: transactionData.date,
+              note: transactionData.note,
+              is_recurring: transactionData.is_recurring,
+              recurring_pattern: transactionData.recurring_pattern,
+            },
+            user.id,
+          );
+        } else {
+          const newCategoryId = categoryIdMap.get(transactionData.category_id);
+          if (!newCategoryId) continue;
+
           await this.transactionsService.create(
             {
               type: transactionData.type,

@@ -30,7 +30,7 @@ Base URLs:
 
 <h1 id="wallport-api-authentication">Authentication</h1>
 
-## AuthController_googleAuth
+## Redirect to Google for authentication
 
 <a id="opIdAuthController_googleAuth"></a>
 
@@ -59,9 +59,7 @@ fetch('/auth/google',
 
 `GET /auth/google`
 
-*Redirect to Google for authentication*
-
-<h3 id="authcontroller_googleauth-responses">Responses</h3>
+<h3 id="redirect-to-google-for-authentication-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -71,7 +69,7 @@ fetch('/auth/google',
 This operation does not require authentication
 </aside>
 
-## AuthController_googleAuthRedirect
+## Google callback for authentication
 
 <a id="opIdAuthController_googleAuthRedirect"></a>
 
@@ -100,9 +98,7 @@ fetch('/auth/google/callback',
 
 `GET /auth/google/callback`
 
-*Google callback for authentication*
-
-<h3 id="authcontroller_googleauthredirect-responses">Responses</h3>
+<h3 id="google-callback-for-authentication-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -112,7 +108,7 @@ fetch('/auth/google/callback',
 This operation does not require authentication
 </aside>
 
-## AuthController_register
+## Register a new user
 
 <a id="opIdAuthController_register"></a>
 
@@ -153,8 +149,6 @@ fetch('/auth/register',
 
 `POST /auth/register`
 
-*Register a new user*
-
 > Body parameter
 
 ```json
@@ -165,7 +159,7 @@ fetch('/auth/register',
 }
 ```
 
-<h3 id="authcontroller_register-parameters">Parameters</h3>
+<h3 id="register-a-new-user-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -194,20 +188,20 @@ fetch('/auth/register',
 }
 ```
 
-<h3 id="authcontroller_register-responses">Responses</h3>
+<h3 id="register-a-new-user-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|User successfully registered.|Inline|
 |409|[Conflict](https://tools.ietf.org/html/rfc7231#section-6.5.8)|Email already registered.|None|
 
-<h3 id="authcontroller_register-responseschema">Response Schema</h3>
+<h3 id="register-a-new-user-responseschema">Response Schema</h3>
 
 <aside class="success">
 This operation does not require authentication
 </aside>
 
-## AuthController_login
+## Log in a user
 
 <a id="opIdAuthController_login"></a>
 
@@ -247,8 +241,6 @@ fetch('/auth/login',
 
 `POST /auth/login`
 
-*Log in a user*
-
 > Body parameter
 
 ```json
@@ -258,7 +250,7 @@ fetch('/auth/login',
 }
 ```
 
-<h3 id="authcontroller_login-parameters">Parameters</h3>
+<h3 id="log-in-a-user-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -288,20 +280,20 @@ fetch('/auth/login',
 }
 ```
 
-<h3 id="authcontroller_login-responses">Responses</h3>
+<h3 id="log-in-a-user-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|User successfully logged in.|Inline|
 |401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid credentials.|None|
 
-<h3 id="authcontroller_login-responseschema">Response Schema</h3>
+<h3 id="log-in-a-user-responseschema">Response Schema</h3>
 
 <aside class="success">
 This operation does not require authentication
 </aside>
 
-## AuthController_forgotPassword
+## Send password reset link
 
 <a id="opIdAuthController_forgotPassword"></a>
 
@@ -338,8 +330,6 @@ fetch('/auth/forgot-password',
 
 `POST /auth/forgot-password`
 
-*Send password reset link*
-
 > Body parameter
 
 ```json
@@ -348,13 +338,13 @@ fetch('/auth/forgot-password',
 }
 ```
 
-<h3 id="authcontroller_forgotpassword-parameters">Parameters</h3>
+<h3 id="send-password-reset-link-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[ForgotPasswordDto](#schemaforgotpassworddto)|true|none|
 
-<h3 id="authcontroller_forgotpassword-responses">Responses</h3>
+<h3 id="send-password-reset-link-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -364,7 +354,7 @@ fetch('/auth/forgot-password',
 This operation does not require authentication
 </aside>
 
-## AuthController_resetPassword
+## Reset user password
 
 <a id="opIdAuthController_resetPassword"></a>
 
@@ -401,8 +391,6 @@ fetch('/auth/reset-password/{token}',
 
 `POST /auth/reset-password/{token}`
 
-*Reset user password*
-
 > Body parameter
 
 ```json
@@ -411,14 +399,14 @@ fetch('/auth/reset-password/{token}',
 }
 ```
 
-<h3 id="authcontroller_resetpassword-parameters">Parameters</h3>
+<h3 id="reset-user-password-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |token|path|string|true|none|
 |body|body|[ResetPasswordDto](#schemaresetpassworddto)|true|none|
 
-<h3 id="authcontroller_resetpassword-responses">Responses</h3>
+<h3 id="reset-user-password-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -429,7 +417,7 @@ fetch('/auth/reset-password/{token}',
 This operation does not require authentication
 </aside>
 
-## AuthController_getProfile
+## Get user profile
 
 <a id="opIdAuthController_getProfile"></a>
 
@@ -466,8 +454,6 @@ fetch('/auth/profile',
 
 `GET /auth/profile`
 
-*Get user profile*
-
 > Example responses
 
 > 200 Response
@@ -491,13 +477,13 @@ fetch('/auth/profile',
 }
 ```
 
-<h3 id="authcontroller_getprofile-responses">Responses</h3>
+<h3 id="get-user-profile-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|User profile retrieved successfully.|Inline|
 
-<h3 id="authcontroller_getprofile-responseschema">Response Schema</h3>
+<h3 id="get-user-profile-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -506,7 +492,7 @@ bearer
 
 <h1 id="wallport-api-config">Config</h1>
 
-## ConfigController_getCurrencyConfig
+## Get currency configuration for the current user
 
 <a id="opIdConfigController_getCurrencyConfig"></a>
 
@@ -543,8 +529,6 @@ fetch('/config',
 
 `GET /config`
 
-*Get currency configuration for the current user*
-
 > Example responses
 
 > 200 Response
@@ -559,20 +543,20 @@ fetch('/config',
 }
 ```
 
-<h3 id="configcontroller_getcurrencyconfig-responses">Responses</h3>
+<h3 id="get-currency-configuration-for-the-current-user-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Returns the currency configuration for the current user.|Inline|
 
-<h3 id="configcontroller_getcurrencyconfig-responseschema">Response Schema</h3>
+<h3 id="get-currency-configuration-for-the-current-user-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 bearer
 </aside>
 
-## ConfigController_updateCurrencyConfig
+## Update currency configuration for the current user
 
 <a id="opIdConfigController_updateCurrencyConfig"></a>
 
@@ -615,8 +599,6 @@ fetch('/config',
 
 `PUT /config`
 
-*Update currency configuration for the current user*
-
 > Body parameter
 
 ```json
@@ -627,7 +609,7 @@ fetch('/config',
 }
 ```
 
-<h3 id="configcontroller_updatecurrencyconfig-parameters">Parameters</h3>
+<h3 id="update-currency-configuration-for-the-current-user-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -647,13 +629,13 @@ fetch('/config',
 }
 ```
 
-<h3 id="configcontroller_updatecurrencyconfig-responses">Responses</h3>
+<h3 id="update-currency-configuration-for-the-current-user-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|Updates and returns the new currency configuration for the current user.|Inline|
 
-<h3 id="configcontroller_updatecurrencyconfig-responseschema">Response Schema</h3>
+<h3 id="update-currency-configuration-for-the-current-user-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -662,7 +644,7 @@ bearer
 
 <h1 id="wallport-api-wallets">Wallets</h1>
 
-## WalletsController_create
+## Create a new wallet
 
 <a id="opIdWalletsController_create"></a>
 
@@ -706,8 +688,6 @@ fetch('/wallets',
 
 `POST /wallets`
 
-*Create a new wallet*
-
 > Body parameter
 
 ```json
@@ -719,7 +699,7 @@ fetch('/wallets',
 }
 ```
 
-<h3 id="walletscontroller_create-parameters">Parameters</h3>
+<h3 id="create-a-new-wallet-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -740,20 +720,20 @@ fetch('/wallets',
 }
 ```
 
-<h3 id="walletscontroller_create-responses">Responses</h3>
+<h3 id="create-a-new-wallet-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|The wallet has been successfully created.|Inline|
 
-<h3 id="walletscontroller_create-responseschema">Response Schema</h3>
+<h3 id="create-a-new-wallet-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 bearer
 </aside>
 
-## WalletsController_findAll
+## Get all wallets for the current user
 
 <a id="opIdWalletsController_findAll"></a>
 
@@ -790,9 +770,7 @@ fetch('/wallets',
 
 `GET /wallets`
 
-*Get all wallets for the current user*
-
-<h3 id="walletscontroller_findall-parameters">Parameters</h3>
+<h3 id="get-all-wallets-for-the-current-user-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -817,20 +795,20 @@ fetch('/wallets',
 ]
 ```
 
-<h3 id="walletscontroller_findall-responses">Responses</h3>
+<h3 id="get-all-wallets-for-the-current-user-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|A list of wallets with their current balances.|Inline|
 
-<h3 id="walletscontroller_findall-responseschema">Response Schema</h3>
+<h3 id="get-all-wallets-for-the-current-user-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 bearer
 </aside>
 
-## WalletsController_findOne
+## Get a specific wallet by ID
 
 <a id="opIdWalletsController_findOne"></a>
 
@@ -867,9 +845,7 @@ fetch('/wallets/{id}',
 
 `GET /wallets/{id}`
 
-*Get a specific wallet by ID*
-
-<h3 id="walletscontroller_findone-parameters">Parameters</h3>
+<h3 id="get-a-specific-wallet-by-id-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -893,20 +869,20 @@ fetch('/wallets/{id}',
 }
 ```
 
-<h3 id="walletscontroller_findone-responses">Responses</h3>
+<h3 id="get-a-specific-wallet-by-id-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|The wallet with its current balance.|Inline|
 
-<h3 id="walletscontroller_findone-responseschema">Response Schema</h3>
+<h3 id="get-a-specific-wallet-by-id-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 bearer
 </aside>
 
-## WalletsController_update
+## Update a wallet
 
 <a id="opIdWalletsController_update"></a>
 
@@ -950,8 +926,6 @@ fetch('/wallets/{id}',
 
 `PATCH /wallets/{id}`
 
-*Update a wallet*
-
 > Body parameter
 
 ```json
@@ -963,7 +937,7 @@ fetch('/wallets/{id}',
 }
 ```
 
-<h3 id="walletscontroller_update-parameters">Parameters</h3>
+<h3 id="update-a-wallet-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -985,20 +959,20 @@ fetch('/wallets/{id}',
 }
 ```
 
-<h3 id="walletscontroller_update-responses">Responses</h3>
+<h3 id="update-a-wallet-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|The updated wallet.|Inline|
 
-<h3 id="walletscontroller_update-responseschema">Response Schema</h3>
+<h3 id="update-a-wallet-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 bearer
 </aside>
 
-## WalletsController_remove
+## Delete a wallet
 
 <a id="opIdWalletsController_remove"></a>
 
@@ -1033,15 +1007,13 @@ fetch('/wallets/{id}',
 
 `DELETE /wallets/{id}`
 
-*Delete a wallet*
-
-<h3 id="walletscontroller_remove-parameters">Parameters</h3>
+<h3 id="delete-a-wallet-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|none|
 
-<h3 id="walletscontroller_remove-responses">Responses</h3>
+<h3 id="delete-a-wallet-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1054,7 +1026,7 @@ bearer
 
 <h1 id="wallport-api-categories">Categories</h1>
 
-## CategoriesController_create
+## Create a new category
 
 <a id="opIdCategoriesController_create"></a>
 
@@ -1098,8 +1070,6 @@ fetch('/categories',
 
 `POST /categories`
 
-*Create a new category*
-
 > Body parameter
 
 ```json
@@ -1111,7 +1081,7 @@ fetch('/categories',
 }
 ```
 
-<h3 id="categoriescontroller_create-parameters">Parameters</h3>
+<h3 id="create-a-new-category-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1134,20 +1104,20 @@ fetch('/categories',
 }
 ```
 
-<h3 id="categoriescontroller_create-responses">Responses</h3>
+<h3 id="create-a-new-category-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|The category has been successfully created.|Inline|
 
-<h3 id="categoriescontroller_create-responseschema">Response Schema</h3>
+<h3 id="create-a-new-category-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 bearer
 </aside>
 
-## CategoriesController_findAll
+## Get all categories for the current user (including defaults)
 
 <a id="opIdCategoriesController_findAll"></a>
 
@@ -1184,9 +1154,7 @@ fetch('/categories',
 
 `GET /categories`
 
-*Get all categories for the current user (including defaults)*
-
-<h3 id="categoriescontroller_findall-parameters">Parameters</h3>
+<h3 id="get-all-categories-for-the-current-user-(including-defaults)-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1198,6 +1166,7 @@ fetch('/categories',
 |---|---|
 |type|income|
 |type|expense|
+|type|transfer|
 
 > Example responses
 
@@ -1218,20 +1187,20 @@ fetch('/categories',
 ]
 ```
 
-<h3 id="categoriescontroller_findall-responses">Responses</h3>
+<h3 id="get-all-categories-for-the-current-user-(including-defaults)-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|A list of categories.|Inline|
 
-<h3 id="categoriescontroller_findall-responseschema">Response Schema</h3>
+<h3 id="get-all-categories-for-the-current-user-(including-defaults)-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 bearer
 </aside>
 
-## CategoriesController_createBulk
+## Create multiple categories in bulk
 
 <a id="opIdCategoriesController_createBulk"></a>
 
@@ -1279,8 +1248,6 @@ fetch('/categories/bulk',
 
 `POST /categories/bulk`
 
-*Create multiple categories in bulk*
-
 > Body parameter
 
 ```json
@@ -1296,7 +1263,7 @@ fetch('/categories/bulk',
 }
 ```
 
-<h3 id="categoriescontroller_createbulk-parameters">Parameters</h3>
+<h3 id="create-multiple-categories-in-bulk-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1331,20 +1298,20 @@ fetch('/categories/bulk',
 ]
 ```
 
-<h3 id="categoriescontroller_createbulk-responses">Responses</h3>
+<h3 id="create-multiple-categories-in-bulk-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|The categories have been successfully created.|Inline|
 
-<h3 id="categoriescontroller_createbulk-responseschema">Response Schema</h3>
+<h3 id="create-multiple-categories-in-bulk-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 bearer
 </aside>
 
-## CategoriesController_findOne
+## Get a specific category by ID
 
 <a id="opIdCategoriesController_findOne"></a>
 
@@ -1381,9 +1348,7 @@ fetch('/categories/{id}',
 
 `GET /categories/{id}`
 
-*Get a specific category by ID*
-
-<h3 id="categoriescontroller_findone-parameters">Parameters</h3>
+<h3 id="get-a-specific-category-by-id-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1406,20 +1371,20 @@ fetch('/categories/{id}',
 }
 ```
 
-<h3 id="categoriescontroller_findone-responses">Responses</h3>
+<h3 id="get-a-specific-category-by-id-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|The category.|Inline|
 
-<h3 id="categoriescontroller_findone-responseschema">Response Schema</h3>
+<h3 id="get-a-specific-category-by-id-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 bearer
 </aside>
 
-## CategoriesController_update
+## Update a category
 
 <a id="opIdCategoriesController_update"></a>
 
@@ -1463,8 +1428,6 @@ fetch('/categories/{id}',
 
 `PATCH /categories/{id}`
 
-*Update a category*
-
 > Body parameter
 
 ```json
@@ -1476,7 +1439,7 @@ fetch('/categories/{id}',
 }
 ```
 
-<h3 id="categoriescontroller_update-parameters">Parameters</h3>
+<h3 id="update-a-category-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1500,20 +1463,20 @@ fetch('/categories/{id}',
 }
 ```
 
-<h3 id="categoriescontroller_update-responses">Responses</h3>
+<h3 id="update-a-category-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|The updated category.|Inline|
 
-<h3 id="categoriescontroller_update-responseschema">Response Schema</h3>
+<h3 id="update-a-category-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 bearer
 </aside>
 
-## CategoriesController_remove
+## Delete a category
 
 <a id="opIdCategoriesController_remove"></a>
 
@@ -1548,15 +1511,13 @@ fetch('/categories/{id}',
 
 `DELETE /categories/{id}`
 
-*Delete a category*
-
-<h3 id="categoriescontroller_remove-parameters">Parameters</h3>
+<h3 id="delete-a-category-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|none|
 
-<h3 id="categoriescontroller_remove-responses">Responses</h3>
+<h3 id="delete-a-category-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1569,7 +1530,7 @@ bearer
 
 <h1 id="wallport-api-transactions">Transactions</h1>
 
-## TransactionsController_createByText
+## Create a new transaction using text
 
 <a id="opIdTransactionsController_createByText"></a>
 
@@ -1608,8 +1569,6 @@ fetch('/transactions/bulk-expense',
 
 `POST /transactions/bulk-expense`
 
-*Create a new transaction using text*
-
 > Body parameter
 
 ```json
@@ -1618,13 +1577,13 @@ fetch('/transactions/bulk-expense',
 }
 ```
 
-<h3 id="transactionscontroller_createbytext-parameters">Parameters</h3>
+<h3 id="create-a-new-transaction-using-text-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[CreateTransactionByTextDto](#schemacreatetransactionbytextdto)|true|none|
 
-<h3 id="transactionscontroller_createbytext-responses">Responses</h3>
+<h3 id="create-a-new-transaction-using-text-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -1635,7 +1594,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer
 </aside>
 
-## TransactionsController_create
+## Create a new transaction
 
 <a id="opIdTransactionsController_create"></a>
 
@@ -1656,6 +1615,7 @@ const inputBody = '{
   "amount": 50,
   "wallet_id": "string",
   "category_id": "string",
+  "destination_wallet_id": "string",
   "date": "2019-08-24T14:15:22Z",
   "note": "string",
   "is_recurring": false,
@@ -1683,8 +1643,6 @@ fetch('/transactions',
 
 `POST /transactions`
 
-*Create a new transaction*
-
 > Body parameter
 
 ```json
@@ -1693,6 +1651,7 @@ fetch('/transactions',
   "amount": 50,
   "wallet_id": "string",
   "category_id": "string",
+  "destination_wallet_id": "string",
   "date": "2019-08-24T14:15:22Z",
   "note": "string",
   "is_recurring": false,
@@ -1700,7 +1659,7 @@ fetch('/transactions',
 }
 ```
 
-<h3 id="transactionscontroller_create-parameters">Parameters</h3>
+<h3 id="create-a-new-transaction-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1727,20 +1686,20 @@ fetch('/transactions',
 }
 ```
 
-<h3 id="transactionscontroller_create-responses">Responses</h3>
+<h3 id="create-a-new-transaction-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|The transaction has been successfully created.|Inline|
 
-<h3 id="transactionscontroller_create-responseschema">Response Schema</h3>
+<h3 id="create-a-new-transaction-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 bearer
 </aside>
 
-## TransactionsController_findAll
+## Get all transactions for the current user
 
 <a id="opIdTransactionsController_findAll"></a>
 
@@ -1777,9 +1736,7 @@ fetch('/transactions',
 
 `GET /transactions`
 
-*Get all transactions for the current user*
-
-<h3 id="transactionscontroller_findall-parameters">Parameters</h3>
+<h3 id="get-all-transactions-for-the-current-user-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1796,6 +1753,7 @@ fetch('/transactions',
 |---|---|
 |type|income|
 |type|expense|
+|type|transfer|
 |sortBy|ASC|
 |sortBy|DESC|
 
@@ -1822,20 +1780,20 @@ fetch('/transactions',
 ]
 ```
 
-<h3 id="transactionscontroller_findall-responses">Responses</h3>
+<h3 id="get-all-transactions-for-the-current-user-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|A list of transactions.|Inline|
 
-<h3 id="transactionscontroller_findall-responseschema">Response Schema</h3>
+<h3 id="get-all-transactions-for-the-current-user-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 bearer
 </aside>
 
-## TransactionsController_findOne
+## Get a specific transaction by ID
 
 <a id="opIdTransactionsController_findOne"></a>
 
@@ -1872,9 +1830,7 @@ fetch('/transactions/{id}',
 
 `GET /transactions/{id}`
 
-*Get a specific transaction by ID*
-
-<h3 id="transactionscontroller_findone-parameters">Parameters</h3>
+<h3 id="get-a-specific-transaction-by-id-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -1901,20 +1857,20 @@ fetch('/transactions/{id}',
 }
 ```
 
-<h3 id="transactionscontroller_findone-responses">Responses</h3>
+<h3 id="get-a-specific-transaction-by-id-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|The transaction.|Inline|
 
-<h3 id="transactionscontroller_findone-responseschema">Response Schema</h3>
+<h3 id="get-a-specific-transaction-by-id-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 bearer
 </aside>
 
-## TransactionsController_update
+## Update a transaction
 
 <a id="opIdTransactionsController_update"></a>
 
@@ -1935,6 +1891,7 @@ const inputBody = '{
   "amount": 0,
   "wallet_id": "string",
   "category_id": "string",
+  "destination_wallet_id": "string",
   "date": "2019-08-24T14:15:22Z",
   "note": "string",
   "is_recurring": true,
@@ -1962,8 +1919,6 @@ fetch('/transactions/{id}',
 
 `PATCH /transactions/{id}`
 
-*Update a transaction*
-
 > Body parameter
 
 ```json
@@ -1972,6 +1927,7 @@ fetch('/transactions/{id}',
   "amount": 0,
   "wallet_id": "string",
   "category_id": "string",
+  "destination_wallet_id": "string",
   "date": "2019-08-24T14:15:22Z",
   "note": "string",
   "is_recurring": true,
@@ -1979,7 +1935,7 @@ fetch('/transactions/{id}',
 }
 ```
 
-<h3 id="transactionscontroller_update-parameters">Parameters</h3>
+<h3 id="update-a-transaction-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -2007,20 +1963,20 @@ fetch('/transactions/{id}',
 }
 ```
 
-<h3 id="transactionscontroller_update-responses">Responses</h3>
+<h3 id="update-a-transaction-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|The updated transaction.|Inline|
 
-<h3 id="transactionscontroller_update-responseschema">Response Schema</h3>
+<h3 id="update-a-transaction-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 bearer
 </aside>
 
-## TransactionsController_remove
+## Delete a transaction
 
 <a id="opIdTransactionsController_remove"></a>
 
@@ -2055,15 +2011,13 @@ fetch('/transactions/{id}',
 
 `DELETE /transactions/{id}`
 
-*Delete a transaction*
-
-<h3 id="transactionscontroller_remove-parameters">Parameters</h3>
+<h3 id="delete-a-transaction-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|none|
 
-<h3 id="transactionscontroller_remove-responses">Responses</h3>
+<h3 id="delete-a-transaction-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -2076,7 +2030,7 @@ bearer
 
 <h1 id="wallport-api-budgets">Budgets</h1>
 
-## BudgetsController_create
+## Create a new budget
 
 <a id="opIdBudgetsController_create"></a>
 
@@ -2120,8 +2074,6 @@ fetch('/budgets',
 
 `POST /budgets`
 
-*Create a new budget*
-
 > Body parameter
 
 ```json
@@ -2133,7 +2085,7 @@ fetch('/budgets',
 }
 ```
 
-<h3 id="budgetscontroller_create-parameters">Parameters</h3>
+<h3 id="create-a-new-budget-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -2157,20 +2109,20 @@ fetch('/budgets',
 }
 ```
 
-<h3 id="budgetscontroller_create-responses">Responses</h3>
+<h3 id="create-a-new-budget-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|The budget has been successfully created.|Inline|
 
-<h3 id="budgetscontroller_create-responseschema">Response Schema</h3>
+<h3 id="create-a-new-budget-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 bearer
 </aside>
 
-## BudgetsController_findAll
+## Get all budgets for the current user
 
 <a id="opIdBudgetsController_findAll"></a>
 
@@ -2207,9 +2159,7 @@ fetch('/budgets',
 
 `GET /budgets`
 
-*Get all budgets for the current user*
-
-<h3 id="budgetscontroller_findall-parameters">Parameters</h3>
+<h3 id="get-all-budgets-for-the-current-user-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -2235,20 +2185,20 @@ fetch('/budgets',
 ]
 ```
 
-<h3 id="budgetscontroller_findall-responses">Responses</h3>
+<h3 id="get-all-budgets-for-the-current-user-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|A list of budgets with their spent amounts.|Inline|
 
-<h3 id="budgetscontroller_findall-responseschema">Response Schema</h3>
+<h3 id="get-all-budgets-for-the-current-user-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 bearer
 </aside>
 
-## BudgetsController_findOne
+## Get a specific budget by ID
 
 <a id="opIdBudgetsController_findOne"></a>
 
@@ -2285,9 +2235,7 @@ fetch('/budgets/{id}',
 
 `GET /budgets/{id}`
 
-*Get a specific budget by ID*
-
-<h3 id="budgetscontroller_findone-parameters">Parameters</h3>
+<h3 id="get-a-specific-budget-by-id-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -2311,20 +2259,20 @@ fetch('/budgets/{id}',
 }
 ```
 
-<h3 id="budgetscontroller_findone-responses">Responses</h3>
+<h3 id="get-a-specific-budget-by-id-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|The budget with its spent amount.|Inline|
 
-<h3 id="budgetscontroller_findone-responseschema">Response Schema</h3>
+<h3 id="get-a-specific-budget-by-id-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 bearer
 </aside>
 
-## BudgetsController_update
+## Update a budget
 
 <a id="opIdBudgetsController_update"></a>
 
@@ -2365,8 +2313,6 @@ fetch('/budgets/{id}',
 
 `PATCH /budgets/{id}`
 
-*Update a budget*
-
 > Body parameter
 
 ```json
@@ -2375,7 +2321,7 @@ fetch('/budgets/{id}',
 }
 ```
 
-<h3 id="budgetscontroller_update-parameters">Parameters</h3>
+<h3 id="update-a-budget-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
@@ -2400,20 +2346,20 @@ fetch('/budgets/{id}',
 }
 ```
 
-<h3 id="budgetscontroller_update-responses">Responses</h3>
+<h3 id="update-a-budget-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
 |200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|The updated budget.|Inline|
 
-<h3 id="budgetscontroller_update-responseschema">Response Schema</h3>
+<h3 id="update-a-budget-responseschema">Response Schema</h3>
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 bearer
 </aside>
 
-## BudgetsController_remove
+## Delete a budget
 
 <a id="opIdBudgetsController_remove"></a>
 
@@ -2448,15 +2394,13 @@ fetch('/budgets/{id}',
 
 `DELETE /budgets/{id}`
 
-*Delete a budget*
-
-<h3 id="budgetscontroller_remove-parameters">Parameters</h3>
+<h3 id="delete-a-budget-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |id|path|string|true|none|
 
-<h3 id="budgetscontroller_remove-responses">Responses</h3>
+<h3 id="delete-a-budget-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -2698,7 +2642,7 @@ bearer
 
 <h1 id="wallport-api-export">Export</h1>
 
-## ExportController_exportTransactions
+## Export user transactions to CSV
 
 <a id="opIdExportController_exportTransactions"></a>
 
@@ -2733,9 +2677,7 @@ fetch('/export/transactions/csv',
 
 `GET /export/transactions/csv`
 
-*Export user transactions to CSV*
-
-<h3 id="exportcontroller_exporttransactions-responses">Responses</h3>
+<h3 id="export-user-transactions-to-csv-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -2748,7 +2690,7 @@ bearer
 
 <h1 id="wallport-api-backup-and-restore">Backup & Restore</h1>
 
-## BackupController_backup
+## Backup user data
 
 <a id="opIdBackupController_backup"></a>
 
@@ -2783,9 +2725,7 @@ fetch('/backup',
 
 `GET /backup`
 
-*Backup user data*
-
-<h3 id="backupcontroller_backup-responses">Responses</h3>
+<h3 id="backup-user-data-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -2796,7 +2736,7 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer
 </aside>
 
-## BackupController_restore
+## Restore user data
 
 <a id="opIdBackupController_restore"></a>
 
@@ -2835,8 +2775,6 @@ fetch('/backup/restore',
 
 `POST /backup/restore`
 
-*Restore user data*
-
 > Body parameter
 
 ```yaml
@@ -2844,14 +2782,14 @@ file: string
 
 ```
 
-<h3 id="backupcontroller_restore-parameters">Parameters</h3>
+<h3 id="restore-user-data-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|object|true|none|
 |» file|body|string(binary)|false|none|
 
-<h3 id="backupcontroller_restore-responses">Responses</h3>
+<h3 id="restore-user-data-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -2864,7 +2802,7 @@ bearer
 
 <h1 id="wallport-api-analytics">Analytics</h1>
 
-## AnalyticsController_generateAnalytics
+## Generate financial analytics using AI
 
 <a id="opIdAnalyticsController_generateAnalytics"></a>
 
@@ -2904,8 +2842,6 @@ fetch('/analytics/generate',
 
 `POST /analytics/generate`
 
-*Generate financial analytics using AI*
-
 > Body parameter
 
 ```json
@@ -2915,13 +2851,13 @@ fetch('/analytics/generate',
 }
 ```
 
-<h3 id="analyticscontroller_generateanalytics-parameters">Parameters</h3>
+<h3 id="generate-financial-analytics-using-ai-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[GenerateAnalyticsDto](#schemagenerateanalyticsdto)|true|none|
 
-<h3 id="analyticscontroller_generateanalytics-responses">Responses</h3>
+<h3 id="generate-financial-analytics-using-ai-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
@@ -3128,6 +3064,7 @@ bearer
 |---|---|
 |type|income|
 |type|expense|
+|type|transfer|
 
 <h2 id="tocS_BulkCreateCategoryDto">BulkCreateCategoryDto</h2>
 <!-- backwards compatibility -->
@@ -3188,6 +3125,7 @@ bearer
 |---|---|
 |type|income|
 |type|expense|
+|type|transfer|
 
 <h2 id="tocS_CreateTransactionByTextDto">CreateTransactionByTextDto</h2>
 <!-- backwards compatibility -->
@@ -3222,6 +3160,7 @@ bearer
   "amount": 50,
   "wallet_id": "string",
   "category_id": "string",
+  "destination_wallet_id": "string",
   "date": "2019-08-24T14:15:22Z",
   "note": "string",
   "is_recurring": false,
@@ -3237,7 +3176,8 @@ bearer
 |type|string|true|none|none|
 |amount|number|true|none|none|
 |wallet_id|string|true|none|none|
-|category_id|string|true|none|none|
+|category_id|string|false|none|none|
+|destination_wallet_id|string|false|none|none|
 |date|string(date-time)|true|none|none|
 |note|string|false|none|none|
 |is_recurring|boolean|false|none|none|
@@ -3249,6 +3189,7 @@ bearer
 |---|---|
 |type|income|
 |type|expense|
+|type|transfer|
 |recurring_pattern|daily|
 |recurring_pattern|weekly|
 |recurring_pattern|monthly|
@@ -3267,6 +3208,7 @@ bearer
   "amount": 0,
   "wallet_id": "string",
   "category_id": "string",
+  "destination_wallet_id": "string",
   "date": "2019-08-24T14:15:22Z",
   "note": "string",
   "is_recurring": true,
@@ -3283,6 +3225,7 @@ bearer
 |amount|number|false|none|none|
 |wallet_id|string|false|none|none|
 |category_id|string|false|none|none|
+|destination_wallet_id|string|false|none|none|
 |date|string(date-time)|false|none|none|
 |note|string|false|none|none|
 |is_recurring|boolean|false|none|none|
@@ -3294,6 +3237,7 @@ bearer
 |---|---|
 |type|income|
 |type|expense|
+|type|transfer|
 |recurring_pattern|daily|
 |recurring_pattern|weekly|
 |recurring_pattern|monthly|

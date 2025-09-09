@@ -102,6 +102,48 @@ export class TransactionsService {
     createTransactionDto: CreateTransactionDto,
     userId: string,
   ): Promise<Transaction> {
+    if (createTransactionDto.type === CategoryType.TRANSFER) {
+      if (!createTransactionDto.destination_wallet_id) {
+        throw new BadRequestException(
+          "Destination wallet is required for transfer transactions.",
+        );
+      }
+      if (createTransactionDto.category_id) {
+        throw new BadRequestException(
+          "Category should not be specified for transfer transactions.",
+        );
+      }
+      if (
+        createTransactionDto.wallet_id === 
+        createTransactionDto.destination_wallet_id
+      ) {
+        throw new BadRequestException(
+          "Source and destination wallets cannot be the same.",
+        );
+      }
+      const destinationWallet = await this.walletsRepository.findOne({
+        where: {
+          id: createTransactionDto.destination_wallet_id,
+          user_id: userId,
+        },
+      });
+      if (!destinationWallet) {
+        throw new NotFoundException("Destination wallet not found");
+      }
+      createTransactionDto.category_id = null;
+    } else {
+      if (!createTransactionDto.category_id) {
+        throw new BadRequestException(
+          "Category is required for income/expense transactions.",
+        );
+      }
+      if (createTransactionDto.destination_wallet_id) {
+        throw new BadRequestException(
+          "Destination wallet should not be specified for income/expense transactions.",
+        );
+      }
+    }
+
     const wallet = await this.walletsRepository.findOne({
       where: { id: createTransactionDto.wallet_id, user_id: userId },
     });
@@ -157,7 +199,7 @@ export class TransactionsService {
 
     return this.transactionsRepository.find({
       where,
-      relations: ["category", "wallet"],
+      relations: ["category", "wallet", "destinationWallet"],
       order,
     });
   }
@@ -165,6 +207,7 @@ export class TransactionsService {
   async findOne(id: string, userId: string): Promise<Transaction> {
     const transaction = await this.transactionsRepository.findOne({
       where: { id, user_id: userId },
+      relations: ["category", "wallet", "destinationWallet"],
     });
     if (!transaction) {
       throw new NotFoundException(`Transaction with ID "${id}" not found`);

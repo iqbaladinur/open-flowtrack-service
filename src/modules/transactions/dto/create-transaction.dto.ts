@@ -28,10 +28,15 @@ export class CreateTransactionDto {
   @IsNotEmpty()
   wallet_id: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsUUID()
-  @IsNotEmpty()
-  category_id: string;
+  @IsOptional()
+  category_id?: string;
+
+  @ApiProperty({ required: false })
+  @IsUUID()
+  @IsOptional()
+  destination_wallet_id?: string;
 
   @ApiProperty()
   @IsDate()

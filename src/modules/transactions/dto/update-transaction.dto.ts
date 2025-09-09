@@ -33,6 +33,11 @@ export class UpdateTransactionDto {
   category_id?: string;
 
   @ApiProperty({ required: false })
+  @IsUUID()
+  @IsOptional()
+  destination_wallet_id?: string;
+
+  @ApiProperty({ required: false })
   @IsDate()
   @Type(() => Date)
   @IsOptional()
