@@ -163,33 +163,35 @@ export class TransactionsService {
     userId: string,
     query?: FindAllTransactionsDto,
   ): Promise<Transaction[]> {
-    const where: FindOptionsWhere<Transaction> = { user_id: userId };
+    const baseWhere: FindOptionsWhere<Transaction> = { user_id: userId };
 
     const start = query.start_date ? new Date(query.start_date) : undefined;
-    // if (start) {
-    //   start.setHours(0, 0, 0, 0);
-    // }
-
     const end = query.end_date ? new Date(query.end_date) : undefined;
-    // if (end) {
-    //   end.setHours(23, 59, 59, 999);
-    // }
 
     if (start && end) {
-      where.date = Between(start, end);
+      baseWhere.date = Between(start, end);
     } else if (start) {
-      where.date = MoreThanOrEqual(start);
+      baseWhere.date = MoreThanOrEqual(start);
     } else if (end) {
-      where.date = LessThanOrEqual(end);
+      baseWhere.date = LessThanOrEqual(end);
     }
-    if (query.wallet_id) {
-      where.wallet_id = query.wallet_id;
-    }
+
     if (query.category_id) {
-      where.category_id = query.category_id;
+      baseWhere.category_id = query.category_id;
     }
     if (query.type) {
-      where.type = query.type;
+      baseWhere.type = query.type;
+    }
+
+    let where: FindOptionsWhere<Transaction> | FindOptionsWhere<Transaction>[];
+
+    if (query.wallet_id) {
+      where = [
+        { ...baseWhere, wallet_id: query.wallet_id },
+        { ...baseWhere, destination_wallet_id: query.wallet_id },
+      ];
+    } else {
+      where = baseWhere;
     }
 
     const order: FindOptionsOrder<Transaction> = {

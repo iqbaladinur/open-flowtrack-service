@@ -140,3 +140,6 @@ Swap:         2.0Gi       272Mi       1.7Gi
 
 - Fixed a missing import for 'CategoryType' in 'BackupService' to resolve a TypeScript error.
 
+
+- Updated 'TransactionsService' 'findAll' to include transactions where the wallet is either the source or the destination when filtering by wallet ID.
+
