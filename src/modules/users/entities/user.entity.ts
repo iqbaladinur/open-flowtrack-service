@@ -34,6 +34,9 @@ export class User {
   @Column({ nullable: true })
   password_reset_expires: Date;
 
+  @Column({ nullable: true })
+  refresh_token: string;
+
   @CreateDateColumn()
   created_at: Date;
 

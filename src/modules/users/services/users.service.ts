@@ -28,4 +28,9 @@ export class UsersService {
       where: { password_reset_token: token },
     });
   }
+
+  async update(id: string, userData: Partial<User>): Promise<User> {
+    await this.usersRepository.update(id, userData);
+    return this.findOneById(id);
+  }
 }

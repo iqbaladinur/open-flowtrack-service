@@ -71,11 +71,11 @@ export class AnalyticsService {
         if (t.type === "transfer") {
           return `- ${t.date.toISOString().split("T")[0]}: Transfer of ${
             t.amount
-          } from ${t.wallet?.name} to ${t.destinationWallet?.name}`;  
+          } from ${t.wallet?.name} to ${t.destinationWallet?.name}`;
         }
         return `- ${t.date.toISOString().split("T")[0]}: ${t.type} of ${
-            t.amount
-          } for ${t.category.name}[${t.category.id}] (${t.note || "no note"}) on wallet ${t.wallet?.name}`
+          t.amount
+        } for ${t.category.name}[${t.category.id}] (${t.note || "no note"}) on wallet ${t.wallet?.name}`;
       })
       .join("\n");
 

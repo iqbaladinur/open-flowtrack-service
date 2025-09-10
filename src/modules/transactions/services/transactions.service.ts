@@ -18,7 +18,10 @@ import { UpdateTransactionDto } from "../dto/update-transaction.dto";
 import { FindAllTransactionsDto } from "../dto/find-all-transactions.dto";
 import { CreateTransactionByTextDto } from "../dto/create-transaction-by-text.dto";
 import { CategoriesService } from "src/modules/categories/services/categories.service";
-import { Category, CategoryType } from "src/modules/categories/entities/category.entity";
+import {
+  Category,
+  CategoryType,
+} from "src/modules/categories/entities/category.entity";
 import { AiProvider } from "src/infrastructure/ai/ai.provider";
 import { ConfigService } from "src/modules/config/services/config.service";
 import { Wallet } from "src/modules/wallets/entities/wallet.entity";
