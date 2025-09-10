@@ -11,6 +11,7 @@ import {
 import { JwtStrategy } from "./strategies/jwt.strategy";
 import { GoogleStrategy } from "./strategies/google.strategy";
 import { ConfigModule } from "../config/config.module";
+import { JwtRefreshStrategy } from "./strategies/jwt-refresh.strategy";
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { ConfigModule } from "../config/config.module";
     }),
     ConfigModule,
   ],
-  providers: [AuthService, JwtStrategy, GoogleStrategy],
+  providers: [AuthService, JwtStrategy, GoogleStrategy, JwtRefreshStrategy],
   controllers: [AuthController],
 })
 export class AuthModule {}

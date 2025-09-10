@@ -13,6 +13,7 @@ import { User } from "src/modules/users/entities/user.entity";
 import { ForgotPasswordDto } from "../dto/forgot-password.dto";
 import { ResetPasswordDto } from "../dto/reset-password.dto";
 import * as crypto from "crypto";
+import { ConfigService as NestConfigService } from "@nestjs/config";
 import { ConfigService } from "../../config/services/config.service";
 import { Config } from "../../config/entities/config.entity";
 
@@ -22,10 +23,46 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private nestConfigService: NestConfigService,
   ) {}
+
+  async getTokens(userId: string, email: string) {
+    const payload = { sub: userId, email };
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(payload, {
+        secret: this.nestConfigService.get<string>("jwt.secret"),
+        expiresIn: this.nestConfigService.get<string>("jwt.expiresIn"),
+      }),
+      this.jwtService.signAsync(payload, {
+        secret: this.nestConfigService.get<string>("jwt.refreshSecret"),
+        expiresIn: this.nestConfigService.get<string>("jwt.refreshExpiresIn"),
+      }),
+    ]);
+
+    return {
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    };
+  }
+
+  async updateRefreshToken(userId: string, refreshToken: string) {
+    const salt = await bcrypt.genSalt();
+    const hashedRefreshToken = await bcrypt.hash(refreshToken, salt);
+    await this.usersService.update(userId, {
+      refresh_token: hashedRefreshToken,
+    });
+  }
+
+  async isRefreshTokenMatching(refreshToken: string, hashedToken: string) {
+    if (!hashedToken) {
+      return false;
+    }
+    return bcrypt.compare(refreshToken, hashedToken);
+  }
 
   async googleLogin(req): Promise<{
     access_token: string;
+    refresh_token: string;
     user: Omit<User, "password_hash">;
     config: Config;
   }> {
@@ -48,12 +85,13 @@ export class AuthService {
       config = await this.configService.getCurrencyConfig(user.id);
     }
 
-    const payload = { sub: user.id, email: user.email };
-    const access_token = this.jwtService.sign(payload);
+    const tokens = await this.getTokens(user.id, user.email);
+    await this.updateRefreshToken(user.id, tokens.refresh_token);
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password_hash, ...result } = user;
     return {
-      access_token,
+      ...tokens,
       user: result,
       config,
     };
@@ -86,6 +124,7 @@ export class AuthService {
 
   async login(loginDto: LoginDto): Promise<{
     access_token: string;
+    refresh_token: string;
     user: Omit<User, "password_hash">;
     config: Config;
   }> {
@@ -103,14 +142,28 @@ export class AuthService {
     }
 
     const config = await this.configService.getCurrencyConfig(user.id);
-    const payload = { sub: user.id, email: user.email };
+    const tokens = await this.getTokens(user.id, user.email);
+    await this.updateRefreshToken(user.id, tokens.refresh_token);
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password_hash, ...result } = user;
     return {
-      access_token: this.jwtService.sign(payload),
+      ...tokens,
       user: result,
       config,
     };
+  }
+
+  async refreshToken(
+    userId: string,
+  ): Promise<{ access_token: string; refresh_token: string }> {
+    const user = await this.usersService.findOneById(userId);
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+    const tokens = await this.getTokens(user.id, user.email);
+    await this.updateRefreshToken(user.id, tokens.refresh_token);
+    return tokens;
   }
 
   async getProfile(
