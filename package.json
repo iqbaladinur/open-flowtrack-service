@@ -1,10 +1,10 @@
 {
-  "name": "wallport-api",
-  "version": "0.0.1",
+  "name": "flowtrack-api",
+  "version": "1.0.2",
   "description": "Personal Finance Tracker API",
-  "author": "Gemini",
-  "private": true,
-  "license": "UNLICENSED",
+  "author": "iqbaladinur@gmail.com",
+  "private": false,
+  "license": "MIT",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -12,6 +12,7 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "pm2-runtime start ecosystem.config.js --env production",
+    "start:simple-prod": "node dist/src/main.js",
     "lint": "eslint 'src/**/*.ts' --fix",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --dataSource data-source.ts",
     "generate:swagger": "ts-node -r tsconfig-paths/register generate-spec.ts",

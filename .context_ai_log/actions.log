@@ -155,3 +155,16 @@ Actions:
 - Updated UsersService with an update method.
 - Updated AuthController with a /refresh endpoint.
 - Updated AuthModule to include the new strategy.
+
+---
+- Action: Add MIT License
+- Tool: write_file
+- Details: Created LICENSE file with MIT License text.
+- Action: Update package.json
+- Tool: read_file
+- Details: Read package.json to update license information.
+- Action: Update package.json
+- Tool: replace
+- Details: Changed license to MIT and private to false in package.json.
+---
+
