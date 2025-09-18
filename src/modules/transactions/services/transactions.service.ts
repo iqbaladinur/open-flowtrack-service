@@ -87,7 +87,10 @@ export class TransactionsService {
     """
     `;
 
-    const aiResult = await this.aiProvider.generateText(prompt);
+    const aiResult = await this.aiProvider.generateText(
+      prompt,
+      config.gemini_api_key,
+    );
     const cleanedJson = aiResult
       .replace(/```json\n/g, "")
       .replace(/\n```/g, "");
