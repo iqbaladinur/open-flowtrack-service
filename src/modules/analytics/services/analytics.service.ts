@@ -51,6 +51,13 @@ export class AnalyticsService {
 
     const budgets = await this.budgetsService.findAll(user.id, {});
 
+    if (transactions.length === 0) {
+      return {
+        analytics: "No data transactions to analyze.",
+        source: "cache",
+      };
+    }
+
     const prompt = this.constructPrompt(transactions, budgets);
     const analyticsResult = await this.aiProvider.generateText(
       prompt,

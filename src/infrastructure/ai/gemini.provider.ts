@@ -20,7 +20,7 @@ export class GeminiAiProvider extends AiProvider {
 
     const generativeAi = new GoogleGenerativeAI(key);
     const model = generativeAi.getGenerativeModel({
-      model: "gemini-1.5-flash-latest",
+      model: "gemini-2.0-flash",
     });
     const result = await model.generateContent(prompt);
     const response = await result.response;
