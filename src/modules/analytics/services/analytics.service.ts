@@ -117,6 +117,7 @@ export class AnalyticsService {
       - Be separated by a "|" character
       - Try to find interesting patterns or anomalies
       - Make it max 8 suggestions
+      - No need to add introduction for your answer, strightly give me tha points only.
 
       Do not include any budget-related insight if the budget data is missing.
     `;
