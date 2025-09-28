@@ -1,9 +1,12 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsNumber, IsOptional } from "class-validator";
+import { ApiProperty, PartialType } from "@nestjs/swagger";
+import {
+  IsArray,
+  IsDateString,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from "class-validator";
+import { CreateBudgetDto } from "./create-budget.dto";
 
-export class UpdateBudgetDto {
-  @ApiProperty({ example: 600.0, required: false })
-  @IsNumber()
-  @IsOptional()
-  limit_amount?: number;
-}
+export class UpdateBudgetDto extends PartialType(CreateBudgetDto) {}

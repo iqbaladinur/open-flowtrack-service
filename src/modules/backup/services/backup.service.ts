@@ -112,15 +112,18 @@ export class BackupService {
     // Restore budgets
     if (data.budgets) {
       for (const budgetData of data.budgets) {
-        const newCategoryId = categoryIdMap.get(budgetData.category_id);
+        const newCategoryIds = budgetData.category_ids
+          ? budgetData.category_ids.map((id) => categoryIdMap.get(id)).filter(Boolean)
+          : [];
 
-        if (newCategoryId) {
+        if (newCategoryIds.length > 0) {
           await this.budgetsService.create(
             {
-              category_id: newCategoryId,
+              name: budgetData.name,
+              category_ids: newCategoryIds,
               limit_amount: budgetData.limit_amount,
-              month: budgetData.month,
-              year: budgetData.year,
+              start_date: budgetData.start_date,
+              end_date: budgetData.end_date,
             },
             user.id,
           );

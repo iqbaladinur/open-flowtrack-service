@@ -104,6 +104,7 @@
                 "schema": {
                   "example": {
                     "access_token": "your_jwt_token",
+                    "refresh_token": "your_refresh_token",
                     "user": {
                       "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
                       "email": "test@example.com",
@@ -125,6 +126,31 @@
           },
           "401": {
             "description": "Invalid credentials."
+          }
+        },
+        "tags": [
+          "Authentication"
+        ]
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "operationId": "AuthController_refreshToken",
+        "summary": "Refresh authentication token",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
           }
         },
         "tags": [
@@ -1164,24 +1190,7 @@
         },
         "responses": {
           "201": {
-            "description": "The budget has been successfully created.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": {
-                    "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-                    "category_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-                    "limit_amount": 500,
-                    "month": 7,
-                    "year": 2025,
-                    "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-                    "created_at": "2025-07-28T00:00:00.000Z",
-                    "updated_at": "2025-07-28T00:00:00.000Z",
-                    "total_spent": 150
-                  }
-                }
-              }
-            }
+            "description": "The budget has been successfully created."
           }
         },
         "tags": [
@@ -1198,38 +1207,31 @@
         "summary": "Get all budgets for the current user",
         "parameters": [
           {
-            "name": "year",
+            "name": "start_date",
             "required": false,
             "in": "query",
-            "description": "Filter budgets by year",
+            "description": "Filter budgets by start date",
             "schema": {
-              "example": 2025,
-              "type": "number"
+              "format": "date-time",
+              "example": "2025-01-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "end_date",
+            "required": false,
+            "in": "query",
+            "description": "Filter budgets by end date",
+            "schema": {
+              "format": "date-time",
+              "example": "2025-12-31",
+              "type": "string"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "A list of budgets with their spent amounts.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": [
-                    {
-                      "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-                      "category_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-                      "limit_amount": 500,
-                      "month": 7,
-                      "year": 2025,
-                      "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-                      "created_at": "2025-07-28T00:00:00.000Z",
-                      "updated_at": "2025-07-28T00:00:00.000Z",
-                      "total_spent": 150
-                    }
-                  ]
-                }
-              }
-            }
+            "description": "A list of budgets with their spent amounts."
           }
         },
         "tags": [
@@ -1258,24 +1260,7 @@
         ],
         "responses": {
           "200": {
-            "description": "The budget with its spent amount.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": {
-                    "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-                    "category_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-                    "limit_amount": 500,
-                    "month": 7,
-                    "year": 2025,
-                    "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-                    "created_at": "2025-07-28T00:00:00.000Z",
-                    "updated_at": "2025-07-28T00:00:00.000Z",
-                    "total_spent": 150
-                  }
-                }
-              }
-            }
+            "description": "The budget with its spent amount."
           }
         },
         "tags": [
@@ -1312,24 +1297,7 @@
         },
         "responses": {
           "200": {
-            "description": "The updated budget.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": {
-                    "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-                    "category_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-                    "limit_amount": 600,
-                    "month": 7,
-                    "year": 2025,
-                    "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-                    "created_at": "2025-07-28T00:00:00.000Z",
-                    "updated_at": "2025-07-28T00:00:00.000Z",
-                    "total_spent": 150
-                  }
-                }
-              }
-            }
+            "description": "The updated budget."
           }
         },
         "tags": [
@@ -1722,6 +1690,18 @@
           "password"
         ]
       },
+      "RefreshTokenDto": {
+        "type": "object",
+        "properties": {
+          "refresh_token": {
+            "type": "string",
+            "example": "your_refresh_token"
+          }
+        },
+        "required": [
+          "refresh_token"
+        ]
+      },
       "ForgotPasswordDto": {
         "type": "object",
         "properties": {
@@ -1991,35 +1971,59 @@
       "CreateBudgetDto": {
         "type": "object",
         "properties": {
-          "category_id": {
+          "name": {
             "type": "string"
+          },
+          "category_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "limit_amount": {
             "type": "number",
             "example": 500
           },
-          "month": {
-            "type": "number",
-            "example": 7
+          "start_date": {
+            "format": "date-time",
+            "type": "string"
           },
-          "year": {
-            "type": "number",
-            "example": 2025
+          "end_date": {
+            "format": "date-time",
+            "type": "string"
           }
         },
         "required": [
-          "category_id",
+          "name",
+          "category_ids",
           "limit_amount",
-          "month",
-          "year"
+          "start_date",
+          "end_date"
         ]
       },
       "UpdateBudgetDto": {
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string"
+          },
+          "category_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "limit_amount": {
             "type": "number",
-            "example": 600
+            "example": 500
+          },
+          "start_date": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "end_date": {
+            "format": "date-time",
+            "type": "string"
           }
         }
       },

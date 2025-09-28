@@ -34,19 +34,6 @@ export class BudgetsController {
   @ApiResponse({
     status: 201,
     description: "The budget has been successfully created.",
-    schema: {
-      example: {
-        id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-        category_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-        limit_amount: 500.0,
-        month: 7,
-        year: 2025,
-        user_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-        created_at: "2025-07-28T00:00:00.000Z",
-        updated_at: "2025-07-28T00:00:00.000Z",
-        total_spent: 150.0,
-      },
-    },
   })
   create(@Body() createBudgetDto: CreateBudgetDto, @Request() req) {
     return this.budgetsService.create(createBudgetDto, req.user.id);
@@ -57,21 +44,6 @@ export class BudgetsController {
   @ApiResponse({
     status: 200,
     description: "A list of budgets with their spent amounts.",
-    schema: {
-      example: [
-        {
-          id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-          category_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-          limit_amount: 500.0,
-          month: 7,
-          year: 2025,
-          user_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-          created_at: "2025-07-28T00:00:00.000Z",
-          updated_at: "2025-07-28T00:00:00.000Z",
-          total_spent: 150.0,
-        },
-      ],
-    },
   })
   findAll(@Request() req, @Query() query: FindAllBudgetsDto) {
     return this.budgetsService.findAll(req.user.id, query);
@@ -82,19 +54,6 @@ export class BudgetsController {
   @ApiResponse({
     status: 200,
     description: "The budget with its spent amount.",
-    schema: {
-      example: {
-        id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-        category_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-        limit_amount: 500.0,
-        month: 7,
-        year: 2025,
-        user_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-        created_at: "2025-07-28T00:00:00.000Z",
-        updated_at: "2025-07-28T00:00:00.000Z",
-        total_spent: 150.0,
-      },
-    },
   })
   findOne(@Param("id") id: string, @Request() req) {
     return this.budgetsService.findOne(id, req.user.id);
@@ -105,19 +64,6 @@ export class BudgetsController {
   @ApiResponse({
     status: 200,
     description: "The updated budget.",
-    schema: {
-      example: {
-        id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-        category_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-        limit_amount: 600.0,
-        month: 7,
-        year: 2025,
-        user_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-        created_at: "2025-07-28T00:00:00.000Z",
-        updated_at: "2025-07-28T00:00:00.000Z",
-        total_spent: 150.0,
-      },
-    },
   })
   update(
     @Param("id") id: string,
