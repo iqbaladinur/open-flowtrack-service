@@ -89,7 +89,7 @@ export class AnalyticsService {
     const budgetsSummary = budgets
       .map(
         (b) =>
-          `- Budget limit for ${b.category.name}[${b.category.id}]: ${b.limit_amount}`,
+          `- Budget limit for ${b.categories?.map((a) => `${a.name}[${a.id}]`).join(",")}: ${b.limit_amount}`,
       )
       .join("\n");
 

@@ -1,15 +1,20 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { IsOptional, IsInt, Min } from "class-validator";
-import { Type } from "class-transformer";
+import { IsOptional, IsDateString } from "class-validator";
 
 export class FindAllBudgetsDto {
   @ApiPropertyOptional({
-    description: "Filter budgets by year",
-    example: 2025,
+    description: "Filter budgets by start date",
+    example: "2025-01-01",
   })
   @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  @Min(1970)
-  year?: number;
+  @IsDateString()
+  start_date?: Date;
+
+  @ApiPropertyOptional({
+    description: "Filter budgets by end date",
+    example: "2025-12-31",
+  })
+  @IsOptional()
+  @IsDateString()
+  end_date?: Date;
 }

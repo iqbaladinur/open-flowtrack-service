@@ -9,29 +9,27 @@ import {
   Unique,
 } from "typeorm";
 import { User } from "../../users/entities/user.entity";
-import { Category } from "../../categories/entities/category.entity";
 
 @Entity("budgets")
-@Unique(["user_id", "category_id", "month", "year"])
+@Unique(["user_id", "name"])
 export class Budget {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column()
-  category_id: string;
+  name: string;
 
-  @ManyToOne(() => Category)
-  @JoinColumn({ name: "category_id" })
-  category: Category;
+  @Column("uuid", { array: true })
+  category_ids: string[];
 
   @Column("decimal", { precision: 10, scale: 2 })
   limit_amount: number;
 
   @Column()
-  month: number;
+  start_date: Date;
 
   @Column()
-  year: number;
+  end_date: Date;
 
   @Column()
   user_id: string;

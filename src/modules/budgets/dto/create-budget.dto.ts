@@ -1,26 +1,37 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsNumber, IsUUID, Max, Min } from "class-validator";
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsUUID,
+  IsString,
+  IsArray,
+  IsDateString,
+} from "class-validator";
 
 export class CreateBudgetDto {
   @ApiProperty()
-  @IsUUID()
+  @IsString()
   @IsNotEmpty()
-  category_id: string;
+  name: string;
+
+  @ApiProperty({ type: [String] })
+  @IsArray()
+  @IsUUID("all", { each: true })
+  @IsNotEmpty()
+  category_ids: string[];
 
   @ApiProperty({ example: 500.0 })
   @IsNumber()
   @IsNotEmpty()
   limit_amount: number;
 
-  @ApiProperty({ example: 7 })
-  @IsNumber()
-  @Min(1)
-  @Max(12)
+  @ApiProperty()
+  @IsDateString()
   @IsNotEmpty()
-  month: number;
+  start_date: Date;
 
-  @ApiProperty({ example: 2025 })
-  @IsNumber()
+  @ApiProperty()
+  @IsDateString()
   @IsNotEmpty()
-  year: number;
+  end_date: Date;
 }

@@ -1,11 +1,20 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { FindManyOptions, Repository } from "typeorm";
+import {
+  FindManyOptions,
+  Repository,
+  In,
+  MoreThanOrEqual,
+  LessThanOrEqual,
+} from "typeorm";
 import { Budget } from "../entities/budget.entity";
 import { CreateBudgetDto } from "../dto/create-budget.dto";
 import { UpdateBudgetDto } from "../dto/update-budget.dto";
 import { Transaction } from "../../transactions/entities/transaction.entity";
-import { CategoryType } from "../../categories/entities/category.entity";
+import {
+  Category,
+  CategoryType,
+} from "../../categories/entities/category.entity";
 import { FindAllBudgetsDto } from "../dto/find-all-budgets.dto";
 
 @Injectable()
@@ -15,6 +24,8 @@ export class BudgetsService {
     private budgetsRepository: Repository<Budget>,
     @InjectRepository(Transaction)
     private transactionsRepository: Repository<Transaction>,
+    @InjectRepository(Category)
+    private categoriesRepository: Repository<Category>,
   ) {}
 
   async create(createBudgetDto: CreateBudgetDto, userId: string): Promise<any> {
@@ -29,12 +40,20 @@ export class BudgetsService {
   async findAll(userId: string, query: FindAllBudgetsDto): Promise<any[]> {
     const findOptions: FindManyOptions<Budget> = {
       where: { user_id: userId },
-      relations: ["category"],
-      order: { year: "DESC", month: "DESC" },
+      order: { start_date: "DESC" },
     };
 
-    if (query.year) {
-      findOptions.where = { ...findOptions.where, year: query.year };
+    if (query.start_date) {
+      findOptions.where = {
+        ...findOptions.where,
+        start_date: MoreThanOrEqual(query.start_date),
+      };
+    }
+    if (query.end_date) {
+      findOptions.where = {
+        ...findOptions.where,
+        end_date: LessThanOrEqual(query.end_date),
+      };
     }
 
     const budgets = await this.budgetsRepository.find(findOptions);
@@ -43,11 +62,14 @@ export class BudgetsService {
       budgets.map(async (budget) => {
         const totalSpent = await this.calculateSpent(
           userId,
-          budget.category_id,
-          budget.year,
-          budget.month,
+          budget.category_ids,
+          budget.start_date,
+          budget.end_date,
         );
-        return { ...budget, total_spent: totalSpent };
+        const categories = await this.categoriesRepository.find({
+          where: { id: In(budget.category_ids) },
+        });
+        return { ...budget, total_spent: totalSpent, categories };
       }),
     );
 
@@ -57,7 +79,6 @@ export class BudgetsService {
   async findOne(id: string, userId: string): Promise<any> {
     const budget = await this.budgetsRepository.findOne({
       where: { id, user_id: userId },
-      relations: ["category"],
     });
     if (!budget) {
       throw new NotFoundException(`Budget with ID "${id}" not found`);
@@ -65,12 +86,16 @@ export class BudgetsService {
 
     const totalSpent = await this.calculateSpent(
       userId,
-      budget.category_id,
-      budget.year,
-      budget.month,
+      budget.category_ids,
+      budget.start_date,
+      budget.end_date,
     );
 
-    return { ...budget, total_spent: totalSpent };
+    const categories = await this.categoriesRepository.find({
+      where: { id: In(budget.category_ids) },
+    });
+
+    return { ...budget, total_spent: totalSpent, categories };
   }
 
   async update(
@@ -100,18 +125,19 @@ export class BudgetsService {
 
   private async calculateSpent(
     userId: string,
-    categoryId: string,
-    year: number,
-    month: number,
+    categoryIds: string[],
+    startDate: Date,
+    endDate: Date,
   ): Promise<number> {
-    const startDate = new Date(year, month - 1, 1);
-    const endDate = new Date(year, month, 0);
+    if (categoryIds.length === 0) {
+      return 0;
+    }
 
     const { total } = await this.transactionsRepository
       .createQueryBuilder("transaction")
       .select("SUM(transaction.amount)", "total")
       .where("transaction.user_id = :userId", { userId })
-      .andWhere("transaction.category_id = :categoryId", { categoryId })
+      .andWhere("transaction.category_id IN (:...categoryIds)", { categoryIds })
       .andWhere("transaction.type = :type", { type: CategoryType.EXPENSE })
       .andWhere("transaction.date BETWEEN :startDate AND :endDate", {
         startDate,
