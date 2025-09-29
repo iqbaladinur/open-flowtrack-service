@@ -263,6 +263,7 @@ fetch('/auth/login',
 ```json
 {
   "access_token": "your_jwt_token",
+  "refresh_token": "your_refresh_token",
   "user": {
     "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
     "email": "test@example.com",
@@ -288,6 +289,67 @@ fetch('/auth/login',
 |401|[Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1)|Invalid credentials.|None|
 
 <h3 id="log-in-a-user-responseschema">Response Schema</h3>
+
+<aside class="success">
+This operation does not require authentication
+</aside>
+
+## Refresh authentication token
+
+<a id="opIdAuthController_refreshToken"></a>
+
+> Code samples
+
+```shell
+# You can also use wget
+curl -X POST /auth/refresh \
+  -H 'Content-Type: application/json'
+
+```
+
+```javascript
+const inputBody = '{
+  "refresh_token": "your_refresh_token"
+}';
+const headers = {
+  'Content-Type':'application/json'
+};
+
+fetch('/auth/refresh',
+{
+  method: 'POST',
+  body: inputBody,
+  headers: headers
+})
+.then(function(res) {
+    return res.json();
+}).then(function(body) {
+    console.log(body);
+});
+
+```
+
+`POST /auth/refresh`
+
+> Body parameter
+
+```json
+{
+  "refresh_token": "your_refresh_token"
+}
+```
+
+<h3 id="refresh-authentication-token-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[RefreshTokenDto](#schemarefreshtokendto)|true|none|
+
+<h3 id="refresh-authentication-token-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|none|None|
 
 <aside class="success">
 This operation does not require authentication
@@ -2040,21 +2102,22 @@ bearer
 # You can also use wget
 curl -X POST /budgets \
   -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
   -H 'Authorization: Bearer {access-token}'
 
 ```
 
 ```javascript
 const inputBody = '{
-  "category_id": "string",
+  "name": "string",
+  "category_ids": [
+    "string"
+  ],
   "limit_amount": 500,
-  "month": 7,
-  "year": 2025
+  "start_date": "2019-08-24T14:15:22Z",
+  "end_date": "2019-08-24T14:15:22Z"
 }';
 const headers = {
   'Content-Type':'application/json',
-  'Accept':'application/json',
   'Authorization':'Bearer {access-token}'
 };
 
@@ -2078,10 +2141,13 @@ fetch('/budgets',
 
 ```json
 {
-  "category_id": "string",
+  "name": "string",
+  "category_ids": [
+    "string"
+  ],
   "limit_amount": 500,
-  "month": 7,
-  "year": 2025
+  "start_date": "2019-08-24T14:15:22Z",
+  "end_date": "2019-08-24T14:15:22Z"
 }
 ```
 
@@ -2091,31 +2157,11 @@ fetch('/budgets',
 |---|---|---|---|---|
 |body|body|[CreateBudgetDto](#schemacreatebudgetdto)|true|none|
 
-> Example responses
-
-> 201 Response
-
-```json
-{
-  "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-  "category_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-  "limit_amount": 500,
-  "month": 7,
-  "year": 2025,
-  "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-  "created_at": "2025-07-28T00:00:00.000Z",
-  "updated_at": "2025-07-28T00:00:00.000Z",
-  "total_spent": 150
-}
-```
-
 <h3 id="create-a-new-budget-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|The budget has been successfully created.|Inline|
-
-<h3 id="create-a-new-budget-responseschema">Response Schema</h3>
+|201|[Created](https://tools.ietf.org/html/rfc7231#section-6.3.2)|The budget has been successfully created.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -2131,7 +2177,6 @@ bearer
 ```shell
 # You can also use wget
 curl -X GET /budgets \
-  -H 'Accept: application/json' \
   -H 'Authorization: Bearer {access-token}'
 
 ```
@@ -2139,7 +2184,6 @@ curl -X GET /budgets \
 ```javascript
 
 const headers = {
-  'Accept':'application/json',
   'Authorization':'Bearer {access-token}'
 };
 
@@ -2163,35 +2207,14 @@ fetch('/budgets',
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|year|query|number|false|Filter budgets by year|
-
-> Example responses
-
-> 200 Response
-
-```json
-[
-  {
-    "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-    "category_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-    "limit_amount": 500,
-    "month": 7,
-    "year": 2025,
-    "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-    "created_at": "2025-07-28T00:00:00.000Z",
-    "updated_at": "2025-07-28T00:00:00.000Z",
-    "total_spent": 150
-  }
-]
-```
+|start_date|query|string(date-time)|false|Filter budgets by start date|
+|end_date|query|string(date-time)|false|Filter budgets by end date|
 
 <h3 id="get-all-budgets-for-the-current-user-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|A list of budgets with their spent amounts.|Inline|
-
-<h3 id="get-all-budgets-for-the-current-user-responseschema">Response Schema</h3>
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|A list of budgets with their spent amounts.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -2207,7 +2230,6 @@ bearer
 ```shell
 # You can also use wget
 curl -X GET /budgets/{id} \
-  -H 'Accept: application/json' \
   -H 'Authorization: Bearer {access-token}'
 
 ```
@@ -2215,7 +2237,6 @@ curl -X GET /budgets/{id} \
 ```javascript
 
 const headers = {
-  'Accept':'application/json',
   'Authorization':'Bearer {access-token}'
 };
 
@@ -2241,31 +2262,11 @@ fetch('/budgets/{id}',
 |---|---|---|---|---|
 |id|path|string|true|none|
 
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-  "category_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-  "limit_amount": 500,
-  "month": 7,
-  "year": 2025,
-  "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-  "created_at": "2025-07-28T00:00:00.000Z",
-  "updated_at": "2025-07-28T00:00:00.000Z",
-  "total_spent": 150
-}
-```
-
 <h3 id="get-a-specific-budget-by-id-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|The budget with its spent amount.|Inline|
-
-<h3 id="get-a-specific-budget-by-id-responseschema">Response Schema</h3>
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|The budget with its spent amount.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -2282,18 +2283,22 @@ bearer
 # You can also use wget
 curl -X PATCH /budgets/{id} \
   -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
   -H 'Authorization: Bearer {access-token}'
 
 ```
 
 ```javascript
 const inputBody = '{
-  "limit_amount": 600
+  "name": "string",
+  "category_ids": [
+    "string"
+  ],
+  "limit_amount": 500,
+  "start_date": "2019-08-24T14:15:22Z",
+  "end_date": "2019-08-24T14:15:22Z"
 }';
 const headers = {
   'Content-Type':'application/json',
-  'Accept':'application/json',
   'Authorization':'Bearer {access-token}'
 };
 
@@ -2317,7 +2322,13 @@ fetch('/budgets/{id}',
 
 ```json
 {
-  "limit_amount": 600
+  "name": "string",
+  "category_ids": [
+    "string"
+  ],
+  "limit_amount": 500,
+  "start_date": "2019-08-24T14:15:22Z",
+  "end_date": "2019-08-24T14:15:22Z"
 }
 ```
 
@@ -2328,31 +2339,11 @@ fetch('/budgets/{id}',
 |id|path|string|true|none|
 |body|body|[UpdateBudgetDto](#schemaupdatebudgetdto)|true|none|
 
-> Example responses
-
-> 200 Response
-
-```json
-{
-  "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-  "category_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-  "limit_amount": 600,
-  "month": 7,
-  "year": 2025,
-  "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
-  "created_at": "2025-07-28T00:00:00.000Z",
-  "updated_at": "2025-07-28T00:00:00.000Z",
-  "total_spent": 150
-}
-```
-
 <h3 id="update-a-budget-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|The updated budget.|Inline|
-
-<h3 id="update-a-budget-responseschema">Response Schema</h3>
+|200|[OK](https://tools.ietf.org/html/rfc7231#section-6.3.1)|The updated budget.|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -2916,6 +2907,26 @@ bearer
 |email|string|true|none|none|
 |password|string|true|none|none|
 
+<h2 id="tocS_RefreshTokenDto">RefreshTokenDto</h2>
+<!-- backwards compatibility -->
+<a id="schemarefreshtokendto"></a>
+<a id="schema_RefreshTokenDto"></a>
+<a id="tocSrefreshtokendto"></a>
+<a id="tocsrefreshtokendto"></a>
+
+```json
+{
+  "refresh_token": "your_refresh_token"
+}
+
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|refresh_token|string|true|none|none|
+
 <h2 id="tocS_ForgotPasswordDto">ForgotPasswordDto</h2>
 <!-- backwards compatibility -->
 <a id="schemaforgotpassworddto"></a>
@@ -3252,10 +3263,13 @@ bearer
 
 ```json
 {
-  "category_id": "string",
+  "name": "string",
+  "category_ids": [
+    "string"
+  ],
   "limit_amount": 500,
-  "month": 7,
-  "year": 2025
+  "start_date": "2019-08-24T14:15:22Z",
+  "end_date": "2019-08-24T14:15:22Z"
 }
 
 ```
@@ -3264,10 +3278,11 @@ bearer
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|category_id|string|true|none|none|
+|name|string|true|none|none|
+|category_ids|[string]|true|none|none|
 |limit_amount|number|true|none|none|
-|month|number|true|none|none|
-|year|number|true|none|none|
+|start_date|string(date-time)|true|none|none|
+|end_date|string(date-time)|true|none|none|
 
 <h2 id="tocS_UpdateBudgetDto">UpdateBudgetDto</h2>
 <!-- backwards compatibility -->
@@ -3278,7 +3293,13 @@ bearer
 
 ```json
 {
-  "limit_amount": 600
+  "name": "string",
+  "category_ids": [
+    "string"
+  ],
+  "limit_amount": 500,
+  "start_date": "2019-08-24T14:15:22Z",
+  "end_date": "2019-08-24T14:15:22Z"
 }
 
 ```
@@ -3287,7 +3308,11 @@ bearer
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
+|name|string|false|none|none|
+|category_ids|[string]|false|none|none|
 |limit_amount|number|false|none|none|
+|start_date|string(date-time)|false|none|none|
+|end_date|string(date-time)|false|none|none|
 
 <h2 id="tocS_GenerateAnalyticsDto">GenerateAnalyticsDto</h2>
 <!-- backwards compatibility -->
