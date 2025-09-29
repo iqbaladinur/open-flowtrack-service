@@ -1,6 +1,12 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { FindManyOptions, Repository, In } from "typeorm";
+import {
+  FindManyOptions,
+  Repository,
+  In,
+  MoreThanOrEqual,
+  LessThanOrEqual,
+} from "typeorm";
 import { Budget } from "../entities/budget.entity";
 import { CreateBudgetDto } from "../dto/create-budget.dto";
 import { UpdateBudgetDto } from "../dto/update-budget.dto";
@@ -40,11 +46,14 @@ export class BudgetsService {
     if (query.start_date) {
       findOptions.where = {
         ...findOptions.where,
-        start_date: query.start_date,
+        start_date: MoreThanOrEqual(query.start_date),
       };
     }
     if (query.end_date) {
-      findOptions.where = { ...findOptions.where, end_date: query.end_date };
+      findOptions.where = {
+        ...findOptions.where,
+        end_date: LessThanOrEqual(query.end_date),
+      };
     }
 
     const budgets = await this.budgetsRepository.find(findOptions);
