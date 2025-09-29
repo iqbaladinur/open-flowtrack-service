@@ -35,4 +35,4 @@ COPY --from=builder /usr/src/app/tsconfig.json ./
 EXPOSE 3000
 
 # Command to run the application via PM2
-CMD ["npm", "run", "start:prod"]
+CMD ["sh", "-c", "npm run migration:run:prod && npm run start:prod"]

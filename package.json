@@ -17,6 +17,7 @@
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "generate:swagger": "ts-node -r tsconfig-paths/register generate-spec.ts",
     "migration:run": "npm run typeorm -- -d data-source.ts migration:run",
+    "migration:run:prod": "node ./node_modules/typeorm/cli.js -d dist/data-source.js migration:run",
     "migrate:revert": "npm run typeorm -- -d data-source.ts migration:revert",
     "migrate:generate": "npm run typeorm -- -d data-source.ts migration:generate src/migrations/new-migration",
     "test": "jest",
