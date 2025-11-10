@@ -21,16 +21,21 @@ async function bootstrap() {
   // Security
   app.use(helmet());
   app.enableCors();
+
+  // Production-specific configurations
   if (process.env.NODE_ENV === "production") {
+    // Enable trust proxy for reverse proxy environments
     const expressInstance = app.getHttpAdapter().getInstance();
     expressInstance.set("trust proxy", 1);
+
+    // Enable rate limiting
+    app.use(
+      rateLimit({
+        windowMs: 15 * 60 * 1000, // 15 minutes
+        max: 100, // limit each IP to 100 requests per windowMs
+      }),
+    );
   }
-  app.use(
-    rateLimit({
-      windowMs: 15 * 60 * 1000, // 15 minutes
-      max: 100, // limit each IP to 100 requests per windowMs
-    }),
-  );
 
   // Global Validation
   app.useGlobalPipes(

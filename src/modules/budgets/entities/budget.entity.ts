@@ -22,7 +22,7 @@ export class Budget {
   @Column("uuid", { array: true })
   category_ids: string[];
 
-  @Column("decimal", { precision: 10, scale: 2 })
+  @Column("decimal", { precision: 18, scale: 4 })
   limit_amount: number;
 
   @Column()
