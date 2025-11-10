@@ -22,7 +22,7 @@ export class Wallet {
   @Column()
   name: string;
 
-  @Column("decimal", { precision: 15, scale: 2 })
+  @Column("decimal", { precision: 18, scale: 4 })
   initial_balance: number;
 
   @Column({ default: false })
