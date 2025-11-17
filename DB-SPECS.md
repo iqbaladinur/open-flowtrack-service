@@ -10,6 +10,7 @@ This document outlines the database schema for the Wallport API.
 *   [categories](#categories)
 *   [transactions](#transactions)
 *   [budgets](#budgets)
+*   [milestones](#milestones)
 
 ---
 
@@ -33,6 +34,7 @@ This document outlines the database schema for the Wallport API.
 *   Has many `categories`
 *   Has many `transactions`
 *   Has many `budgets`
+*   Has many `milestones`
 
 ---
 
@@ -132,6 +134,33 @@ This document outlines the database schema for the Wallport API.
 
 **Constraints:**
 *   UNIQUE on (`user_id`, `name`)
+
+**Relations:**
+*   Belongs to one `user`
+
+---
+
+### `milestones`
+
+| Column | Data Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | uuid | PRIMARY KEY | Unique identifier for the milestone. |
+| `name` | string | | Name/title of the milestone. |
+| `description` | text | NULLABLE | Detailed description of the milestone. |
+| `icon` | string | NULLABLE | Icon identifier for UI visualization. |
+| `color` | string | NULLABLE | Hex color code for UI visualization. |
+| `conditions` | jsonb[] | | Array of condition objects (supports multiple conditions). |
+| `target_date` | date | | Target date when milestone should be achieved. |
+| `achieved_at` | date | NULLABLE | Actual date when milestone was achieved. |
+| `status` | enum('pending', 'in_progress', 'achieved', 'failed', 'cancelled') | DEFAULT: 'pending' | Current status of the milestone. |
+| `user_id` | uuid | FOREIGN KEY to `users.id` | The user who owns this milestone. |
+| `created_at` | date | | Timestamp of when the milestone was created. |
+| `updated_at` | date | | Timestamp of when the milestone was last updated. |
+
+**Indexes:**
+*   INDEX on `user_id`
+*   INDEX on `status`
+*   INDEX on `target_date`
 
 **Relations:**
 *   Belongs to one `user`
