@@ -7,6 +7,7 @@ import { Budget } from "./src/modules/budgets/entities/budget.entity";
 import { Category } from "./src/modules/categories/entities/category.entity";
 import { Transaction } from "./src/modules/transactions/entities/transaction.entity";
 import { Wallet } from "./src/modules/wallets/entities/wallet.entity";
+import { Milestone } from "./src/modules/milestones/entities/milestone.entity";
 
 async function generateSwaggerSpec() {
   console.log("=== Start Swagger Generation ===");
@@ -25,7 +26,7 @@ async function generateSwaggerSpec() {
   console.log("Swagger config built");
 
   const document = SwaggerModule.createDocument(app, config, {
-    extraModels: [User, Budget, Category, Transaction, Wallet],
+    extraModels: [User, Budget, Category, Transaction, Wallet, Milestone],
   });
   console.log("Swagger document created");
 

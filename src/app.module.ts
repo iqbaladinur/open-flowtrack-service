@@ -13,6 +13,7 @@ import { BackupModule } from "./modules/backup/backup.module";
 import configuration from "./infrastructure/config/configuration";
 import { validationSchema } from "./infrastructure/config/validation";
 import { AnalyticsModule } from "./modules/analytics/analytics.module";
+import { MilestonesModule } from "./modules/milestones/milestones.module";
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { AnalyticsModule } from "./modules/analytics/analytics.module";
     ExportModule,
     BackupModule,
     AnalyticsModule,
+    MilestonesModule,
   ],
   controllers: [],
   providers: [],
