@@ -203,10 +203,9 @@ export class MilestonesService {
     let status = milestone.status;
     let achievedAt = milestone.achieved_at;
 
-    if (
-      status !== MilestoneStatus.CANCELLED &&
-      status !== MilestoneStatus.ACHIEVED
-    ) {
+    // Only skip recalculation for CANCELLED status (manual user action)
+    // Allow recalculation for ACHIEVED status when conditions are modified
+    if (status !== MilestoneStatus.CANCELLED) {
       if (allMet) {
         status = MilestoneStatus.ACHIEVED;
         achievedAt = achievedAt || new Date();
