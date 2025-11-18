@@ -5,6 +5,7 @@ import { TransactionsService } from "../../transactions/services/transactions.se
 import { BudgetsService } from "../../budgets/services/budgets.service";
 import { User } from "src/modules/users/entities/user.entity";
 import { CategoryType } from "src/modules/categories/entities/category.entity";
+import { MilestonesService } from "../../milestones/services/milestones.service";
 
 @Injectable()
 export class BackupService {
@@ -13,6 +14,7 @@ export class BackupService {
     private readonly categoriesService: CategoriesService,
     private readonly transactionsService: TransactionsService,
     private readonly budgetsService: BudgetsService,
+    private readonly milestonesService: MilestonesService,
   ) {}
 
   async backup(user: User) {
@@ -20,12 +22,14 @@ export class BackupService {
     const categories = await this.categoriesService.findAll(user.id);
     const transactions = await this.transactionsService.findAll(user.id, {});
     const budgets = await this.budgetsService.findAll(user.id, {});
+    const milestones = await this.milestonesService.findAll(user.id, {});
 
     return {
       wallets,
       categories,
       transactions,
       budgets,
+      milestones,
     };
   }
 
