@@ -5,7 +5,6 @@ import { WalletsService } from "../../wallets/services/wallets.service";
 import { CategoriesService } from "../../categories/services/categories.service";
 import { TransactionsService } from "../../transactions/services/transactions.service";
 import { BudgetsService } from "../../budgets/services/budgets.service";
-import { User } from "src/modules/users/entities/user.entity";
 import { CategoryType } from "src/modules/categories/entities/category.entity";
 import { MilestonesService } from "../../milestones/services/milestones.service";
 import { Wallet } from "../../wallets/entities/wallet.entity";
@@ -48,12 +47,12 @@ export class BackupService {
     await this.walletsRepository.delete({ user_id: userId });
   }
 
-  async backup(user: User) {
-    const wallets = await this.walletsService.findAll(user.id);
-    const categories = await this.categoriesService.findAll(user.id);
-    const transactions = await this.transactionsService.findAll(user.id, {});
-    const budgets = await this.budgetsService.findAll(user.id, {});
-    const milestones = await this.milestonesService.findAll(user.id, {});
+  async backup(userId: string) {
+    const wallets = await this.walletsService.findAll(userId);
+    const categories = await this.categoriesService.findAll(userId);
+    const transactions = await this.transactionsService.findAll(userId, {});
+    const budgets = await this.budgetsService.findAll(userId, {});
+    const milestones = await this.milestonesService.findAll(userId, {});
 
     return {
       wallets,
@@ -64,9 +63,9 @@ export class BackupService {
     };
   }
 
-  async restore(user: User, data: any) {
+  async restore(userId: string, data: any) {
     // Clear all existing user data first (agnostic restore)
-    await this.clearAllUserData(user.id);
+    await this.clearAllUserData(userId);
 
     const walletIdMap = new Map<string, string>();
     const categoryIdMap = new Map<string, string>();
@@ -80,7 +79,7 @@ export class BackupService {
             name: walletData.name,
             initial_balance: walletData.initial_balance,
           },
-          user.id,
+          userId,
         );
         walletIdMap.set(walletData.id, newWallet.id);
       }
@@ -96,7 +95,7 @@ export class BackupService {
             icon: categoryData.icon,
             color: categoryData.color,
           },
-          user.id,
+          userId,
         );
         categoryIdMap.set(categoryData.id, newCategory.id);
       }
@@ -125,7 +124,7 @@ export class BackupService {
               is_recurring: transactionData.is_recurring,
               recurring_pattern: transactionData.recurring_pattern,
             },
-            user.id,
+            userId,
           );
         } else {
           const newCategoryId = categoryIdMap.get(transactionData.category_id);
@@ -142,7 +141,7 @@ export class BackupService {
               is_recurring: transactionData.is_recurring,
               recurring_pattern: transactionData.recurring_pattern,
             },
-            user.id,
+            userId,
           );
         }
       }
@@ -164,7 +163,7 @@ export class BackupService {
               start_date: budgetData.start_date,
               end_date: budgetData.end_date,
             },
-            user.id,
+            userId,
           );
           budgetIdMap.set(budgetData.id, newBudget.id);
         }
@@ -218,7 +217,7 @@ export class BackupService {
             color: milestoneData.color,
             conditions: mappedConditions,
             target_date: milestoneData.target_date,
-          }, user.id);
+          }, userId);
         }
       }
     }

@@ -3,7 +3,6 @@ import { TransactionsService } from "../../transactions/services/transactions.se
 import { BudgetsService } from "../../budgets/services/budgets.service";
 import { AiProvider } from "../../../infrastructure/ai/ai.provider";
 import { GenerateAnalyticsDto } from "../dto/generate-analytics.dto";
-import { User } from "src/modules/users/entities/user.entity";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { Cache } from "cache-manager";
 import { ConfigService } from "src/modules/config/services/config.service";
@@ -19,10 +18,10 @@ export class AnalyticsService {
   ) {}
 
   async generateAnalytics(
-    user: User,
+    userId: string,
     generateAnalyticsDto: GenerateAnalyticsDto,
   ): Promise<any> {
-    const config = await this.configService.getCurrencyConfig(user.id);
+    const config = await this.configService.getCurrencyConfig(userId);
     if (!config.gemini_api_key) {
       throw new BadRequestException(
         "AI features are not available. Please configure your Gemini API key in settings.",
@@ -34,7 +33,7 @@ export class AnalyticsService {
       st: new Date(startDate).toDateString(),
       en: new Date(endDate).toDateString(),
     };
-    const cacheKey = `analytics:${user.id}:${key.st}:${key.en}:`;
+    const cacheKey = `analytics:${userId}:${key.st}:${key.en}:`;
 
     const cachedResult = await this.cacheManager.get(cacheKey);
     if (cachedResult) {
@@ -44,12 +43,12 @@ export class AnalyticsService {
       };
     }
 
-    const transactions = await this.transactionsService.findAll(user.id, {
+    const transactions = await this.transactionsService.findAll(userId, {
       start_date: new Date(startDate),
       end_date: new Date(endDate),
     });
 
-    const budgets = await this.budgetsService.findAll(user.id, {});
+    const budgets = await this.budgetsService.findAll(userId, {});
 
     if (transactions.length === 0) {
       return {

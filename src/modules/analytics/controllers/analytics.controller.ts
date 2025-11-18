@@ -27,7 +27,7 @@ export class AnalyticsController {
     @Body() generateAnalyticsDto: GenerateAnalyticsDto,
   ) {
     return this.analyticsService.generateAnalytics(
-      req.user,
+      req.user.id,
       generateAnalyticsDto,
     );
   }

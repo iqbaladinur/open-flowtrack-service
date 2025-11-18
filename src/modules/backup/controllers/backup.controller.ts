@@ -30,7 +30,7 @@ export class BackupController {
   @Get()
   @ApiOperation({ summary: "Backup user data" })
   async backup(@Request() req, @Res() res: Response) {
-    const data = await this.backupService.backup(req.user);
+    const data = await this.backupService.backup(req.user.id);
     res.header("Content-Type", "application/json");
     res.attachment("backup.json");
     res.send(data);
@@ -53,6 +53,6 @@ export class BackupController {
   @ApiOperation({ summary: "Restore user data" })
   async restore(@Request() req, @UploadedFile() file) {
     const data = JSON.parse(file.buffer.toString());
-    return await this.backupService.restore(req.user, data);
+    return await this.backupService.restore(req.user.id, data);
   }
 }
