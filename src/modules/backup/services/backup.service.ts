@@ -1,10 +1,18 @@
 import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 import { WalletsService } from "../../wallets/services/wallets.service";
 import { CategoriesService } from "../../categories/services/categories.service";
 import { TransactionsService } from "../../transactions/services/transactions.service";
 import { BudgetsService } from "../../budgets/services/budgets.service";
 import { User } from "src/modules/users/entities/user.entity";
 import { CategoryType } from "src/modules/categories/entities/category.entity";
+import { MilestonesService } from "../../milestones/services/milestones.service";
+import { Wallet } from "../../wallets/entities/wallet.entity";
+import { Category } from "../../categories/entities/category.entity";
+import { Transaction } from "../../transactions/entities/transaction.entity";
+import { Budget } from "../../budgets/entities/budget.entity";
+import { Milestone } from "../../milestones/entities/milestone.entity";
 
 @Injectable()
 export class BackupService {
@@ -13,25 +21,56 @@ export class BackupService {
     private readonly categoriesService: CategoriesService,
     private readonly transactionsService: TransactionsService,
     private readonly budgetsService: BudgetsService,
+    private readonly milestonesService: MilestonesService,
+    @InjectRepository(Wallet)
+    private readonly walletsRepository: Repository<Wallet>,
+    @InjectRepository(Category)
+    private readonly categoriesRepository: Repository<Category>,
+    @InjectRepository(Transaction)
+    private readonly transactionsRepository: Repository<Transaction>,
+    @InjectRepository(Budget)
+    private readonly budgetsRepository: Repository<Budget>,
+    @InjectRepository(Milestone)
+    private readonly milestonesRepository: Repository<Milestone>,
   ) {}
+
+  private async clearAllUserData(userId: string): Promise<void> {
+    // Delete in order to handle foreign key constraints
+    // 1. Milestones (no dependencies)
+    await this.milestonesRepository.delete({ user_id: userId });
+    // 2. Budgets (no FK constraints)
+    await this.budgetsRepository.delete({ user_id: userId });
+    // 3. Transactions (references wallets and categories)
+    await this.transactionsRepository.delete({ user_id: userId });
+    // 4. Categories
+    await this.categoriesRepository.delete({ user_id: userId });
+    // 5. Wallets
+    await this.walletsRepository.delete({ user_id: userId });
+  }
 
   async backup(user: User) {
     const wallets = await this.walletsService.findAll(user.id);
     const categories = await this.categoriesService.findAll(user.id);
     const transactions = await this.transactionsService.findAll(user.id, {});
     const budgets = await this.budgetsService.findAll(user.id, {});
+    const milestones = await this.milestonesService.findAll(user.id, {});
 
     return {
       wallets,
       categories,
       transactions,
       budgets,
+      milestones,
     };
   }
 
   async restore(user: User, data: any) {
+    // Clear all existing user data first (agnostic restore)
+    await this.clearAllUserData(user.id);
+
     const walletIdMap = new Map<string, string>();
     const categoryIdMap = new Map<string, string>();
+    const budgetIdMap = new Map<string, string>();
 
     // Restore wallets
     if (data.wallets) {
@@ -113,11 +152,11 @@ export class BackupService {
     if (data.budgets) {
       for (const budgetData of data.budgets) {
         const newCategoryIds = budgetData.category_ids
-          ? budgetData.category_ids.map((id) => categoryIdMap.get(id)).filter(Boolean)
+          ? budgetData.category_ids.map((id: string) => categoryIdMap.get(id)).filter(Boolean)
           : [];
 
         if (newCategoryIds.length > 0) {
-          await this.budgetsService.create(
+          const newBudget = await this.budgetsService.create(
             {
               name: budgetData.name,
               category_ids: newCategoryIds,
@@ -127,6 +166,59 @@ export class BackupService {
             },
             user.id,
           );
+          budgetIdMap.set(budgetData.id, newBudget.id);
+        }
+      }
+    }
+
+    // Restore milestonesoke
+    if (data.milestones) {
+      for (const milestoneData of data.milestones) {
+        // Map IDs in conditions to new IDs
+        const mappedConditions = milestoneData.conditions?.map((c: { type: string; config: any }) => {
+          const newConfig = { ...c.config };
+
+          // Map wallet_id (for wallet_balance condition)
+          if (newConfig.wallet_id) {
+            newConfig.wallet_id = walletIdMap.get(newConfig.wallet_id) || null;
+          }
+
+          // Map budget_id (for budget_control condition)
+          if (newConfig.budget_id) {
+            const newBudgetId = budgetIdMap.get(newConfig.budget_id);
+            if (!newBudgetId) {
+              // Skip this condition if budget not found
+              return null;
+            }
+            newConfig.budget_id = newBudgetId;
+          }
+
+          // Map category_id (for transaction_amount, period_total, category_spending conditions)
+          if (newConfig.category_id) {
+            const newCategoryId = categoryIdMap.get(newConfig.category_id);
+            if (!newCategoryId) {
+              // Skip this condition if category not found
+              return null;
+            }
+            newConfig.category_id = newCategoryId;
+          }
+
+          return {
+            type: c.type,
+            config: newConfig
+          };
+        }).filter(Boolean) || [];
+
+        // Only create milestone if it has valid conditions
+        if (mappedConditions.length > 0) {
+          await this.milestonesService.create({
+            name: milestoneData.name,
+            description: milestoneData.description,
+            icon: milestoneData.icon,
+            color: milestoneData.color,
+            conditions: mappedConditions,
+            target_date: milestoneData.target_date,
+          }, user.id);
         }
       }
     }
