@@ -395,20 +395,40 @@ export class MilestonesService {
       whereClause.category_id = config.category_id;
     }
 
+    // For EQUAL operator, directly filter by exact amount
+    if (config.operator === Operator.EQUAL) {
+      whereClause.amount = config.amount;
+    }
+
+    // Determine sort order based on operator
+    let orderDirection: "ASC" | "DESC" = "DESC";
+    if (
+      config.operator === Operator.LESS_THAN ||
+      config.operator === Operator.LESS_THAN_EQUAL
+    ) {
+      orderDirection = "ASC"; // Get smallest transaction for <= or <
+    }
+
     const transactions = await this.transactionsRepository.find({
       where: whereClause,
-      order: { amount: "DESC" },
+      order: { amount: orderDirection },
       take: 1,
     });
 
     const currentValue = transactions.length > 0 ? Number(transactions[0].amount) : 0;
     const targetValue = config.amount;
-    const progressPercentage = Math.min((currentValue / targetValue) * 100, 100);
+
+    // Evaluate if condition is met
     const isMet = this.evaluateOperator(
       currentValue,
       config.operator,
       targetValue,
     );
+
+    // Progress is binary: either met (100%) or not met (0%)
+    // This is because we're checking "has user EVER made a transaction"
+    // not accumulating values over time
+    const progressPercentage = transactions.length > 0 && isMet ? 100 : 0;
 
     return {
       id: condition.id,
@@ -532,7 +552,7 @@ export class MilestonesService {
     const targetValue = config.amount;
 
     // For <= operator, progress is inverse (less spending = more progress)
-    let progressPercentage;
+    let progressPercentage: number;
     if (
       config.operator === Operator.LESS_THAN_EQUAL ||
       config.operator === Operator.LESS_THAN
