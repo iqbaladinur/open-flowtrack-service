@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 import { AiProvider } from "./ai.provider";
 
 @Injectable()
@@ -18,12 +18,11 @@ export class GeminiAiProvider extends AiProvider {
       throw new Error("Gemini API key not provided.");
     }
 
-    const generativeAi = new GoogleGenerativeAI(key);
-    const model = generativeAi.getGenerativeModel({
-      model: "gemini-2.0-flash",
+    const generativeAi = new GoogleGenAI({ apiKey: key });
+    const result = await generativeAi.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: prompt
     });
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    return response.text();
+    return result.text;
   }
 }

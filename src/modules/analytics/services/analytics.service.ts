@@ -76,11 +76,11 @@ export class AnalyticsService {
       .map((t) => {
         if (t.type === "transfer") {
           return `- ${t.date.toISOString().split("T")[0]}: Transfer of ${
-            t.amount
+            Number(t.amount).toFixed(2)
           } from ${t.wallet?.name} to ${t.destinationWallet?.name}`;
         }
         return `- ${t.date.toISOString().split("T")[0]}: ${t.type} of ${
-          t.amount
+          Number(t.amount).toFixed(2)
         } for ${t.category.name}[${t.category.id}] (${t.note || "no note"}) on wallet ${t.wallet?.name}`;
       })
       .join("\n");
@@ -88,37 +88,40 @@ export class AnalyticsService {
     const budgetsSummary = budgets
       .map(
         (b) =>
-          `- Budget limit for ${b.categories?.map((a) => `${a.name}[${a.id}]`).join(",")}: ${b.limit_amount}`,
+          `- Budget limit for ${b.categories?.map((a) => `${a.name}[${a.id}]`).join(",")}: ${Number(b.limit_amount).toFixed(2)}`,
       )
       .join("\n");
 
     return `
-      Here is my financial data for the selected period:
+You are a financial analyst. Analyze the following transaction data and provide insights.
 
-      Transactions:
-      ${transactionsSummary}
+TRANSACTION DATA:
+${transactionsSummary}
 
-      Budgets (if available):
-      ${budgetsSummary}
+BUDGET DATA:
+${budgetsSummary || "No budget data available"}
 
-      Please analyze my spending habits in a friendly and insightful way.
-      Focus on:
-      - Income vs. expenses ratio
-      - Spending by category
-      - Budget performance (only if budget data is provided)
-      - Higlight higest expense and income in total by category id that written in format "[uuid]" inside transaction summary
+ANALYSIS REQUIREMENTS:
+1. Analyze income vs expenses ratio
+2. Identify spending patterns by category
+3. Highlight highest expense and income categories
+4. Find interesting patterns or anomalies
+5. Include budget performance ONLY if budget data exists
 
-      Summarize your analysis using short, helpful suggestions or observations.
-      Each line should:
-      - Use friendly words, do not show any of id format "[uuid]"
-      - Be no longer than 130 characters
-      - Use some emoticons to laverage emotions
-      - Be separated by a "|" character
-      - Try to find interesting patterns or anomalies
-      - Make it max 8 suggestions
-      - No need to add introduction for your answer, strightly give me tha points only.
+OUTPUT FORMAT RULES (MUST FOLLOW STRICTLY):
+- Output ONLY the insights, no introduction, no conclusion
+- Each insight must be separated by " | " (pipe with spaces)
+- Maximum 8 insights
+- Each insight maximum 130 characters
+- Use friendly, conversational tone
+- Include relevant emoticons (😊 💰 📊 🎯 ⚠️ 💡 etc)
+- Do NOT include any ID in format [uuid]
+- Do NOT mention budget if no budget data available
 
-      Do not include any budget-related insight if the budget data is missing.
+OUTPUT EXAMPLE:
+Your income is 2x your expenses this month 💰 | Food spending increased 15% compared to last week 🍔 | Great job staying under budget! 🎯
+
+NOW GENERATE THE OUTPUT:
     `;
   }
 }

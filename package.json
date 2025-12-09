@@ -28,7 +28,7 @@
     "seed": "ts-node -r tsconfig-paths/register data-source.ts seed"
   },
   "dependencies": {
-    "@google/generative-ai": "^0.11.3",
+    "@google/genai": "^1.32.0",
     "@nestjs/cache-manager": "^3.0.1",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.2.2",
