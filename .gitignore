@@ -73,6 +73,8 @@ web_modules/
 .env.test.local
 .env.production.local
 .env.prod
+.env.stb
+.env.deploy
 
 # parcel-bundler cache files
 .cache
@@ -114,6 +116,9 @@ out
 
 # dist directory
 /dist
+
+# /deploy-local
+/deploy-package
 
 # ai context directory
 !/.context_ai_log/*.log
