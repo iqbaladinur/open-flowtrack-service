@@ -13,13 +13,6 @@ import { Wallet } from "../../wallets/entities/wallet.entity";
 import { Category } from "../../categories/entities/category.entity";
 import { CategoryType } from "../../categories/entities/category.entity";
 
-export enum RecurringPattern {
-  DAILY = "daily",
-  WEEKLY = "weekly",
-  MONTHLY = "monthly",
-  YEARLY = "yearly",
-}
-
 @Entity("transactions")
 export class Transaction {
   @PrimaryGeneratedColumn("uuid")
@@ -65,16 +58,6 @@ export class Transaction {
 
   @Column({ nullable: true })
   note: string;
-
-  @Column({ default: false })
-  is_recurring: boolean;
-
-  @Column({
-    type: "enum",
-    enum: RecurringPattern,
-    nullable: true,
-  })
-  recurring_pattern: RecurringPattern;
 
   @Index()
   @Column()

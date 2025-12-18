@@ -9,7 +9,6 @@ import {
   IsUUID,
 } from "class-validator";
 import { CategoryType } from "../../categories/entities/category.entity";
-import { RecurringPattern } from "../entities/transaction.entity";
 import { Type } from "class-transformer";
 
 export class CreateTransactionDto {
@@ -48,13 +47,4 @@ export class CreateTransactionDto {
   @IsString()
   @IsOptional()
   note?: string;
-
-  @ApiProperty({ default: false, required: false })
-  @IsOptional()
-  is_recurring?: boolean;
-
-  @ApiProperty({ enum: RecurringPattern, required: false })
-  @IsEnum(RecurringPattern)
-  @IsOptional()
-  recurring_pattern?: RecurringPattern;
 }

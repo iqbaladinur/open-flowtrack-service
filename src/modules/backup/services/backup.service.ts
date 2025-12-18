@@ -121,8 +121,6 @@ export class BackupService {
               destination_wallet_id: newDestinationWalletId,
               date: transactionData.date,
               note: transactionData.note,
-              is_recurring: transactionData.is_recurring,
-              recurring_pattern: transactionData.recurring_pattern,
             },
             userId,
           );
@@ -138,8 +136,6 @@ export class BackupService {
               category_id: newCategoryId,
               date: transactionData.date,
               note: transactionData.note,
-              is_recurring: transactionData.is_recurring,
-              recurring_pattern: transactionData.recurring_pattern,
             },
             userId,
           );
