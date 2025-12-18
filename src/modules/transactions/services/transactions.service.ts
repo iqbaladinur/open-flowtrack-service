@@ -17,6 +17,10 @@ import { CreateTransactionDto } from "../dto/create-transaction.dto";
 import { UpdateTransactionDto } from "../dto/update-transaction.dto";
 import { FindAllTransactionsDto } from "../dto/find-all-transactions.dto";
 import { CreateTransactionByTextDto } from "../dto/create-transaction-by-text.dto";
+import {
+  CreateBulkRecurringTransactionDto,
+  RecurringPattern,
+} from "../dto/create-bulk-recurring-transaction.dto";
 import { CategoriesService } from "src/modules/categories/services/categories.service";
 import {
   Category,
@@ -165,6 +169,145 @@ export class TransactionsService {
       user_id: userId,
     });
     return this.transactionsRepository.save(transaction);
+  }
+
+  async createBulkRecurring(
+    createBulkRecurringDto: CreateBulkRecurringTransactionDto,
+    userId: string,
+  ): Promise<Transaction[]> {
+    // Validate that either recurring_count or recurring_until is provided
+    if (!createBulkRecurringDto.recurring_count && !createBulkRecurringDto.recurring_until) {
+      throw new BadRequestException(
+        "Either recurring_count or recurring_until must be provided.",
+      );
+    }
+
+    // Validate wallet exists
+    const wallet = await this.walletsRepository.findOne({
+      where: { id: createBulkRecurringDto.wallet_id, user_id: userId },
+    });
+
+    if (!wallet) {
+      throw new NotFoundException("Wallet not found");
+    }
+
+    // Validate for transfer type
+    if (createBulkRecurringDto.type === CategoryType.TRANSFER) {
+      if (!createBulkRecurringDto.destination_wallet_id) {
+        throw new BadRequestException(
+          "Destination wallet is required for transfer transactions.",
+        );
+      }
+      if (createBulkRecurringDto.category_id) {
+        throw new BadRequestException(
+          "Category should not be specified for transfer transactions.",
+        );
+      }
+      if (
+        createBulkRecurringDto.wallet_id ===
+        createBulkRecurringDto.destination_wallet_id
+      ) {
+        throw new BadRequestException(
+          "Source and destination wallets cannot be the same.",
+        );
+      }
+      const destinationWallet = await this.walletsRepository.findOne({
+        where: {
+          id: createBulkRecurringDto.destination_wallet_id,
+          user_id: userId,
+        },
+      });
+      if (!destinationWallet) {
+        throw new NotFoundException("Destination wallet not found");
+      }
+    } else {
+      if (!createBulkRecurringDto.category_id) {
+        throw new BadRequestException(
+          "Category is required for income/expense transactions.",
+        );
+      }
+      if (createBulkRecurringDto.destination_wallet_id) {
+        throw new BadRequestException(
+          "Destination wallet should not be specified for income/expense transactions.",
+        );
+      }
+    }
+
+    // Calculate all dates based on pattern
+    const dates = this.calculateRecurringDates(
+      createBulkRecurringDto.date,
+      createBulkRecurringDto.recurring_pattern,
+      createBulkRecurringDto.recurring_count,
+      createBulkRecurringDto.recurring_until,
+    );
+
+    // Create transactions for all dates
+    const transactions = dates.map((date) => {
+      return this.transactionsRepository.create({
+        type: createBulkRecurringDto.type,
+        amount: createBulkRecurringDto.amount,
+        wallet_id: createBulkRecurringDto.wallet_id,
+        category_id: createBulkRecurringDto.category_id,
+        destination_wallet_id: createBulkRecurringDto.destination_wallet_id,
+        date,
+        note: createBulkRecurringDto.note,
+        user_id: userId,
+      });
+    });
+
+    // Bulk save all transactions
+    return this.transactionsRepository.save(transactions);
+  }
+
+  private calculateRecurringDates(
+    startDate: Date,
+    pattern: RecurringPattern,
+    count?: number,
+    until?: Date,
+  ): Date[] {
+    const dates: Date[] = [new Date(startDate)];
+    let currentDate = new Date(startDate);
+
+    // Determine how many dates to generate
+    let iterations = count || 365; // Default max if using until date
+    if (until) {
+      // Calculate max iterations to prevent infinite loop
+      iterations = 365;
+    }
+
+    for (let i = 1; i < iterations; i++) {
+      const nextDate = new Date(currentDate);
+
+      switch (pattern) {
+        case RecurringPattern.DAILY:
+          nextDate.setDate(nextDate.getDate() + 1);
+          break;
+        case RecurringPattern.WEEKLY:
+          nextDate.setDate(nextDate.getDate() + 7);
+          break;
+        case RecurringPattern.MONTHLY:
+          nextDate.setMonth(nextDate.getMonth() + 1);
+          break;
+        case RecurringPattern.YEARLY:
+          nextDate.setFullYear(nextDate.getFullYear() + 1);
+          break;
+      }
+
+      // Check if we've exceeded the until date
+      if (until && nextDate > until) {
+        break;
+      }
+
+      dates.push(new Date(nextDate));
+      currentDate = nextDate;
+
+      // If using until date, check if we should continue
+      if (!count && until && currentDate >= until) {
+        break;
+      }
+    }
+
+    return dates;
   }
 
   async findAll(

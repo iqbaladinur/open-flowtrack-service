@@ -13,6 +13,7 @@ import {
 import { TransactionsService } from "../services/transactions.service";
 import { CreateTransactionDto } from "../dto/create-transaction.dto";
 import { UpdateTransactionDto } from "../dto/update-transaction.dto";
+import { CreateBulkRecurringTransactionDto } from "../dto/create-bulk-recurring-transaction.dto";
 import { JwtAuthGuard } from "../../auth/guards/jwt-auth.guard";
 import {
   ApiTags,
@@ -60,8 +61,6 @@ export class TransactionsController {
         category_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
         date: "2025-07-28T00:00:00.000Z",
         note: "Lunch",
-        is_recurring: false,
-        recurring_pattern: null,
         user_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
         created_at: "2025-07-28T00:00:00.000Z",
         updated_at: "2025-07-28T00:00:00.000Z",
@@ -70,6 +69,50 @@ export class TransactionsController {
   })
   create(@Body() createTransactionDto: CreateTransactionDto, @Request() req) {
     return this.transactionsService.create(createTransactionDto, req.user.id);
+  }
+
+  @Post("bulk-recurring")
+  @ApiOperation({ summary: "Create bulk recurring transactions" })
+  @ApiResponse({
+    status: 201,
+    description: "The transactions have been successfully created.",
+    schema: {
+      example: [
+        {
+          id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+          type: "expense",
+          amount: 5000000.0,
+          wallet_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+          category_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+          date: "2025-01-01T00:00:00.000Z",
+          note: "Rent payment",
+          user_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+          created_at: "2025-07-28T00:00:00.000Z",
+          updated_at: "2025-07-28T00:00:00.000Z",
+        },
+        {
+          id: "b1c2d3e4-f5g6-7890-1234-567890abcdef",
+          type: "expense",
+          amount: 5000000.0,
+          wallet_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+          category_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+          date: "2025-02-01T00:00:00.000Z",
+          note: "Rent payment",
+          user_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+          created_at: "2025-07-28T00:00:00.000Z",
+          updated_at: "2025-07-28T00:00:00.000Z",
+        },
+      ],
+    },
+  })
+  createBulkRecurring(
+    @Body() createBulkRecurringDto: CreateBulkRecurringTransactionDto,
+    @Request() req,
+  ) {
+    return this.transactionsService.createBulkRecurring(
+      createBulkRecurringDto,
+      req.user.id,
+    );
   }
 
   @Get()
@@ -87,8 +130,6 @@ export class TransactionsController {
           category_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
           date: "2025-07-28T00:00:00.000Z",
           note: "Lunch",
-          is_recurring: false,
-          recurring_pattern: null,
           user_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
           created_at: "2025-07-28T00:00:00.000Z",
           updated_at: "2025-07-28T00:00:00.000Z",
@@ -114,8 +155,6 @@ export class TransactionsController {
         category_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
         date: "2025-07-28T00:00:00.000Z",
         note: "Lunch",
-        is_recurring: false,
-        recurring_pattern: null,
         user_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
         created_at: "2025-07-28T00:00:00.000Z",
         updated_at: "2025-07-28T00:00:00.000Z",
@@ -140,8 +179,6 @@ export class TransactionsController {
         category_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
         date: "2025-07-28T00:00:00.000Z",
         note: "Dinner",
-        is_recurring: false,
-        recurring_pattern: null,
         user_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef",
         created_at: "2025-07-28T00:00:00.000Z",
         updated_at: "2025-07-28T00:00:00.000Z",
