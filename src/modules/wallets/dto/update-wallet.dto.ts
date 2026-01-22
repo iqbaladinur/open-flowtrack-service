@@ -12,6 +12,11 @@ export class UpdateWalletDto {
   @IsOptional()
   initial_balance?: number;
 
+  @ApiProperty({ example: "wallet", required: false })
+  @IsOptional()
+  @IsString()
+  icon?: string;
+
   @ApiProperty({ required: false })
   @IsOptional()
   @IsBoolean()

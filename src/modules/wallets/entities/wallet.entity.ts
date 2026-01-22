@@ -22,6 +22,9 @@ export class Wallet {
   @Column()
   name: string;
 
+  @Column({ default: "", nullable: true })
+  icon: string;
+
   @Column("decimal", { precision: 18, scale: 4 })
   initial_balance: number;
 

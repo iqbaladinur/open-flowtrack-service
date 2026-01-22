@@ -18,6 +18,11 @@ export class CreateWalletDto {
   @IsNotEmpty()
   initial_balance: number;
 
+  @ApiProperty({ example: "wallet", required: false, default: "" })
+  @IsOptional()
+  @IsString()
+  icon?: string;
+
   @ApiProperty({ required: false, default: false })
   @IsOptional()
   @IsBoolean()
