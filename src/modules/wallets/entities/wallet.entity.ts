@@ -34,6 +34,9 @@ export class Wallet {
   @Column({ default: false })
   is_main_wallet: boolean;
 
+  @Column({ default: false })
+  is_saving: boolean;
+
   @Column()
   @Index()
   user_id: string;

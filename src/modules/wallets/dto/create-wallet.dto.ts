@@ -32,4 +32,9 @@ export class CreateWalletDto {
   @IsOptional()
   @IsBoolean()
   is_main_wallet?: boolean;
+
+  @ApiProperty({ required: false, default: false })
+  @IsOptional()
+  @IsBoolean()
+  is_saving?: boolean;
 }
