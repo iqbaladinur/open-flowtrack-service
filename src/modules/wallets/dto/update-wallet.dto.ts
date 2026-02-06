@@ -26,4 +26,9 @@ export class UpdateWalletDto {
   @IsOptional()
   @IsBoolean()
   is_main_wallet?: boolean;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsBoolean()
+  is_saving?: boolean;
 }
