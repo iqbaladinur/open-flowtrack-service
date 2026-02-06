@@ -78,6 +78,10 @@ export class BackupService {
           {
             name: walletData.name,
             initial_balance: walletData.initial_balance,
+            icon: walletData.icon,
+            hidden: walletData.hidden,
+            is_main_wallet: walletData.is_main_wallet,
+            is_saving: walletData.is_saving,
           },
           userId,
         );
@@ -147,7 +151,9 @@ export class BackupService {
     if (data.budgets) {
       for (const budgetData of data.budgets) {
         const newCategoryIds = budgetData.category_ids
-          ? budgetData.category_ids.map((id: string) => categoryIdMap.get(id)).filter(Boolean)
+          ? budgetData.category_ids
+              .map((id: string) => categoryIdMap.get(id))
+              .filter(Boolean)
           : [];
 
         if (newCategoryIds.length > 0) {
@@ -170,50 +176,57 @@ export class BackupService {
     if (data.milestones) {
       for (const milestoneData of data.milestones) {
         // Map IDs in conditions to new IDs
-        const mappedConditions = milestoneData.conditions?.map((c: { type: string; config: any }) => {
-          const newConfig = { ...c.config };
+        const mappedConditions =
+          milestoneData.conditions
+            ?.map((c: { type: string; config: any }) => {
+              const newConfig = { ...c.config };
 
-          // Map wallet_id (for wallet_balance condition)
-          if (newConfig.wallet_id) {
-            newConfig.wallet_id = walletIdMap.get(newConfig.wallet_id) || null;
-          }
+              // Map wallet_id (for wallet_balance condition)
+              if (newConfig.wallet_id) {
+                newConfig.wallet_id =
+                  walletIdMap.get(newConfig.wallet_id) || null;
+              }
 
-          // Map budget_id (for budget_control condition)
-          if (newConfig.budget_id) {
-            const newBudgetId = budgetIdMap.get(newConfig.budget_id);
-            if (!newBudgetId) {
-              // Skip this condition if budget not found
-              return null;
-            }
-            newConfig.budget_id = newBudgetId;
-          }
+              // Map budget_id (for budget_control condition)
+              if (newConfig.budget_id) {
+                const newBudgetId = budgetIdMap.get(newConfig.budget_id);
+                if (!newBudgetId) {
+                  // Skip this condition if budget not found
+                  return null;
+                }
+                newConfig.budget_id = newBudgetId;
+              }
 
-          // Map category_id (for transaction_amount, period_total, category_spending conditions)
-          if (newConfig.category_id) {
-            const newCategoryId = categoryIdMap.get(newConfig.category_id);
-            if (!newCategoryId) {
-              // Skip this condition if category not found
-              return null;
-            }
-            newConfig.category_id = newCategoryId;
-          }
+              // Map category_id (for transaction_amount, period_total, category_spending conditions)
+              if (newConfig.category_id) {
+                const newCategoryId = categoryIdMap.get(newConfig.category_id);
+                if (!newCategoryId) {
+                  // Skip this condition if category not found
+                  return null;
+                }
+                newConfig.category_id = newCategoryId;
+              }
 
-          return {
-            type: c.type,
-            config: newConfig
-          };
-        }).filter(Boolean) || [];
+              return {
+                type: c.type,
+                config: newConfig,
+              };
+            })
+            .filter(Boolean) || [];
 
         // Only create milestone if it has valid conditions
         if (mappedConditions.length > 0) {
-          await this.milestonesService.create({
-            name: milestoneData.name,
-            description: milestoneData.description,
-            icon: milestoneData.icon,
-            color: milestoneData.color,
-            conditions: mappedConditions,
-            target_date: milestoneData.target_date,
-          }, userId);
+          await this.milestonesService.create(
+            {
+              name: milestoneData.name,
+              description: milestoneData.description,
+              icon: milestoneData.icon,
+              color: milestoneData.color,
+              conditions: mappedConditions,
+              target_date: milestoneData.target_date,
+            },
+            userId,
+          );
         }
       }
     }
