@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@google/genai": "^1.32.0",
+    "@modelcontextprotocol/sdk": "^1.26.0",
     "@nestjs/cache-manager": "^3.0.1",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.2.2",
@@ -55,7 +56,8 @@
     "rxjs": "^7.8.1",
     "swagger-ui-express": "^5.0.1",
     "typeorm": "^0.3.20",
-    "widdershins": "^4.0.1"
+    "widdershins": "^4.0.1",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

@@ -27,5 +27,6 @@ import { ConfigModule } from "../config/config.module";
       useClass: GeminiAiProvider,
     },
   ],
+  exports: [AnalyticsService],
 })
 export class AnalyticsModule {}

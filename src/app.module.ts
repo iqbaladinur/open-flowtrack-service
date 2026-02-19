@@ -14,6 +14,7 @@ import configuration from "./infrastructure/config/configuration";
 import { validationSchema } from "./infrastructure/config/validation";
 import { AnalyticsModule } from "./modules/analytics/analytics.module";
 import { MilestonesModule } from "./modules/milestones/milestones.module";
+import { McpModule } from "./modules/mcp/mcp.module";
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { MilestonesModule } from "./modules/milestones/milestones.module";
     BackupModule,
     AnalyticsModule,
     MilestonesModule,
+    McpModule,
   ],
   controllers: [],
   providers: [],

@@ -14,6 +14,7 @@ export default () => ({
     clientId: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: process.env.GOOGLE_CALLBACK_URL,
+    mcpCallbackURL: process.env.MCP_GOOGLE_CALLBACK_URL,
   },
   frontend: {
     url: process.env.FRONTEND_URL,

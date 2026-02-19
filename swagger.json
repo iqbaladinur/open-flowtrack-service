@@ -912,8 +912,6 @@
                     "category_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
                     "date": "2025-07-28T00:00:00.000Z",
                     "note": "Lunch",
-                    "is_recurring": false,
-                    "recurring_pattern": null,
                     "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
                     "created_at": "2025-07-28T00:00:00.000Z",
                     "updated_at": "2025-07-28T00:00:00.000Z"
@@ -1018,8 +1016,68 @@
                       "category_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
                       "date": "2025-07-28T00:00:00.000Z",
                       "note": "Lunch",
-                      "is_recurring": false,
-                      "recurring_pattern": null,
+                      "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "created_at": "2025-07-28T00:00:00.000Z",
+                      "updated_at": "2025-07-28T00:00:00.000Z"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Transactions"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/transactions/bulk-recurring": {
+      "post": {
+        "operationId": "TransactionsController_createBulkRecurring",
+        "summary": "Create bulk recurring transactions",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBulkRecurringTransactionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The transactions have been successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": [
+                    {
+                      "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "type": "expense",
+                      "amount": 5000000,
+                      "wallet_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "category_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "date": "2025-01-01T00:00:00.000Z",
+                      "note": "Rent payment",
+                      "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "created_at": "2025-07-28T00:00:00.000Z",
+                      "updated_at": "2025-07-28T00:00:00.000Z"
+                    },
+                    {
+                      "id": "b1c2d3e4-f5g6-7890-1234-567890abcdef",
+                      "type": "expense",
+                      "amount": 5000000,
+                      "wallet_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "category_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                      "date": "2025-02-01T00:00:00.000Z",
+                      "note": "Rent payment",
                       "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
                       "created_at": "2025-07-28T00:00:00.000Z",
                       "updated_at": "2025-07-28T00:00:00.000Z"
@@ -1068,8 +1126,6 @@
                     "category_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
                     "date": "2025-07-28T00:00:00.000Z",
                     "note": "Lunch",
-                    "is_recurring": false,
-                    "recurring_pattern": null,
                     "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
                     "created_at": "2025-07-28T00:00:00.000Z",
                     "updated_at": "2025-07-28T00:00:00.000Z"
@@ -1125,8 +1181,6 @@
                     "category_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
                     "date": "2025-07-28T00:00:00.000Z",
                     "note": "Dinner",
-                    "is_recurring": false,
-                    "recurring_pattern": null,
                     "user_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
                     "created_at": "2025-07-28T00:00:00.000Z",
                     "updated_at": "2025-07-28T00:00:00.000Z"
@@ -1604,6 +1658,259 @@
         ]
       }
     },
+    "/milestones": {
+      "post": {
+        "operationId": "MilestonesController_create",
+        "summary": "Create a new milestone",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMilestoneDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The milestone has been successfully created."
+          }
+        },
+        "tags": [
+          "Milestones"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "MilestonesController_findAll",
+        "summary": "Get all milestones with progress",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by milestone status",
+            "schema": {
+              "enum": [
+                "pending",
+                "in_progress",
+                "achieved",
+                "failed",
+                "cancelled"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort_by",
+            "required": false,
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "enum": [
+                "target_date",
+                "created_at",
+                "name"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "required": false,
+            "in": "query",
+            "description": "Sort order",
+            "schema": {
+              "enum": [
+                "ASC",
+                "DESC"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of milestones with calculated progress for each condition."
+          }
+        },
+        "tags": [
+          "Milestones"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/milestones/{id}": {
+      "get": {
+        "operationId": "MilestonesController_findOne",
+        "summary": "Get a specific milestone by ID with progress",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The milestone with current progress."
+          }
+        },
+        "tags": [
+          "Milestones"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "MilestonesController_update",
+        "summary": "Update a milestone",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMilestoneDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The updated milestone."
+          }
+        },
+        "tags": [
+          "Milestones"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "MilestonesController_remove",
+        "summary": "Delete a milestone",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The milestone has been successfully deleted."
+          }
+        },
+        "tags": [
+          "Milestones"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/milestones/{id}/status": {
+      "patch": {
+        "operationId": "MilestonesController_updateStatus",
+        "summary": "Manually update milestone status",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The milestone status has been updated."
+          }
+        },
+        "tags": [
+          "Milestones"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/milestones/{id}/check-progress": {
+      "get": {
+        "operationId": "MilestonesController_checkProgress",
+        "summary": "Force check progress (refresh)",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns milestone with freshly calculated progress."
+          }
+        },
+        "tags": [
+          "Milestones"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
     "/analytics/generate": {
       "post": {
         "operationId": "AnalyticsController_generateAnalytics",
@@ -1754,11 +2061,20 @@
             "type": "number",
             "example": 1000
           },
+          "icon": {
+            "type": "string",
+            "example": "wallet",
+            "default": ""
+          },
           "hidden": {
             "type": "boolean",
             "default": false
           },
           "is_main_wallet": {
+            "type": "boolean",
+            "default": false
+          },
+          "is_saving": {
             "type": "boolean",
             "default": false
           }
@@ -1779,10 +2095,17 @@
             "type": "number",
             "example": 1500
           },
+          "icon": {
+            "type": "string",
+            "example": "wallet"
+          },
           "hidden": {
             "type": "boolean"
           },
           "is_main_wallet": {
+            "type": "boolean"
+          },
+          "is_saving": {
             "type": "boolean"
           }
         }
@@ -1902,10 +2225,46 @@
           },
           "note": {
             "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "amount",
+          "wallet_id",
+          "date"
+        ]
+      },
+      "CreateBulkRecurringTransactionDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "income",
+              "expense",
+              "transfer"
+            ],
+            "example": "expense"
           },
-          "is_recurring": {
-            "type": "boolean",
-            "default": false
+          "amount": {
+            "type": "number",
+            "example": 50
+          },
+          "wallet_id": {
+            "type": "string"
+          },
+          "category_id": {
+            "type": "string"
+          },
+          "destination_wallet_id": {
+            "type": "string"
+          },
+          "date": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
           },
           "recurring_pattern": {
             "type": "string",
@@ -1914,14 +2273,27 @@
               "weekly",
               "monthly",
               "yearly"
-            ]
+            ],
+            "example": "monthly",
+            "description": "Recurring pattern for bulk transaction creation"
+          },
+          "recurring_count": {
+            "type": "number",
+            "example": 12,
+            "description": "Number of times to repeat the transaction"
+          },
+          "recurring_until": {
+            "format": "date-time",
+            "type": "string",
+            "description": "End date for recurring transactions"
           }
         },
         "required": [
           "type",
           "amount",
           "wallet_id",
-          "date"
+          "date",
+          "recurring_pattern"
         ]
       },
       "UpdateTransactionDto": {
@@ -1953,18 +2325,6 @@
           },
           "note": {
             "type": "string"
-          },
-          "is_recurring": {
-            "type": "boolean"
-          },
-          "recurring_pattern": {
-            "type": "string",
-            "enum": [
-              "daily",
-              "weekly",
-              "monthly",
-              "yearly"
-            ]
           }
         }
       },
@@ -2027,6 +2387,143 @@
           }
         }
       },
+      "ConditionDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "wallet_balance",
+              "budget_control",
+              "transaction_amount",
+              "period_total",
+              "net_worth",
+              "category_spending"
+            ],
+            "example": "wallet_balance"
+          },
+          "config": {
+            "type": "object",
+            "description": "Configuration object based on condition type"
+          }
+        },
+        "required": [
+          "type",
+          "config"
+        ]
+      },
+      "CreateMilestoneDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Emergency Fund Complete",
+            "description": "Name of the milestone",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "description": {
+            "type": "string",
+            "example": "Build emergency fund untuk 6 bulan pengeluaran",
+            "description": "Detailed description of the milestone",
+            "maxLength": 1000
+          },
+          "icon": {
+            "type": "string",
+            "example": "shield-checkmark-outline",
+            "description": "Icon identifier for UI",
+            "maxLength": 50
+          },
+          "color": {
+            "type": "string",
+            "example": "#26de81",
+            "description": "Hex color code",
+            "pattern": "^#[0-9A-Fa-f]{6}$"
+          },
+          "conditions": {
+            "description": "Array of conditions (minimum 1, maximum 10)",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConditionDto"
+            }
+          },
+          "target_date": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2025-12-31",
+            "description": "Target date when milestone should be achieved"
+          }
+        },
+        "required": [
+          "name",
+          "conditions",
+          "target_date"
+        ]
+      },
+      "UpdateMilestoneDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Emergency Fund Complete",
+            "description": "Name of the milestone",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "description": {
+            "type": "string",
+            "example": "Build emergency fund untuk 6 bulan pengeluaran",
+            "description": "Detailed description of the milestone",
+            "maxLength": 1000
+          },
+          "icon": {
+            "type": "string",
+            "example": "shield-checkmark-outline",
+            "description": "Icon identifier for UI",
+            "maxLength": 50
+          },
+          "color": {
+            "type": "string",
+            "example": "#26de81",
+            "description": "Hex color code",
+            "pattern": "^#[0-9A-Fa-f]{6}$"
+          },
+          "conditions": {
+            "description": "Array of conditions (minimum 1, maximum 10)",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConditionDto"
+            }
+          },
+          "target_date": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2025-12-31",
+            "description": "Target date when milestone should be achieved"
+          }
+        }
+      },
+      "UpdateStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "achieved",
+              "failed",
+              "cancelled"
+            ],
+            "example": "achieved"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
       "GenerateAnalyticsDto": {
         "type": "object",
         "properties": {
@@ -2061,6 +2558,10 @@
         "properties": {}
       },
       "Wallet": {
+        "type": "object",
+        "properties": {}
+      },
+      "Milestone": {
         "type": "object",
         "properties": {}
       }
